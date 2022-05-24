@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.apache.ranger.common.view.VList;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -56,6 +57,7 @@ public class VXCredentialStoreList extends VList {
     /**
      * @return the vXCredentialStores
      */
+    @JsonProperty("vXCredentialStores")
     public List<VXCredentialStore> getVXCredentialStores() {
 	return vXCredentialStores;
     }
@@ -64,6 +66,7 @@ public class VXCredentialStoreList extends VList {
      * @param vXCredentialStores
      *            the vXCredentialStores to set
      */
+    @JsonProperty("vXCredentialStores")
     public void setVXCredentialStores(List<VXCredentialStore> vXCredentialStores) {
 	this.vXCredentialStores = vXCredentialStores;
     }

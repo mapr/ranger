@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.apache.ranger.common.view.VList;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -56,6 +57,7 @@ public class VXPolicyExportAuditList extends VList {
     /**
      * @return the vXPolicyExportAudits
      */
+    @JsonProperty("vXPolicyExportAudits")
     public List<VXPolicyExportAudit> getVXPolicyExportAudits() {
 	return vXPolicyExportAudits;
     }
@@ -64,6 +66,7 @@ public class VXPolicyExportAuditList extends VList {
      * @param vXPolicyExportAudits
      *            the vXPolicyExportAudits to set
      */
+    @JsonProperty("vXPolicyExportAudits")
     public void setVXPolicyExportAudits(List<VXPolicyExportAudit> vXPolicyExportAudits) {
 	this.vXPolicyExportAudits = vXPolicyExportAudits;
     }

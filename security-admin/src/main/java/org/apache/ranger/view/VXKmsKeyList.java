@@ -31,6 +31,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import org.codehaus.jackson.annotate.JsonProperty;
 import org.apache.ranger.common.view.VList;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -56,6 +57,7 @@ public class VXKmsKeyList extends VList {
     /**
      * @return the vXKeys
      */
+    @JsonProperty("vXKeys")
     public List<VXKmsKey> getVXKeys() {
 	return vXKeys;
     }
@@ -64,6 +66,7 @@ public class VXKmsKeyList extends VList {
      * @param vXKeys
      *            the vXKeys to set
      */
+    @JsonProperty("vXKeys")
     public void setVXKeys(List<VXKmsKey> vXKeys) {
 	this.vXKeys = vXKeys;
     }
