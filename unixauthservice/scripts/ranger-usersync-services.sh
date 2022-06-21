@@ -15,6 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Global variables
+MAPR_HOME="${BASEMAPR:-/opt/mapr}"
+
 function getInstallProperty() {
     local propertyName=$1
     local propertyValue=""
@@ -110,6 +113,7 @@ if [ "${action}" == "START" ]; then
 			exit ;
 		else
 			rm -rf $pidf
+			rm -rf "${MAPR_HOME}"/pid/"${USERSYNC_PID_NAME}"
         fi
     fi
 	SLEEP_TIME_AFTER_START=5
@@ -124,6 +128,7 @@ if [ "${action}" == "START" ]; then
 		chmod 660 ${pidf}
 		pid=`cat $pidf`
 		echo "Apache Ranger Usersync Service with pid ${pid} has started."
+		cp ${pidf} "${MAPR_HOME}"/pid/
 	else
 		echo "Apache Ranger Usersync Service failed to start!"
 	fi
@@ -168,6 +173,7 @@ elif [ "${action}" == "STOP" ]; then
 
 	else
 		rm -rf $pidf
+		rm -f "${MAPR_HOME}"/pid/"${USERSYNC_PID_NAME}"
 		echo "Apache Ranger Usersync Service with pid ${pid} has been stopped."
 	fi
 	exit;

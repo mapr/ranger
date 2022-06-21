@@ -15,6 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Global vars
+MAPR_HOME="${BASEMAPR:-/opt/mapr}"
+
+# source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
+if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
+  . "${MAPR_HOME}"/conf/env.sh
+fi
+
 if [ "${JAVA_HOME}" == "" ]
 then
 	echo "JAVA_HOME environment property not defined, aborting installation."
