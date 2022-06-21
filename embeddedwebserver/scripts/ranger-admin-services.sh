@@ -15,6 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Global variables
+MAPR_HOME="${BASEMAPR:-/opt/mapr}"
+
 if [[ -z $1 ]]; then
 	echo "Invalid argument [$1];"
 	echo "Usage: Only start | stop | restart | metric | version , are supported."
@@ -95,6 +98,16 @@ start() {
 	VALUE_OF_PID=$!
 	echo "Starting Apache Ranger Admin Service"
 	sleep $SLEEP_TIME_AFTER_START
+
+  # if not running but pid exist
+  if [ -f "$pidf" ]; then
+    pid=$(cat $pidf)
+    if ! ps -p $pid >/dev/null; then
+      rm -rf $pidf
+      rm -rf "${MAPR_HOME}"/pid/"${RANGER_ADMIN_PID_NAME}"
+    fi
+  fi
+
 	if ps -p $VALUE_OF_PID > /dev/null
 	then
 		echo $VALUE_OF_PID > ${pidf}
@@ -102,6 +115,7 @@ start() {
 		chmod 660 ${pidf}
 		pid=`cat $pidf`
 		echo "Apache Ranger Admin Service with pid ${pid} has started."
+		cp ${pidf} "${MAPR_HOME}"/pid/
 	else
 		echo "Apache Ranger Admin Service failed to start!"
 	fi
@@ -148,6 +162,7 @@ stop(){
 
 	else
 		rm -rf $pidf
+		rm -rf "${MAPR_HOME}"/pid/"${RANGER_ADMIN_PID_NAME}"
 		echo "Apache Ranger Admin Service with pid ${pid} has been stopped."
 	fi
 

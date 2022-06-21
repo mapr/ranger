@@ -19,6 +19,14 @@
 #
 # This script will install policymanager webapplication under tomcat and also, initialize the database with ranger users/tables.
 
+# Global vars
+MAPR_HOME="${BASEMAPR:-/opt/mapr}"
+
+# source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
+if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
+  . "${MAPR_HOME}"/conf/env.sh
+fi
+
 usage() {
         [ "$*" ] && echo "$0: $*"
         sed -n '/^##/,/^$/s/^## \{0,1\}//p' "$0"
