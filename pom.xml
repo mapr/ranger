@@ -1241,6 +1241,7 @@
                         <exclude>**/package-lock.json</exclude>
                         <exclude>**/ranger_es_schema.json</exclude>
                         <exclude>**/venv/**</exclude>
+                        <exclude>**/devops/**</exclude>
                         <exclude>**/requirements.txt</exclude>
                         <exclude>**/__init__.py</exclude>
                         <exclude>**/default_primary_config.json</exclude>

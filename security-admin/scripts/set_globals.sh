@@ -24,6 +24,8 @@
 PROPFILE=$PWD/install.properties
 propertyValue=''
 
+log "[I] Setting global variables by running set_globals.sh"
+
 if [ ! $? = "0" ];then
 	log "$PROPFILE file not found....!!";
 	exit 1;
@@ -96,9 +98,11 @@ if [ ! -d /etc/ranger/admin/conf ]; then
 	chown -R $unix_user:$unix_group /etc/ranger/admin/conf
 fi
 
-log "[I] Soft linking /etc/ranger/admin/conf to ews/webapp/WEB-INF/classes/conf"
+log " [I] Soft linking /etc/ranger/admin/conf to ews/webapp/WEB-INF/classes/conf"
 mv -f ews/webapp/WEB-INF/classes/conf ews/webapp/WEB-INF/classes/conf.$curDt 2> /dev/null
 ln -sf /etc/ranger/admin/conf ews/webapp/WEB-INF/classes/conf
+chown -R $unix_user:$unix_group /etc/ranger/admin/conf
+chown -R $unix_user:$unix_group ews/webapp/WEB-INF/classes/conf
 
 #Create the log folder
 if [ ! -d /var/log/ranger/admin ]; then

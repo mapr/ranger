@@ -358,7 +358,15 @@ check_db_connector() {
 	if test -f "$SQL_CONNECTOR_JAR"; then
 		log "[I] ${DB_FLAVOR} CONNECTOR FILE : $SQL_CONNECTOR_JAR file found"
 	else
-		log "[E] ${DB_FLAVOR} CONNECTOR FILE : $SQL_CONNECTOR_JAR does not exists" ; exit 1;
+    if test -f "${MAPR_HOME}"/lib/mysql-connector-java* ; then
+      SQL_CONNECTOR_JAR_CORE_LIB=$(ls "${MAPR_HOME}"/lib/mysql-connector-java*)
+      sed -i --expression "s@SQL_CONNECTOR_JAR=${SQL_CONNECTOR_JAR}@SQL_CONNECTOR_JAR=${SQL_CONNECTOR_JAR_CORE_LIB}@" ${PROPFILE}
+      SQL_CONNECTOR_JAR=${SQL_CONNECTOR_JAR_CORE_LIB}
+      log "[I] ${DB_FLAVOR} CONNECTOR FILE : $SQL_CONNECTOR_JAR file found in mapr core library"
+    else
+      log "[E] ${DB_FLAVOR} CONNECTOR FILE : $SQL_CONNECTOR_JAR does not exists in either specified location or core lib"
+      exit 1
+    fi
 	fi
 }
 check_java_version() {
@@ -1712,5 +1720,9 @@ then
 	fi
 else
 	exit 1
+fi
+
+if [ -f "${XAPOLICYMGR_DIR}"/set_globals.sh ]; then
+  source "${XAPOLICYMGR_DIR}"/set_globals.sh
 fi
 echo "Installation of Ranger PolicyManager Web Application is completed."
