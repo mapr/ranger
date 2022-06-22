@@ -20,6 +20,9 @@
 #This script creates the required folders in /etc/ranger, /var/log/ranger and other folders.
 #This will also create the ranger linux user and groups if required.
 
+## !!! Do not run manually.
+## This script creates symlink to /etc/ranger/admin/conf which causes databases connection issue
+
 #This script needs to be run as root
 PROPFILE=$PWD/install.properties
 propertyValue=''

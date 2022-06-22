@@ -17,6 +17,8 @@
 
 # Global vars
 MAPR_HOME="${BASEMAPR:-/opt/mapr}"
+HADOOP_VERSION_FILE="$MAPR_HOME"/hadoop/hadoopversion
+HADOOP_VERSION=$(cat "$HADOOP_VERSION_FILE")
 
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
@@ -35,6 +37,11 @@ else
 	export JAVA_HOME
 	PATH="${JAVA_HOME}/bin:${PATH}"
 	export PATH
+fi
+
+# set hadoop home if not yet
+if [ -z "${HADOOP_HOME}" ]; then
+  export HADOOP_HOME="$MAPR_HOME"/hadoop/hadoop-"${HADOOP_VERSION}"
 fi
 
 ./setup.py

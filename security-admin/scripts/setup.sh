@@ -21,6 +21,8 @@
 
 # Global vars
 MAPR_HOME="${BASEMAPR:-/opt/mapr}"
+HADOOP_VERSION_FILE="$MAPR_HOME"/hadoop/hadoopversion
+HADOOP_VERSION=$(cat "$HADOOP_VERSION_FILE")
 
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
@@ -1669,10 +1671,35 @@ change_default_users_password(){
 		fi
 	fi
 }
+
+# configure hadoop conf dir for ranger usage
+configure_hadoop_conf() {
+  # this is core-site.xml location
+  local HADOOP_CONF_DIR="${MAPR_HOME}"/hadoop/hadoop-"${HADOOP_VERSION}"/etc/hadoop/
+  if [ ! -d /etc/hadoop ]; then
+    log "[I] /etc/hadoop/ does not exist, creating it."
+    mkdir -p /etc/hadoop
+  fi
+
+  local RANGER_HADOOP_SYMLINK="/etc/hadoop/conf"
+  if [ -L "${RANGER_HADOOP_SYMLINK}" ]; then
+    log "[I] Symlink for hadoop conf exists: ${RANGER_HADOOP_SYMLINK}"
+    if [ ! -e "${RANGER_HADOOP_SYMLINK}" ]; then
+      log "[I] Symlink is broken, refreshing it."
+      ln -sf "${HADOOP_CONF_DIR}" "${RANGER_HADOOP_SYMLINK}"
+    fi
+  else
+    log "[I] Symlink for hadoop conf does not exist. Creating link from ${HADOOP_CONF_DIR} to ${RANGER_HADOOP_SYMLINK}"
+    ln -sf "${HADOOP_CONF_DIR}" "${RANGER_HADOOP_SYMLINK}"
+  fi
+  chmod 755 "${RANGER_HADOOP_SYMLINK}"
+}
+
 log " --------- Running Ranger PolicyManager Web Application Install Script --------- "
 log "[I] uname=`uname`"
 log "[I] hostname=`hostname`"
 init_variables
+configure_hadoop_conf
 get_distro
 check_java_version
 check_db_connector
@@ -1722,7 +1749,4 @@ else
 	exit 1
 fi
 
-if [ -f "${XAPOLICYMGR_DIR}"/set_globals.sh ]; then
-  source "${XAPOLICYMGR_DIR}"/set_globals.sh
-fi
 echo "Installation of Ranger PolicyManager Web Application is completed."
