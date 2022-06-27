@@ -142,6 +142,7 @@
         <javax.servlet.version>3.1.0</javax.servlet.version>
         <javax-inject.version>1</javax-inject.version>
         <javax.annotation-api>1.3.2</javax.annotation-api>
+        <javax.el-glassfish.version>3.0.0</javax.el-glassfish.version>
         <jaxb.api.version>2.3.1</jaxb.api.version>
         <jericho.html.version>3.3</jericho.html.version>
         <jersey-bundle.version>1.19.3</jersey-bundle.version>
@@ -930,15 +931,16 @@
             <name>pentaho-repo</name>
             <url>https://public.nexus.pentaho.org/content/groups/omni/</url>
         </repository>
-        <!--
-    <repository>
-      <id>repo</id>
-      <url>file://${basedir}/local-repo</url>
-      <snapshots>
-         <enabled>true</enabled>
-      </snapshots>
-  </repository>
-  -->
+        <repository>
+            <id>clojars-repo</id>
+            <name>clojars-repo</name>
+            <url>https://clojars.org/repo/</url>
+        </repository>
+        <repository>
+            <id>maven-restlet</id>
+            <name>Public online Restlet repository</name>
+            <url>https://maven.restlet.talend.com/</url>
+        </repository>
     </repositories>
     <dependencyManagement>
         <dependencies>
@@ -971,6 +973,11 @@
                 <artifactId>hamcrest</artifactId>
                 <version>${hamcrest.version}</version>
                 <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.el</artifactId>
+                <version>${javax.el-glassfish.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
