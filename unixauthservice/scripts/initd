@@ -27,6 +27,11 @@ LINUX_USER=ranger
 BIN_PATH=/usr/bin
 MOD_NAME=ranger-usersync
 
+if [ ! -d "/var/run/ranger" ]; then
+  mkdir -p /var/run/ranger
+  chmod -R 775 /var/run/ranger
+fi
+
 if [ -z "${USERSYNC_PID_DIR_PATH}" ]; then
         USERSYNC_PID_DIR_PATH=/var/run/ranger
 fi

@@ -136,12 +136,15 @@ if [ "${action}" == "START" ]; then
     sleep $SLEEP_TIME_AFTER_START
     if ps -p $VALUE_OF_PID > /dev/null
     then
+    if [ ! -f "$pidf" ]; then
+      touch "$pidf"
+    fi
 		echo $VALUE_OF_PID > ${pidf}
                 chown ${UNIX_USERSYNC_USER} ${pidf}
 		chmod 660 ${pidf}
 		pid=`cat $pidf`
 		echo "Apache Ranger Usersync Service with pid ${pid} has started."
-		cp ${pidf} "${MAPR_HOME}"/pid/
+		ln -sf ${pidf} "${MAPR_HOME}"/pid/
 	else
 		echo "Apache Ranger Usersync Service failed to start!"
 	fi
@@ -151,17 +154,20 @@ elif [ "${action}" == "STOP" ]; then
 	WAIT_TIME_FOR_SHUTDOWN=2
 	NR_ITER_FOR_SHUTDOWN_CHECK=15
 	if [ -f "$pidf" ] ; then
-		pid=`cat $pidf` > /dev/null 2>&1
+		pid=$(cat $pidf) > /dev/null 2>&1
 		echo "Getting pid from $pidf .."
-	else
-		pid=`ps -ef | grep java | grep -- '-Dproc_rangerusersync' | grep -v grep | awk '{ print $2 }'`
-		if [ "$pid" != "" ];then
-			echo "pid file($pidf) not present, taking pid from \'ps\' command.."
-		else
-			echo "Apache Ranger Usersync Service is not running"
-			return	
-		fi
 	fi
+
+  if [ -z "$pid" ]; then
+    echo "pid from the file($pidf) not present, taking pid from \'ps\' command.."
+    pid=$(ps -ef | grep java | grep -- '-Dproc_rangerusersync' | grep -v grep | awk '{ print $2 }')
+	fi
+
+  if [ -z "$pid" ];then
+    echo "Apache Ranger Usersync Service is not running"
+    return
+  fi
+
 	echo "Found Apache Ranger Usersync Service with pid $pid, Stopping it..."
 	kill -15 $pid
 	for ((i=0; i<$NR_ITER_FOR_SHUTDOWN_CHECK; i++))

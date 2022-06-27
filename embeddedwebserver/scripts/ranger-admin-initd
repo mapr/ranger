@@ -28,6 +28,11 @@ LINUX_USER=ranger
 BIN_PATH=/usr/bin
 MOD_NAME=ranger-admin
 
+if [ ! -d "/var/run/ranger" ]; then
+  mkdir -p /var/run/ranger
+  chmod -R 775 /var/run/ranger
+fi
+
 pid=`ps -ef | grep java | grep -- '-Dproc_rangeradmin' | grep -v grep | awk '{ print $2 }'`
 
 case $1 in

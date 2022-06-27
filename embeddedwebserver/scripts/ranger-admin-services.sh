@@ -110,12 +110,15 @@ start() {
 
 	if ps -p $VALUE_OF_PID > /dev/null
 	then
+    if [ ! -f "$pidf" ]; then
+      touch "$pidf"
+    fi
 		echo $VALUE_OF_PID > ${pidf}
                 chown ${RANGER_USER} ${pidf}
 		chmod 660 ${pidf}
 		pid=`cat $pidf`
 		echo "Apache Ranger Admin Service with pid ${pid} has started."
-		cp ${pidf} "${MAPR_HOME}"/pid/
+		ln -sf ${pidf} "${MAPR_HOME}"/pid/
 	else
 		echo "Apache Ranger Admin Service failed to start!"
 	fi
