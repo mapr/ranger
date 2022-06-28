@@ -68,13 +68,13 @@ RANGER_USERSYNC_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-usersyn
 # ranger-usersync conf is created by its setup.sh, if it does not exist, add warn logs and skip it
 if [ -d "$RANGER_USERSYNC_HOME"/conf ]; then
   RANGER_USERSYNC_CONF_DIR="$RANGER_USERSYNC_HOME"/conf
-  RANGER_USERSYNC_SITE="$RANGER_USERSYNC_CONF_DIR"/ranger-admin-site.xml
 else
   echo "Warning!: Ranger is not configured, please check the logs in ${MAPR_HOME}/logs/configure.log."
   logWarn "Ranger: Ranger is not configured! Could not found ${RANGER_USERSYNC_HOME}/conf directory."
   logWarn "Ranger: Please make sure that install.properties file for Ranger-Usersync is ready and its setup.sh file is executed."
   exit 1
 fi
+RANGER_USERSYNC_SITE="$RANGER_USERSYNC_CONF_DIR"/ranger-ugsync-site.xml
 RANGER_USERSYNC_WARDEN_NAME="warden.ranger-usersync.conf"
 
 # Get MAPR_USER and MAPR_GROUP
@@ -210,6 +210,18 @@ configure_security(){
 }
 
 ###############################################
+#    DEFAULT BEHAVIOUR                        #
+###############################################
+
+enable_periodic_user_sync(){
+  local property_name="ranger.usersync.enabled"
+  if is_ranger_not_configured_yet ; then
+    logInfo "Ranger: Enabling Ranger's user synchronization."
+    set_property ${property_name} "true" "${RANGER_USERSYNC_SITE}"
+  fi
+}
+
+###############################################
 #    MAIN SECTION                             #
 ###############################################
 
@@ -221,6 +233,9 @@ if is_ranger_not_configured_yet ; then
 else
   logInfo "Ranger: Not first configuration."
 fi
+
+# default
+enable_periodic_user_sync
 
 # security
 logInfo "Ranger: Configuring security."
