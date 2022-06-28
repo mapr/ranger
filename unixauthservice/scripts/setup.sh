@@ -19,6 +19,9 @@
 MAPR_HOME="${BASEMAPR:-/opt/mapr}"
 HADOOP_VERSION_FILE="$MAPR_HOME"/hadoop/hadoopversion
 HADOOP_VERSION=$(cat "$HADOOP_VERSION_FILE")
+RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
+RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
+RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
@@ -48,5 +51,12 @@ fi
 if [ -z "${HADOOP_HOME}" ]; then
   export HADOOP_HOME="$MAPR_HOME"/hadoop/hadoop-"${HADOOP_VERSION}"
 fi
+
+# in below script, there are functions for refreshing symlink
+# call below function in main part
+# link_mapr_core_lib_for_usersync
+source "$RANGER_HOME"/bin/symlink_configuration_helper.sh
+
+link_mapr_core_lib_for_usersync
 
 ./setup.py

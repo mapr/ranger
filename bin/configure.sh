@@ -185,6 +185,14 @@ EOF
 }
 
 ###############################################
+#    REFRESH SYMLINKS                         #
+###############################################
+# in below script, there are functions for refreshing symlink
+# call below functions in main part
+# link_mapr_core_lib_for_admin, configure_hbase_jars_for_admin and link_mapr_core_lib_for_usersync
+source "$RANGER_HOME"/bin/symlink_configuration_helper.sh
+
+###############################################
 #    SECURITY RELATED                         #
 ###############################################
 
@@ -236,6 +244,13 @@ fi
 
 # default
 enable_periodic_user_sync
+
+# symlinks
+logInfo "Ranger: Creating/refreshing symlinks in ranger-admin libraries."
+link_mapr_core_lib_for_admin
+configure_hbase_jars_for_admin
+logInfo "Ranger: Creating/refreshing symlinks in ranger-usersync library."
+link_mapr_core_lib_for_usersync
 
 # security
 logInfo "Ranger: Configuring security."

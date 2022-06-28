@@ -23,6 +23,9 @@
 MAPR_HOME="${BASEMAPR:-/opt/mapr}"
 HADOOP_VERSION_FILE="$MAPR_HOME"/hadoop/hadoopversion
 HADOOP_VERSION=$(cat "$HADOOP_VERSION_FILE")
+RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
+RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
+RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
@@ -1700,11 +1703,18 @@ configure_hadoop_conf() {
   chmod 755 "${RANGER_HADOOP_SYMLINK}"
 }
 
+# in below script, there are functions for refreshing symlink
+# call below functions in main part
+# link_mapr_core_lib_for_admin and configure_hbase_jars_for_admin
+source "$RANGER_HOME"/bin/symlink_configuration_helper.sh
+
 log " --------- Running Ranger PolicyManager Web Application Install Script --------- "
 log "[I] uname=`uname`"
 log "[I] hostname=`hostname`"
 init_variables
 configure_hadoop_conf
+link_mapr_core_lib_for_admin
+configure_hbase_jars_for_admin
 get_distro
 check_java_version
 check_db_connector
