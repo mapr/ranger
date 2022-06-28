@@ -423,8 +423,8 @@ def main():
     if isfile(java_home_setter_fn):
         archiveFile(java_home_setter_fn)
     jhf = open(java_home_setter_fn, 'w')
-    str = "export JAVA_HOME=%s\n" % os.environ['JAVA_HOME']
-    jhf.write(str)
+    strr = "export JAVA_HOME=%s\n" % os.environ['JAVA_HOME']
+    jhf.write(strr)
     jhf.close()
     os.chmod(java_home_setter_fn, 0o750)
 
@@ -568,9 +568,10 @@ def main():
                 os.chown(dn, ownerId, groupId)
                 os.chmod(dn, 0o755)
             for obj in files:
-                fn = join(root, obj)
-                os.chown(fn, ownerId, groupId)
-                os.chmod(fn, 0o750)
+                if not os.path.islink("./lib/" + str(obj)):
+                    fn = join(root, obj)
+                    os.chown(fn, ownerId, groupId)
+                    os.chmod(fn, 0o750)
 
     if isfile(nativeAuthProgramName):
         try:
