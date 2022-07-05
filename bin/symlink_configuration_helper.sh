@@ -163,3 +163,32 @@ configure_cred_lib_for_admin() {
   ln -sf $STAX2_API_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $WOODSTOX_CORE_JAR $RANGER_ADMIN_CRED_LIB
 }
+
+# if Hive exists and hive plugin is installed;
+# to be able to run enable plugin script, we need to link below jars;
+# hadoop-shaded-guava
+# bc-fips
+# bctls-fips
+configure_symlinks_for_hive_plugin() {
+  if [ -f "${MAPR_HOME}"/roles/hive ] && [ -f "${MAPR_HOME}"/roles/ranger-hive-plugin ]; then
+    # libraries
+    local MAPR_CORE_LIB="$MAPR_HOME"/lib
+    local RANGER_HIVE_INSTALL_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-hive-plugin/install/lib
+    local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
+
+    # needed jars
+    local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
+    local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
+    local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
+
+    # if already exists, unlink first. In case applying patch, we need to remove old links
+    find $RANGER_HIVE_INSTALL_LIB -type l -name "bc-fips-*" -delete
+    find $RANGER_HIVE_INSTALL_LIB -type l -name "bctls-fips-*" -delete
+    find $RANGER_HIVE_INSTALL_LIB -type l -name "hadoop-shaded-guava-*" -delete
+
+    # create the links again
+    ln -sf $BC_FIPS_JAR $RANGER_HIVE_INSTALL_LIB
+    ln -sf $BCTLS_FIPS_JAR $RANGER_HIVE_INSTALL_LIB
+    ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_HIVE_INSTALL_LIB
+  fi
+}
