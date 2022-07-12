@@ -35,6 +35,13 @@
             <artifactId>hadoop-auth</artifactId>
             <version>${hadoop.version}</version>
             <scope>provided</scope> <!-- clarify the scope to override transitives -->
+            <exclusions>
+                <!-- without exclusion, all unit test fail in this module -->
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-reload4j</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.mapr.hadoop</groupId>

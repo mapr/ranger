@@ -17,6 +17,9 @@
 
 # Global vars mapr specific
 MAPR_HOME="${BASEMAPR:-/opt/mapr}"
+RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
+RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
+RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
@@ -132,6 +135,13 @@ PLUGIN_DEPENDENT_LIB_DIR=lib/"${PROJ_NAME}-${COMPONENT_NAME}-impl"
 PROJ_LIB_PLUGIN_DIR=${PROJ_INSTALL_DIR}/${PLUGIN_DEPENDENT_LIB_DIR}
 
 HCOMPONENT_INSTALL_DIR_NAME=$(getInstallProperty 'COMPONENT_INSTALL_DIR_NAME')
+
+# symlinks for installation library
+PLUGIN_NAME=${PROJ_INSTALL_DIR##*/}
+if [ "${PLUGIN_NAME}" = "ranger-hive-plugin" ]; then
+  source "$RANGER_HOME"/bin/symlink_configuration_helper.sh
+  configure_symlinks_for_hive_plugin
+fi
 
 # Install Environment property used for trino plugin.
 INSTALL_ENV=$(getInstallProperty 'INSTALL_ENV')
