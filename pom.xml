@@ -145,11 +145,11 @@
         <javax.el-glassfish.version>3.0.0</javax.el-glassfish.version>
         <jaxb.api.version>2.3.1</jaxb.api.version>
         <jericho.html.version>3.3</jericho.html.version>
-        <jersey-bundle.version>1.19.3</jersey-bundle.version>
+        <jersey-bundle.version>1.19.4</jersey-bundle.version>
         <jersey-client.version>2.35</jersey-client.version>
-        <jersey-core.version>1.19.3</jersey-core.version>
-        <jersey-server.version>1.19.3</jersey-server.version>
-        <jersey-spring.version>1.19.3</jersey-spring.version>
+        <jersey-core.version>1.19.4</jersey-core.version>
+        <jersey-server.version>1.19.4</jersey-server.version>
+        <jersey-spring.version>1.19.4</jersey-spring.version>
         <jaxb-impl.version>2.3.3</jaxb-impl.version>
         <jettison.version>1.1</jettison.version>
         <jetty-client.version>9.4.31.v20200723</jetty-client.version>
@@ -1077,6 +1077,51 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${fasterxml.jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-core</artifactId>
+                <version>${jersey-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-server</artifactId>
+                <version>${jersey-server.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-bundle</artifactId>
+                <version>${jersey-bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>${jersey-bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-servlet</artifactId>
+                <version>${jersey-bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-spring</artifactId>
+                <version>${jersey-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-multipart</artifactId>
+                <version>${jersey-bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey.contribs</groupId>
+                <artifactId>jersey-guice</artifactId>
+                <version>${jersey-bundle.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-json</artifactId>
+                <version>${jersey-bundle.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
