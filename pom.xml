@@ -1347,6 +1347,11 @@
                 <artifactId>zookeeper-jute</artifactId>
                 <version>${zookeeper.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk15on</artifactId>
+                <version>${org.bouncycastle.bcprov-jdk15on}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
     <build>
