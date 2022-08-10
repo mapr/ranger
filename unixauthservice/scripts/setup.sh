@@ -23,6 +23,12 @@ RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
 RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
 RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
+FIPS_ENABLED="false"
+if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
+	FIPS_ENABLED="true"
+fi
+export FIPS_ENABLED
+
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
   . "${MAPR_HOME}"/conf/env.sh

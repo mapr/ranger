@@ -221,7 +221,11 @@ def updatePropertyInJCKSFile(jcksFileName, propName, value):
     fn = jcksFileName
     if (value == ''):
         value = ' '
-    cmd = "java -cp './lib/*' %s create '%s' -value '%s' -provider jceks://file%s 2>&1" % (
+    ks_type = "jceks"
+    if os.getenv("FIPS_ENABLED") == "true":
+        ks_type = "bcfks"
+    pattern = "java -cp './lib/*' %s create '%s' -value '%s' -provider "+ks_type+"://file%s 2>&1"
+    cmd = pattern % (
     credUpdateClassName, propName, value, fn)
     ret = os.system(cmd)
     if (ret != 0):
@@ -353,7 +357,10 @@ def initializeInitD(ownerName):
 
 
 def createJavaKeystoreForSSL(fn, passwd):
-    cmd = "keytool -genkeypair -keyalg RSA -alias selfsigned -keystore '%s' -keypass '%s' -storepass '%s' -validity 3600 -keysize 2048 -dname '%s'" % (
+    pattern = "keytool -genkeypair -keyalg RSA -alias selfsigned -keystore '%s' -keypass '%s' -storepass '%s' -validity 3600 -keysize 2048 -dname '%s'"
+    if os.getenv("FIPS_ENABLED") == "true":
+        pattern = "keytool -genkeypair -sigalg SHA512withRSA -keyalg RSA -alias selfsigned -keystore '%s' -keypass '%s' -storepass '%s' -validity 3600 -keysize 2048 -dname '%s' -storetype BCFKS  -provider org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider -providerpath /opt/mapr/lib/bc-fips-1.0.2.1.jar -providername BCFIPS"
+    cmd = pattern % (
     fn, passwd, passwd, defaultDNAME)
     ret = os.system(cmd)
     if (ret != 0):

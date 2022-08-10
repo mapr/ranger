@@ -27,6 +27,12 @@ RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
 RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
 RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
+FIPS_ENABLED="false"
+if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
+	FIPS_ENABLED="true"
+fi
+export FIPS_ENABLED
+
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
   . "${MAPR_HOME}"/conf/env.sh
@@ -302,6 +308,12 @@ init_variables(){
 	fi
 
 	db_ssl_enabled=`echo $db_ssl_enabled | tr '[:upper:]' '[:lower:]'`
+
+	default_keystore_type="jks"
+	if [ "$FIPS_ENABLED" == "true" ] ; then
+		default_keystore_type="bcfks"
+	fi
+
 	if [ "${db_ssl_enabled}" != "true" ]
 	then
 		db_ssl_enabled="false"
@@ -309,8 +321,8 @@ init_variables(){
 		db_ssl_verifyServerCertificate="false"
 		db_ssl_auth_type="2-way"
 		db_ssl_certificate_file=''
-		javax_net_ssl_trustStore_type='jks'
-		javax_net_ssl_keyStore_type='jks'
+		javax_net_ssl_trustStore_type=$default_keystore_type
+		javax_net_ssl_keyStore_type=$default_keystore_type
 	fi
 	if [ "${db_ssl_enabled}" == "true" ]
 	then
@@ -333,11 +345,11 @@ init_variables(){
 		fi
 		if [ "${javax_net_ssl_trustStore_type}" == "" ]
 		then
-			javax_net_ssl_trustStore_type="jks"
+			javax_net_ssl_trustStore_type=$default_keystore_type
 		fi
 		if [ "${javax_net_ssl_keyStore_type}" == "" ]
 		then
-			javax_net_ssl_keyStore_type="jks"
+			javax_net_ssl_keyStore_type=$default_keystore_type
 		fi
 	fi
 }

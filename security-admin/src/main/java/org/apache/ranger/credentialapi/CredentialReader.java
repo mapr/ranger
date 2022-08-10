@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.alias.BouncyCastleFipsKeyStoreProvider;
 import org.apache.hadoop.security.alias.CredentialProvider;
 import org.apache.hadoop.security.alias.CredentialProviderFactory;
 import org.apache.hadoop.security.alias.JavaKeyStoreProvider;
@@ -56,7 +57,8 @@ public class CredentialReader {
 			  }else{
 				  if(CrendentialProviderPath.startsWith("/")){
 					  if(StringUtils.equalsIgnoreCase(storeType, "bcfks")) {
-						  conf.set(CredentialProviderFactory.CREDENTIAL_PROVIDER_PATH, CrendentialProviderPath);
+						  conf.set(CredentialProviderFactory.CREDENTIAL_PROVIDER_PATH,
+								  BouncyCastleFipsKeyStoreProvider.SCHEME_NAME + "://file" + CrendentialProviderPath);
 					  } else {
 						  conf.set(CredentialProviderFactory.CREDENTIAL_PROVIDER_PATH,
 								  //UserProvider.SCHEME_NAME + ":///," +

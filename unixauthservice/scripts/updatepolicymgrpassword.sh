@@ -119,7 +119,11 @@ then
         log "[I] Storing policymgr usersync password in credential store"
         mkdir -p `dirname "${SYNC_LDAP_BIND_KEYSTOREPATH}"`
         chown ${unix_user}:${unix_group} `dirname "${SYNC_LDAP_BIND_KEYSTOREPATH}"`
-        $JAVA_HOME/bin/java -cp "lib/*" org.apache.ranger.credentialapi.buildks create "$SYNC_POLICY_MGR_ALIAS" -value "$SYNC_POLICY_MGR_PASSWORD" -provider jceks://file$SYNC_LDAP_BIND_KEYSTOREPATH
+        ks_type="jceks"
+        if [ "$FIPS_ENABLED" == "true" ] ; then
+          ks_type="bcfks"
+        fi
+        $JAVA_HOME/bin/java -cp "lib/*" org.apache.ranger.credentialapi.buildks create "$SYNC_POLICY_MGR_ALIAS" -value "$SYNC_POLICY_MGR_PASSWORD" -provider $ks_type://file$SYNC_LDAP_BIND_KEYSTOREPATH
 fi
 
 # Create $INSTALL_DIR/conf/unixauthservice.properties

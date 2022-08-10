@@ -31,23 +31,26 @@ def main():
 	parser = OptionParser()
 
 	parser.add_option("-l", "--libpath", dest="library_path", help="Path to folder where credential libs are present")
-	parser.add_option("-f", "--file",  dest="jceks_file_path", help="Path to jceks file to use")
+	parser.add_option("-f", "--file",  dest="ks_file_path", help="Path to keystore file to use")
 	parser.add_option("-k", "--key",  dest="key", help="Key to use")
 	parser.add_option("-v", "--value",  dest="value", help="Value to use")
 	parser.add_option("-c", "--create",  dest="create", help="Add a new alias")
 
 	(options, args) = parser.parse_args()
 	library_path = options.library_path
-	jceks_file_path = options.jceks_file_path
+	ks_file_path = options.ks_file_path
 	key = options.key
 	value = options.value
 	getorcreate = 'create' if options.create else 'get'
-	call_keystore(library_path, jceks_file_path, key, value, getorcreate)
+	call_keystore(library_path, ks_file_path, key, value, getorcreate)
 
 
 def call_keystore(libpath, filepath, aliasKey, aliasValue='', getorcreate='get'):
 	finalLibPath = libpath.replace('\\','/').replace('//','/')
-	finalFilePath = 'jceks://file/'+filepath.replace('\\','/').replace('//','/')
+	ks_type="jceks"
+	if os.getenv("FIPS_ENABLED") == "true":
+		ks_type="bcfks"
+	finalFilePath = ks_type+'://file/'+filepath.replace('\\','/').replace('//','/')
 	if getorcreate == 'create':
 		commandtorun = [JAVA_BIN, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
 		p = Popen(commandtorun,stdin=PIPE, stdout=PIPE, stderr=PIPE)
