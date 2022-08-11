@@ -48,8 +48,8 @@ link_mapr_core_lib_for_usersync() {
   local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
   local JACKSON_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/jackson-core-2.*
-  local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
-  local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
+  local BC_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bc-fips-*
+  local BCTLS_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bctls-fips-*
   local STAX2_API_JAR="$RANGER_ADMIN_WEBAPP_LIB"/stax2-api-*
   local WOODSTOX_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/woodstox-core-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
