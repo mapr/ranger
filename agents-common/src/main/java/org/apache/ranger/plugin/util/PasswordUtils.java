@@ -28,6 +28,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
+import org.apache.ranger.authorization.hadoop.config.RangerAdminConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +40,7 @@ public class PasswordUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(PasswordUtils.class);
 
+    private final boolean isFipsEnabled;
     private final String cryptAlgo;
     private String password;
     private final int iterationCount;
@@ -54,6 +56,10 @@ public class PasswordUtils {
     public static final String DEFAULT_SALT = "f77aLYLo";
     public static final int DEFAULT_ITERATION_COUNT = 17;
     public static final byte[] DEFAULT_INITIAL_VECTOR = new byte[16];
+    //cryptoAlgo field will be ignored if fips mode is enabled
+    public static final String CRYPTO_ALGO_FIPS = "AES/CBC/PKCS5Padding";
+    public static final String KEY_ALGO_FIPS = "AES";
+    public static final int  KEY_LENGTH_FIPS = 192;
 
 	public static String encryptPassword(String aPassword) throws IOException {
 		return build(aPassword).encrypt();
@@ -72,13 +78,24 @@ public class PasswordUtils {
             strToEncrypt = password.length() + LEN_SEPARATOR_STR + password;
         }
         try {
-            Cipher engine = Cipher.getInstance(cryptAlgo);
-            PBEKeySpec keySpec = new PBEKeySpec(encryptKey);
-            SecretKeyFactory skf = SecretKeyFactory.getInstance(cryptAlgo);
-            SecretKey key = skf.generateSecret(keySpec);
-            engine.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(salt, iterationCount, new IvParameterSpec(iv)));
-            byte[] encryptedStr = engine.doFinal(strToEncrypt.getBytes());
-            ret = new String(Base64.encode(encryptedStr));
+            if (isFipsEnabled) {
+                Cipher engine = Cipher.getInstance(CRYPTO_ALGO_FIPS);
+                PBEKeySpec keySpec = new PBEKeySpec(encryptKey, salt, iterationCount, KEY_LENGTH_FIPS);
+                SecretKeyFactory skf = SecretKeyFactory.getInstance(KEY_ALGO_FIPS);
+                SecretKey key = skf.generateSecret(keySpec);
+                engine.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(iv));
+                byte[] encryptedStr = engine.doFinal(strToEncrypt.getBytes());
+                ret = new String(Base64.encode(encryptedStr));
+            }
+            else {
+                Cipher engine = Cipher.getInstance(cryptAlgo);
+                PBEKeySpec keySpec = new PBEKeySpec(encryptKey);
+                SecretKeyFactory skf = SecretKeyFactory.getInstance(cryptAlgo);
+                SecretKey key = skf.generateSecret(keySpec);
+                engine.init(Cipher.ENCRYPT_MODE, key, new PBEParameterSpec(salt, iterationCount, new IvParameterSpec(iv)));
+                byte[] encryptedStr = engine.doFinal(strToEncrypt.getBytes());
+                ret = new String(Base64.encode(encryptedStr));
+            }
         }
         catch(Throwable t) {
             LOG.error("Unable to encrypt password due to error", t);
@@ -88,6 +105,7 @@ public class PasswordUtils {
     }
 
         PasswordUtils(String aPassword) {
+            this.isFipsEnabled = RangerAdminConfig.getInstance().isFipsEnabled();
             String[] crypt_algo_array = null;
             byte[] SALT;
             char[] ENCRYPT_KEY;
@@ -142,11 +160,21 @@ public class PasswordUtils {
         String ret = null;
         try {
             byte[] decodedPassword = Base64.decode(password);
-            Cipher engine = Cipher.getInstance(cryptAlgo);
-            PBEKeySpec keySpec = new PBEKeySpec(encryptKey);
-            SecretKeyFactory skf = SecretKeyFactory.getInstance(cryptAlgo);
-            SecretKey key = skf.generateSecret(keySpec);
-            engine.init(Cipher.DECRYPT_MODE, key,new PBEParameterSpec(salt, iterationCount, new IvParameterSpec(iv)));
+            Cipher engine;
+            if (isFipsEnabled) {
+                engine = Cipher.getInstance(CRYPTO_ALGO_FIPS);
+                PBEKeySpec keySpec = new PBEKeySpec(encryptKey, salt, iterationCount, KEY_LENGTH_FIPS);
+                SecretKeyFactory skf = SecretKeyFactory.getInstance(KEY_ALGO_FIPS);
+                SecretKey key = skf.generateSecret(keySpec);
+                engine.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(iv));
+            }
+            else {
+                engine = Cipher.getInstance(cryptAlgo);
+                PBEKeySpec keySpec = new PBEKeySpec(encryptKey);
+                SecretKeyFactory skf = SecretKeyFactory.getInstance(cryptAlgo);
+                SecretKey key = skf.generateSecret(keySpec);
+                engine.init(Cipher.DECRYPT_MODE, key,new PBEParameterSpec(salt, iterationCount, new IvParameterSpec(iv)));
+            }
             String decrypted = new String(engine.doFinal(decodedPassword));
             int foundAt = decrypted.indexOf(LEN_SEPARATOR_STR);
             if (foundAt > -1) {
