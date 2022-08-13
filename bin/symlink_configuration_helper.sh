@@ -84,21 +84,25 @@ link_mapr_core_lib_for_usersync() {
 link_mapr_core_lib_for_admin() {
   local MAPR_CORE_LIB="$MAPR_HOME"/lib
   local RANGER_ADMIN_EWS_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/lib
+  local RANGER_ADMIN_WEBAPP_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/webapp/WEB-INF/lib
 
   # if needed add more jars
   local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
   local SERVLET_JARS="$MAPR_CORE_LIB"/javax.servlet-api-*
+  local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
 
   # if already exists, unlink first. In case applying patch, we need to remove old links
   find $RANGER_ADMIN_EWS_LIB -type l -name "maprfs-*" -delete
   find $RANGER_ADMIN_EWS_LIB -type l -name "protobuf-java-*" -delete
   find $RANGER_ADMIN_EWS_LIB -type l -name "javax.servlet-api-*" -delete
+  find $RANGER_ADMIN_WEBAPP_LIB -type l -name "mapr-security-web-*" -delete
 
   # create the links again
   ln -sf $MAPRFS_JARS $RANGER_ADMIN_EWS_LIB
   ln -sf $PROTOBUF_JARS $RANGER_ADMIN_EWS_LIB
   ln -sf $SERVLET_JARS $RANGER_ADMIN_EWS_LIB
+  ln -sf $MAPR_WEB_SECURITY_JAR $RANGER_ADMIN_WEBAPP_LIB
 }
 
 # if HBase exists and hbase plugin is installed;

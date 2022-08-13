@@ -105,7 +105,7 @@ add_property() {
 }
 
 set_property() {
-  local property_name=$1
+  local property_name="<name>"$1"<\/name>"
   local property_value=$2
   local site_file=$3
   if ! grep -q "${property_name}" "${site_file}" ; then
@@ -116,7 +116,7 @@ set_property() {
 }
 
 get_property_value() {
-  local property_name=$1
+  local property_name="<name>"$1"<\/name>"
   local site_file=$2
   sed -n '/'"${property_name}"'/{:a;N;/<\/value>/!ba {s|.*<value>\(.*\)</value>|\1|p}}' "${site_file}"
 }
@@ -206,14 +206,30 @@ is_secure_cluster(){
   fi
 }
 
-configure_security(){
-  local property_name="ranger.cluster.security.enabled"
+configure_ssl(){
+  local property_ssl_enabled="ranger.service.https.attrib.ssl.enabled"
+  local property_admin_url="ranger.usersync.policymanager.baseURL"
+  local http_port=$(get_property_value "ranger.service.http.port" "${RANGER_ADMIN_SITE}")
+  local https_port=$(get_property_value "ranger.service.https.port" "${RANGER_ADMIN_SITE}")
+
   if is_secure_cluster ; then
-    logInfo "Ranger: Cluster security is enabled, ranger.cluster.security.enabled is set as True."
-    set_property ${property_name} "true" "${RANGER_ADMIN_SITE}"
+    logInfo "Ranger: Cluster security is enabled, SSL will be configured."
+    set_property ${property_ssl_enabled} "true" "${RANGER_ADMIN_SITE}"
+
+    if [ -z "${https_port}" ]; then
+      https_port="6182"
+    fi
+    logInfo "Ranger: Setting usersync's policy manager port as ${https_port}."
+    set_property ${property_admin_url} "https://$(hostname):${https_port}" "${RANGER_USERSYNC_SITE}"
   else
-    logInfo "Ranger: Cluster security is not enabled, ranger.cluster.security.enabled is set as False."
-    set_property ${property_name} "false" "${RANGER_ADMIN_SITE}"
+    logInfo "Ranger: Cluster security is not enabled, SSL will not be configured."
+    set_property ${property_ssl_enabled} "false" "${RANGER_ADMIN_SITE}"
+
+    if [ -z "${http_port}" ]; then
+      http_port="6080"
+    fi
+    logInfo "Ranger: Setting usersync's policy manager port as ${http_port}."
+    set_property ${property_admin_url} "http://$(hostname):${http_port}" "${RANGER_USERSYNC_SITE}"
   fi
 }
 
@@ -256,8 +272,8 @@ logInfo "Ranger: Creating/refreshing symlinks in ranger-hive-plugin library."
 configure_symlinks_for_hive_plugin
 
 # security
-logInfo "Ranger: Configuring security."
-configure_security
+logInfo "Ranger: Configuring SSL."
+configure_ssl
 
 # warden
 logInfo "Ranger: Creating/refreshing warden files."

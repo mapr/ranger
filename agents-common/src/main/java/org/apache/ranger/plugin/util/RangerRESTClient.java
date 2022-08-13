@@ -50,6 +50,7 @@ import org.apache.commons.lang.Validate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.ranger.authorization.hadoop.utils.RangerCredentialProvider;
 import org.apache.ranger.authorization.utils.StringUtil;
+import org.apache.ranger.util.MapRSslConfigReader;
 import org.apache.ranger.util.MaprAuthenticationUtils;
 import org.apache.ranger.util.MaprSecurity;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
@@ -313,6 +314,17 @@ public class RangerRESTClient {
 			try {
 				in = getFileInputStream(keyStoreFile);
 
+				// try default ssl configuration if provided one fails
+				if (in == null) {
+					LOG.warn("Unable to obtain keystore from file [" + keyStoreFile + "]");
+					LOG.warn("Provided keystore either does not exist or is wrong. " +
+							"This may happen when it is not configured. " +
+							"Default one will be tried in case it is intended to do so.");
+					keyStoreFile = MapRSslConfigReader.getServerKeystoreLocation();
+					keyStoreFilePwd = MapRSslConfigReader.getServerKeystorePassword();
+					in = getFileInputStream(keyStoreFile);
+				}
+
 				if (in != null) {
 					KeyStore keyStore = KeyStore.getInstance(mKeyStoreType);
 
@@ -372,6 +384,17 @@ public class RangerRESTClient {
 
 			try {
 				in = getFileInputStream(trustStoreFile);
+
+				// try default ssl configuration if provided one fails
+				if (in == null) {
+					LOG.warn("Unable to obtain truststore from file [" + trustStoreFile + "]");
+					LOG.warn("Provided truststore either does not exist or is wrong. " +
+							"This may happen when it is not configured. " +
+							"So, default one will be tried in case it is intended to do so.");
+					trustStoreFile = MapRSslConfigReader.getServerTruststoreLocation();
+					trustStoreFilepwd = MapRSslConfigReader.getServerTruststorePassword();
+					in = getFileInputStream(trustStoreFile);
+				}
 
 				if (in != null) {
 					KeyStore trustStore = KeyStore.getInstance(mTrustStoreType);

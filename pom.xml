@@ -937,11 +937,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>pentaho-repo</id>
-            <name>pentaho-repo</name>
-            <url>https://public.nexus.pentaho.org/content/groups/omni/</url>
-        </repository>
-        <repository>
             <id>clojars-repo</id>
             <name>clojars-repo</name>
             <url>https://clojars.org/repo/</url>
@@ -965,6 +960,12 @@
                         <artifactId>hadoop-auth</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.mapr.security</groupId>
+                <artifactId>mapr-security-web</artifactId>
+                <version>${mapr.core.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>junit</groupId>

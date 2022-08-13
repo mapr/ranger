@@ -47,6 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.security.SecureClientLogin;
 
 import org.apache.ranger.credentialapi.CredentialReader;
+import org.apache.ranger.util.MapRSslConfigReader;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -164,9 +165,25 @@ public class EmbeddedServer {
 					keystorePass = EmbeddedServerUtil.getConfig("ranger.service.https.attrib.keystore.pass");
 				}
 			}
-			ssl.setAttribute("keyAlias", EmbeddedServerUtil.getConfig("ranger.service.https.attrib.keystore.keyalias", "rangeradmin"));
+
+			// setting keystore alias, if not empty.
+			String keyStoreKeyAlias = EmbeddedServerUtil.getConfig("ranger.service.https.attrib.keystore.keyalias");
+			if (!StringUtils.isBlank(keyStoreKeyAlias)) {
+				ssl.setAttribute("keyAlias", keyStoreKeyAlias);
+			}
+
+			// setting keystore password. if not overridden, use mapr specific public certificate
+			if (StringUtils.isBlank(keystorePass)) {
+				keystorePass = MapRSslConfigReader.getServerKeystorePassword();
+			}
 			ssl.setAttribute("keystorePass", keystorePass);
-			ssl.setAttribute("keystoreFile", getKeystoreFile());
+
+			// setting keystore file. if both corresponding properties are empty, use mapr specific public certificate
+			String keystoreFile = getKeystoreFile();
+			if (StringUtils.isBlank(keystoreFile)) {
+				keystoreFile = MapRSslConfigReader.getServerKeystoreLocation();
+			}
+			ssl.setAttribute("keystoreFile", keystoreFile);
 
 			String defaultEnabledProtocols = "TLSv1.2";
 			String enabledProtocols = EmbeddedServerUtil.getConfig("ranger.service.https.attrib.ssl.enabled.protocols", defaultEnabledProtocols);
