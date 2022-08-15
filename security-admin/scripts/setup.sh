@@ -27,6 +27,9 @@ RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
 RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
 RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
+# to allow users to run the script from another location
+cd "$RANGER_HOME"/ranger-admin || { echo "Error: Could not find $RANGER_HOME/ranger-admin"; exit 1; }
+
 FIPS_ENABLED="false"
 if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
 	FIPS_ENABLED="true"
