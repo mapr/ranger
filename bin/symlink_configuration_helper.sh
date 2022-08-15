@@ -173,26 +173,39 @@ configure_cred_lib_for_admin() {
 # hadoop-shaded-guava
 # bc-fips
 # bctls-fips
+# jackson-core
+# maprfs
+# protobuf
 configure_symlinks_for_hive_plugin() {
   if [ -f "${MAPR_HOME}"/roles/hive ] && [ -f "${MAPR_HOME}"/roles/ranger-hive-plugin ]; then
     # libraries
     local MAPR_CORE_LIB="$MAPR_HOME"/lib
     local RANGER_HIVE_INSTALL_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-hive-plugin/install/lib
     local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
+    local RANGER_ADMIN_WEBAPP_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/webapp/WEB-INF/lib
 
     # needed jars
     local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
     local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
     local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
+    local JACKSON_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/jackson-core-2.*
+    local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
+    local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
 
     # if already exists, unlink first. In case applying patch, we need to remove old links
     find $RANGER_HIVE_INSTALL_LIB -type l -name "bc-fips-*" -delete
     find $RANGER_HIVE_INSTALL_LIB -type l -name "bctls-fips-*" -delete
     find $RANGER_HIVE_INSTALL_LIB -type l -name "hadoop-shaded-guava-*" -delete
+    find $RANGER_HIVE_INSTALL_LIB -type l -name "jackson-core-2.*" -delete
+    find $RANGER_HIVE_INSTALL_LIB -type l -name "protobuf-java-*" -delete
+    find $RANGER_HIVE_INSTALL_LIB -type l -name "maprfs-*" -delete
 
     # create the links again
     ln -sf $BC_FIPS_JAR $RANGER_HIVE_INSTALL_LIB
     ln -sf $BCTLS_FIPS_JAR $RANGER_HIVE_INSTALL_LIB
     ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_HIVE_INSTALL_LIB
+    ln -sf $JACKSON_CORE_JAR $RANGER_HIVE_INSTALL_LIB
+    ln -sf $PROTOBUF_JARS $RANGER_HIVE_INSTALL_LIB
+    ln -sf $MAPRFS_JARS $RANGER_HIVE_INSTALL_LIB
   fi
 }

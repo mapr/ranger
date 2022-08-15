@@ -26,6 +26,11 @@ if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
   . "${MAPR_HOME}"/conf/env.sh
 fi
 
+# mapr ticket is needed here. MAPR_SECURITY_STATUS comes from main env.sh
+if [ "$MAPR_SECURITY_STATUS" = "true" ] && [ -f "${MAPR_HOME}/conf/mapruserticket" ]; then
+  export MAPR_TICKETFILE_LOCATION="${MAPR_HOME}/conf/mapruserticket"
+fi
+
 function getInstallProperty() {
     local propertyName=$1
     local propertyValue=""
