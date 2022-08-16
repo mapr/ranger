@@ -43,6 +43,10 @@ RANGER_ADMIN_HOME = os.getenv("RANGER_ADMIN_HOME")
 if RANGER_ADMIN_HOME is None:
 	RANGER_ADMIN_HOME = os.getcwd()
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is None:
+    RANGER_OPTS = ""
+
 if socket.getfqdn().find('.')>=0:
 	client_host=socket.getfqdn()
 else:
@@ -559,7 +563,7 @@ class BaseDB(object):
 								path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR)
 							elif os_name == "WINDOWS":
 								path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF;%s" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR)
-							get_java_cmd = "%s -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx%s -Xms1g -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.%s"%(self.JAVA_BIN,globalDict['ranger_admin_max_heap_size'],ranger_log_dir,logback_conf_file,os_user,client_host,path,className)
+							get_java_cmd = "%s %s -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx%s -Xms1g -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.%s"%(self.JAVA_BIN,RANGER_OPTS,globalDict['ranger_admin_max_heap_size'],ranger_log_dir,logback_conf_file,os_user,client_host,path,className)
 							if is_unix:
 								ret = subprocess.call(shlex.split(get_java_cmd))
 							elif os_name == "WINDOWS":
@@ -650,7 +654,7 @@ class BaseDB(object):
 							path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s", ":%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
 						elif os_name == "WINDOWS":
 							path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF;%s", ";%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
-						get_java_cmd = "%s -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.cliutil.%s %s %s %s -default"%(self.JAVA_BIN,ranger_log_dir,logback_conf_file,os_user,client_host,path,className,'"'+userName+'"','"'+oldPassword+'"','"'+newPassword+'"')
+						get_java_cmd = "%s %s -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.cliutil.%s %s %s %s -default"%(self.JAVA_BIN,RANGER_OPTS,ranger_log_dir,logback_conf_file,os_user,client_host,path,className,'"'+userName+'"','"'+oldPassword+'"','"'+newPassword+'"')
 						if is_unix:
 							status = subprocess.call(shlex.split(get_java_cmd))
 						elif os_name == "WINDOWS":
@@ -748,7 +752,7 @@ class BaseDB(object):
 							path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s", ":%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
 						elif os_name == "WINDOWS":
 							path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF;%s", ";%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
-						get_java_cmd = "%s -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.cliutil.%s %s -default"%(self.JAVA_BIN,ranger_log_dir,logback_conf_file,os_user,client_host,path,className, userPwdString)
+						get_java_cmd = "%s %s -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.cliutil.%s %s -default"%(self.JAVA_BIN,RANGER_OPTS,ranger_log_dir,logback_conf_file,os_user,client_host,path,className, userPwdString)
 						if is_unix:
 							status = subprocess.call(shlex.split(get_java_cmd))
 						elif os_name == "WINDOWS":
@@ -853,14 +857,14 @@ class MysqlConf(BaseDB):
 		self.JAVA_BIN = self.JAVA_BIN.strip("'")
 		if is_unix:
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver mysqlconj -cstring %s -u '%s' -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN,db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path,self.db_override_jdbc_connection_string,user,password)
+				jisql_cmd = "%s %s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver mysqlconj -cstring %s -u '%s' -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN,RANGER_OPTS,db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path,self.db_override_jdbc_connection_string,user,password)
 			else:
-				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s%s -u '%s' -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN,db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path,self.host,db_name,db_ssl_param,user,password)
+				jisql_cmd = "%s %s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s%s -u '%s' -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN,RANGER_OPTS,db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path,self.host,db_name,db_ssl_param,user,password)
 		elif os_name == "WINDOWS":
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver mysqlconj -cstring %s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN,db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string,user, password)
+				jisql_cmd = "%s %s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver mysqlconj -cstring %s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS,db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string,user, password)
 			else:
-				jisql_cmd = "%s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s%s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN,db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.host, db_name, db_ssl_param,user, password)
+				jisql_cmd = "%s %s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s%s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS,db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.host, db_name, db_ssl_param,user, password)
 		return jisql_cmd
 
 	def get_check_table_query(self, TABLE_NAME):
@@ -905,14 +909,14 @@ class OracleConf(BaseDB):
 
 		if is_unix:
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u '%s' -p '%s' -noheader -trim" %(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string, user, password)
+				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u '%s' -p '%s' -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string, user, password)
 			else:
-				jisql_cmd = "%s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u '%s' -p '%s' -noheader -trim" %(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, cstring, user, password)
+				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u '%s' -p '%s' -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, cstring, user, password)
 		elif os_name == "WINDOWS":
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string, user, password)
+				jisql_cmd = "%s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string, user, password)
 			else:
-				jisql_cmd = "%s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, cstring, user, password)
+				jisql_cmd = "%s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver oraclethin -cstring %s -u \"%s\" -p \"%s\" -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, cstring, user, password)
 		return jisql_cmd
 
 	def execute_file(self, file_name):
@@ -996,14 +1000,14 @@ class PostgresConf(BaseDB):
 				db_ssl_param="?ssl=%s" %(self.db_ssl_enabled)
 		if is_unix:
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver postgresql -cstring %s -u %s -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN, db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path, self.db_override_jdbc_connection_string, user, password)
+				jisql_cmd = "%s %s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver postgresql -cstring %s -u %s -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN,RANGER_OPTS, db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path, self.db_override_jdbc_connection_string, user, password)
 			else:
-				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver postgresql -cstring jdbc:postgresql://%s/%s%s -u %s -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN, db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path, self.host, db_name, db_ssl_param,user, password)
+				jisql_cmd = "%s %s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver postgresql -cstring jdbc:postgresql://%s/%s%s -u %s -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN,RANGER_OPTS, db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path, self.host, db_name, db_ssl_param,user, password)
 		elif os_name == "WINDOWS":
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver postgresql -cstring %s -u %s -p \"%s\" -noheader -trim" %(self.JAVA_BIN, db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string,user, password)
+				jisql_cmd = "%s %s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver postgresql -cstring %s -u %s -p \"%s\" -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS, db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.db_override_jdbc_connection_string,user, password)
 			else:
-				jisql_cmd = "%s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver postgresql -cstring jdbc:postgresql://%s/%s%s -u %s -p \"%s\" -noheader -trim" %(self.JAVA_BIN, db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.host, db_name, db_ssl_param,user, password)
+				jisql_cmd = "%s %s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver postgresql -cstring jdbc:postgresql://%s/%s%s -u %s -p \"%s\" -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS, db_ssl_cert_param,self.SQL_CONNECTOR_JAR, path, self.host, db_name, db_ssl_param,user, password)
 		return jisql_cmd
 
 	def create_language_plpgsql(self,db_user, db_password, db_name):
@@ -1062,14 +1066,14 @@ class SqlServerConf(BaseDB):
 		self.JAVA_BIN = self.JAVA_BIN.strip("'")
 		if is_unix:
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -p '%s' -driver mssql -cstring %s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, user, password, self.db_override_jdbc_connection_string)
+				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -p '%s' -driver mssql -cstring %s -noheader -trim"%(self.JAVA_BIN, RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, user, password, self.db_override_jdbc_connection_string)
 			else:
-				jisql_cmd = "%s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -p '%s' -driver mssql -cstring jdbc:sqlserver://%s\\;databaseName=%s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, user, password, self.host,db_name)
+				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -p '%s' -driver mssql -cstring jdbc:sqlserver://%s\\;databaseName=%s -noheader -trim"%(self.JAVA_BIN, RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, user, password, self.host,db_name)
 		elif os_name == "WINDOWS":
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -p \"%s\" -driver mssql -cstring %s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, user, password, self.db_override_jdbc_connection_string)
+				jisql_cmd = "%s %s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -p \"%s\" -driver mssql -cstring %s -noheader -trim"%(self.JAVA_BIN, RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, user, password, self.db_override_jdbc_connection_string)
 			else:
-				jisql_cmd = "%s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -p \"%s\" -driver mssql -cstring jdbc:sqlserver://%s;databaseName=%s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, user, password, self.host,db_name)
+				jisql_cmd = "%s %s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -p \"%s\" -driver mssql -cstring jdbc:sqlserver://%s;databaseName=%s -noheader -trim"%(self.JAVA_BIN, RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, user, password, self.host,db_name)
 		return jisql_cmd
 
 	def get_check_table_query(self, TABLE_NAME):
@@ -1103,14 +1107,14 @@ class SqlAnywhereConf(BaseDB):
 		self.JAVA_BIN = self.JAVA_BIN.strip("'")
 		if is_unix:
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring %s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path,user, password,self.db_override_jdbc_connection_string)
+				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring %s -noheader -trim"%(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path,user, password,self.db_override_jdbc_connection_string)
 			else:
-				jisql_cmd = "%s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring jdbc:sqlanywhere:database=%s;host=%s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path,user, password,db_name,self.host)
+				jisql_cmd = "%s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring jdbc:sqlanywhere:database=%s;host=%s -noheader -trim"%(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path,user, password,db_name,self.host)
 		elif os_name == "WINDOWS":
 			if self.is_db_override_jdbc_connection_string == 'true' and self.db_override_jdbc_connection_string is not None and len(self.db_override_jdbc_connection_string) > 0:
-				jisql_cmd = "%s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring %s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, user, password,self.db_override_jdbc_connection_string)
+				jisql_cmd = "%s %s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring %s -noheader -trim"%(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, user, password,self.db_override_jdbc_connection_string)
 			else:
-				jisql_cmd = "%s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring jdbc:sqlanywhere:database=%s;host=%s -noheader -trim"%(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, user, password,db_name,self.host)
+				jisql_cmd = "%s %s -cp %s;%s\\jisql\\lib\\* org.apache.util.sql.Jisql -user %s -password '%s' -driver sapsajdbc4 -cstring jdbc:sqlanywhere:database=%s;host=%s -noheader -trim"%(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, user, password,db_name,self.host)
 		return jisql_cmd
 
 	def get_check_table_query(self, TABLE_NAME):
@@ -1194,7 +1198,7 @@ def main(argv):
 	global ranger_version
 	try:
 		lib_home = os.path.join(RANGER_ADMIN_HOME,"ews","webapp","WEB-INF","lib","*")
-		get_ranger_version_cmd="%s -cp %s org.apache.ranger.common.RangerVersionInfo"%(JAVA_BIN,lib_home)
+		get_ranger_version_cmd="%s %s -cp %s org.apache.ranger.common.RangerVersionInfo"%(JAVA_BIN,RANGER_OPTS,lib_home)
 		ranger_version = check_output(get_ranger_version_cmd).split("\n")[1]
 	except Exception as error:
 		ranger_version=''

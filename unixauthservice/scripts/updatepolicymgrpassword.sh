@@ -123,7 +123,7 @@ then
         if [ "$FIPS_ENABLED" == "true" ] ; then
           ks_type="bcfks"
         fi
-        $JAVA_HOME/bin/java -cp "lib/*" org.apache.ranger.credentialapi.buildks create "$SYNC_POLICY_MGR_ALIAS" -value "$SYNC_POLICY_MGR_PASSWORD" -provider $ks_type://file$SYNC_LDAP_BIND_KEYSTOREPATH
+        $JAVA_HOME/bin/java ${RANGER_OPTS} -cp "lib/*" org.apache.ranger.credentialapi.buildks create "$SYNC_POLICY_MGR_ALIAS" -value "$SYNC_POLICY_MGR_PASSWORD" -provider $ks_type://file$SYNC_LDAP_BIND_KEYSTOREPATH
 fi
 
 # Create $INSTALL_DIR/conf/unixauthservice.properties

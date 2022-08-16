@@ -68,6 +68,14 @@ then
 	chmod 660 $USERSYNC_PID_DIR_PATH
 fi
 
+FIPS_ENABLED="false"
+if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
+	FIPS_ENABLED="true"
+	JAVA_FIPS_OPTS="-Djava.security.properties=/opt/mapr/conf/java.security.fips"
+fi
+
+RANGER_OPTS="${RANGER_OPTS} ${JAVA_FIPS_OPTS}"
+
 # User can set their own pid path using USERSYNC_PID_DIR_PATH and
 # USERSYNC_PID_NAME variable before calling the script. The user can modify
 # the value of the USERSYNC_PID_DIR_PATH in ranger-usersync-env-piddir.sh to
@@ -130,7 +138,7 @@ if [ "${action}" == "START" ]; then
         fi
     fi
 	SLEEP_TIME_AFTER_START=5
-	nohup java -Dproc_rangerusersync -Dlogback.configurationFile=file:${USERSYNC_CONF_DIR}/logback.xml ${JAVA_OPTS} -Duser=${USER} -Dhostname=${HOSTNAME} -Dlogdir="${logdir}" -cp "${cp}" org.apache.ranger.authentication.UnixAuthenticationService -enableUnixAuth > ${logdir}/auth.log 2>&1 &
+	nohup java -Dproc_rangerusersync -Dlogback.configurationFile=file:${USERSYNC_CONF_DIR}/logback.xml ${JAVA_OPTS} ${RANGER_OPTS} -Duser=${USER} -Dhostname=${HOSTNAME} -Dlogdir="${logdir}" -cp "${cp}" org.apache.ranger.authentication.UnixAuthenticationService -enableUnixAuth > ${logdir}/auth.log 2>&1 &
 	VALUE_OF_PID=$!
     echo "Starting Apache Ranger Usersync Service"
     sleep $SLEEP_TIME_AFTER_START
@@ -204,7 +212,7 @@ elif [ "${action}" == "RESTART" ]; then
 	exit;
 elif [ "${action}" == "VERSION" ]; then
 	cd ${cdir}/lib
-	java -cp ranger-util-*.jar org.apache.ranger.common.RangerVersionInfo
+	java ${RANGER_OPTS} -cp ranger-util-*.jar org.apache.ranger.common.RangerVersionInfo
 	exit
 elif [ "${action}" == "STATUS" ]; then
   status

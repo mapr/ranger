@@ -38,6 +38,10 @@ import pwd, grp
 
 globalDict = {}
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is None:
+    RANGER_OPTS = ""
+
 if (not 'JAVA_HOME' in os.environ):
     print("ERROR: JAVA_HOME environment variable is not defined. Please define JAVA_HOME before running this script")
     sys.exit(1)
@@ -224,9 +228,9 @@ def updatePropertyInJCKSFile(jcksFileName, propName, value):
     ks_type = "jceks"
     if os.getenv("FIPS_ENABLED") == "true":
         ks_type = "bcfks"
-    pattern = "java -cp './lib/*' %s create '%s' -value '%s' -provider "+ks_type+"://file%s 2>&1"
+    pattern = "java %s -cp './lib/*' %s create '%s' -value '%s' -provider "+ks_type+"://file%s 2>&1"
     cmd = pattern % (
-    credUpdateClassName, propName, value, fn)
+    RANGER_OPTS, credUpdateClassName, propName, value, fn)
     ret = os.system(cmd)
     if (ret != 0):
         print("ERROR: Unable update the JCKSFile(%s) for aliasName (%s)" % (fn, propName))

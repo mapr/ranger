@@ -26,6 +26,10 @@ else:
 	JAVA_BIN=os.path.join(os.getenv('JAVA_HOME'),'bin','java')
 print("Using Java:" + str(JAVA_BIN))
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is not None:
+	RANGER_OPTS = RANGER_OPTS.strip()
+
 def main():
 
 	parser = OptionParser()
@@ -52,7 +56,10 @@ def call_keystore(libpath, filepath, aliasKey, aliasValue='', getorcreate='get')
 		ks_type="bcfks"
 	finalFilePath = ks_type+'://file/'+filepath.replace('\\','/').replace('//','/')
 	if getorcreate == 'create':
-		commandtorun = [JAVA_BIN, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
+		if RANGER_OPTS is None:
+			commandtorun = [JAVA_BIN, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
+		else:
+			commandtorun = [JAVA_BIN, RANGER_OPTS, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
 		p = Popen(commandtorun,stdin=PIPE, stdout=PIPE, stderr=PIPE)
 		output, error = p.communicate()
 		statuscode = p.returncode
@@ -62,7 +69,10 @@ def call_keystore(libpath, filepath, aliasKey, aliasValue='', getorcreate='get')
 			print("Error creating Alias!! Error: " + str(error))
 
 	elif getorcreate == 'get':
-		commandtorun = [JAVA_BIN, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'get', aliasKey, '-provider',finalFilePath]
+		if RANGER_OPTS is None:
+			commandtorun = [JAVA_BIN, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'get', aliasKey, '-provider',finalFilePath]
+		else:
+			commandtorun = [JAVA_BIN, RANGER_OPTS, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'get', aliasKey, '-provider',finalFilePath]
 		p = Popen(commandtorun,stdin=PIPE, stdout=PIPE, stderr=PIPE)
 		output, error = p.communicate()
 		statuscode = p.returncode

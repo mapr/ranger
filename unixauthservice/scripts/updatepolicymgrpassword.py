@@ -41,6 +41,10 @@ RANGER_USERSYNC_HOME = os.getenv("RANGER_USERSYNC_HOME")
 if RANGER_USERSYNC_HOME is None:
 	RANGER_USERSYNC_HOME = os.getcwd()
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is None:
+    RANGER_OPTS = ""
+
 def check_output(query):
 	if os_name == "LINUX":
 		p = subprocess.Popen(shlex.split(query), stdout=subprocess.PIPE)
@@ -146,8 +150,8 @@ def main(argv):
 		ks_type = "jceks"
 		if os.getenv("FIPS_ENABLED") == "true":
 			ks_type = "bcfks"
-		pattern = "%s -cp lib/* org.apache.ranger.credentialapi.buildks create %s -value %s  -provider "+ks_type+"://file%s"
-		cmd = pattern %(JAVA_BIN,SYNC_POLICY_MGR_ALIAS,SYNC_POLICY_MGR_PASSWORD,SYNC_LDAP_BIND_KEYSTOREPATH)
+		pattern = "%s %s -cp lib/* org.apache.ranger.credentialapi.buildks create %s -value %s  -provider "+ks_type+"://file%s"
+		cmd = pattern %(JAVA_BIN,RANGER_OPTS,SYNC_POLICY_MGR_ALIAS,SYNC_POLICY_MGR_PASSWORD,SYNC_LDAP_BIND_KEYSTOREPATH)
 		ret=subprocess.call(shlex.split(cmd))
 		if ret == 0:
 			cmd="chown %s:%s %s" %(unix_user,unix_group,SYNC_LDAP_BIND_KEYSTOREPATH)

@@ -29,8 +29,11 @@ cd "$RANGER_HOME"/ranger-usersync || { echo "Error: Could not find $RANGER_HOME/
 FIPS_ENABLED="false"
 if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
 	FIPS_ENABLED="true"
+	JAVA_FIPS_OPTS="-Djava.security.properties=/opt/mapr/conf/java.security.fips"
 fi
 export FIPS_ENABLED
+
+export RANGER_OPTS="${RANGER_OPTS} ${JAVA_FIPS_OPTS}"
 
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then

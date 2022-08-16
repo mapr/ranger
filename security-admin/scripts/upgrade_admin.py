@@ -35,6 +35,10 @@ installPropFileName = 'install.properties'
 
 tempLibFolder = "./upgrade-temp"
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is None:
+    RANGER_OPTS = ""
+
 def showUsage():
 	print("upgrade_admin.py [-g] [-h]")
 	print("This script will generate %s based on currently installed ranger (v0.4.*) configuration." % (installPropFileName))
@@ -171,7 +175,7 @@ def getPropertiesKeyList(configFileName):
 
 def	readFromJCKSFile(jcksFileName,propName):
 	fn = jcksFileName
-	cmd = "java -cp './cred/lib/*' org.apache.ranger.credentialapi.buildks get '" + propName + "' -provider jceks://file" + fn + " 2> /dev/null"
+	cmd = "java " + RANGER_OPTS + " -cp './cred/lib/*' org.apache.ranger.credentialapi.buildks get '" + propName + "' -provider jceks://file" + fn + " 2> /dev/null"
 	pwd = os.popen(cmd).read()
 	pwd = pwd.strip()
 	return pwd

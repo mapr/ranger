@@ -48,6 +48,10 @@ if os_name == "LINUX":
 elif os_name == "WINDOWS":
     RANGER_ADMIN_HOME = os.getenv("RANGER_ADMIN_HOME")
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is None:
+    RANGER_OPTS = ""
+
 def log(msg,type):
     if type == 'info':
         logging.info(" %s",msg)
@@ -142,9 +146,9 @@ def main(argv):
         elif os_name == "WINDOWS":
             path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home)
         if userRole != "" :
-            get_java_cmd = "%s -Dlogdir=%s -Dlogback.configurationFile=db_patch.logback.xml -cp %s org.apache.ranger.patch.cliutil.%s %s %s %s"%(JAVA_BIN,ranger_log,path,'RoleBasedUserSearchUtil',userName,password,userRole)
+            get_java_cmd = "%s %s -Dlogdir=%s -Dlogback.configurationFile=db_patch.logback.xml -cp %s org.apache.ranger.patch.cliutil.%s %s %s %s"%(JAVA_BIN,RANGER_OPTS,ranger_log,path,'RoleBasedUserSearchUtil',userName,password,userRole)
         if userRole == "" :
-            get_java_cmd = "%s -Dlogdir=%s -Dlogback.configurationFile=db_patch.logback.xml -cp %s org.apache.ranger.patch.cliutil.%s %s %s "%(JAVA_BIN,ranger_log,path,'RoleBasedUserSearchUtil',userName,password)
+            get_java_cmd = "%s %s -Dlogdir=%s -Dlogback.configurationFile=db_patch.logback.xml -cp %s org.apache.ranger.patch.cliutil.%s %s %s "%(JAVA_BIN,RANGER_OPTS,ranger_log,path,'RoleBasedUserSearchUtil',userName,password)
         if os_name == "LINUX":
             ret = subprocess.call(shlex.split(get_java_cmd))
         elif os_name == "WINDOWS":

@@ -38,6 +38,10 @@ RANGER_ADMIN_HOME = os.getenv("RANGER_ADMIN_HOME")
 if RANGER_ADMIN_HOME is None:
 	RANGER_ADMIN_HOME = os.getcwd()
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is None:
+    RANGER_OPTS = ""
+
 def log(msg,type):
 	if type == 'info':
 		logging.info(" %s",msg)
@@ -111,7 +115,7 @@ def main(argv):
 			path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s/*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home,ews_lib)
 		elif os_name == "WINDOWS":
 			path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home)
-		get_java_cmd = "%s -Dlogdir=%s -Dlogback.configurationFile=db_patch.logback.xml -cp %s org.apache.ranger.patch.cliutil.%s %s %s %s"%(JAVA_BIN,ranger_log,path,
+		get_java_cmd = "%s %s -Dlogdir=%s -Dlogback.configurationFile=db_patch.logback.xml -cp %s org.apache.ranger.patch.cliutil.%s %s %s %s"%(JAVA_BIN,RANGER_OPTS,ranger_log,path,
 'ChangePasswordUtil','"'+userName+'"','"'+oldPassword+'"','"'+newPassword+'"')
 		if os_name == "LINUX":
 			ret = subprocess.call(shlex.split(get_java_cmd))

@@ -33,6 +33,10 @@ globalDict = {}
 os_name = platform.system()
 os_name = os_name.upper()
 
+RANGER_OPTS = os.getenv("RANGER_OPTS")
+if RANGER_OPTS is None:
+    RANGER_OPTS = ""
+
 def check_output(query):
 	if os_name == "LINUX":
 		p = subprocess.Popen(shlex.split(query), stdout=subprocess.PIPE)
@@ -111,10 +115,10 @@ class MysqlConf(BaseDB):
 	def get_jisql_cmd(self, user, password ,db_name):
 		path = os.getcwd()
 		if os_name == "LINUX":
-			jisql_cmd = "%s -cp %s:jisql/lib/* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s -u %s -p %s -noheader -trim -c \;" %(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, self.host, db_name, user, password)
+			jisql_cmd = "%s %s -cp %s:jisql/lib/* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s -u %s -p %s -noheader -trim -c \;" %(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, self.host, db_name, user, password)
 		elif os_name == "WINDOWS":
 			self.JAVA_BIN = self.JAVA_BIN.strip("'")
-			jisql_cmd = "%s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s -u %s -p %s -noheader -trim" %(self.JAVA_BIN, self.SQL_CONNECTOR_JAR, path, self.host, db_name, user, password)
+			jisql_cmd = "%s %s -cp %s;%s\jisql\\lib\\* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s -u %s -p %s -noheader -trim" %(self.JAVA_BIN,RANGER_OPTS, self.SQL_CONNECTOR_JAR, path, self.host, db_name, user, password)
 		return jisql_cmd
 		
 	def verify_user(self, root_user, db_root_password, host, db_user, get_cmd,dryMode):
