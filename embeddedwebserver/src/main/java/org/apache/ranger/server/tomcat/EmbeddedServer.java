@@ -194,6 +194,8 @@ public class EmbeddedServer {
 			}
 			server.getService().addConnector(ssl);
 
+			ssl.setAttribute("truststoreFile", MapRSslConfigReader.getServerTruststoreLocation());
+			ssl.setAttribute("truststorePass", MapRSslConfigReader.getServerTruststorePassword());
 			//
 			// Making this as a default connector
 			//

@@ -379,57 +379,55 @@ public class RangerRESTClient {
 	public TrustManager[] getTrustManagers(String trustStoreFile, String trustStoreFilepwd) {
 		TrustManager[] tmList = null;
 
-		if (StringUtils.isNotEmpty(trustStoreFile) && StringUtils.isNotEmpty(trustStoreFilepwd)) {
-			InputStream in =  null;
+		InputStream in =  null;
 
-			try {
+		try {
+			in = getFileInputStream(trustStoreFile);
+
+			// try default ssl configuration if provided one fails
+			if (in == null) {
+				LOG.warn("Unable to obtain truststore from file [" + trustStoreFile + "]");
+				LOG.warn("Provided truststore either does not exist or is wrong. " +
+						"This may happen when it is not configured. " +
+						"So, default one will be tried in case it is intended to do so.");
+				trustStoreFile = MapRSslConfigReader.getServerTruststoreLocation();
+				trustStoreFilepwd = MapRSslConfigReader.getServerTruststorePassword();
 				in = getFileInputStream(trustStoreFile);
-
-				// try default ssl configuration if provided one fails
-				if (in == null) {
-					LOG.warn("Unable to obtain truststore from file [" + trustStoreFile + "]");
-					LOG.warn("Provided truststore either does not exist or is wrong. " +
-							"This may happen when it is not configured. " +
-							"So, default one will be tried in case it is intended to do so.");
-					trustStoreFile = MapRSslConfigReader.getServerTruststoreLocation();
-					trustStoreFilepwd = MapRSslConfigReader.getServerTruststorePassword();
-					in = getFileInputStream(trustStoreFile);
-				}
-
-				if (in != null) {
-					KeyStore trustStore = KeyStore.getInstance(mTrustStoreType);
-
-					trustStore.load(in, trustStoreFilepwd.toCharArray());
-
-					TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(RANGER_SSL_TRUSTMANAGER_ALGO_TYPE);
-
-					trustManagerFactory.init(trustStore);
-
-					tmList = trustManagerFactory.getTrustManagers();
-				} else {
-					LOG.error("Unable to obtain truststore from file [" + trustStoreFile + "]");
-					throw new IllegalStateException("Unable to find truststore file :" + trustStoreFile);
-				}
-			} catch (KeyStoreException e) {
-				LOG.error("Unable to obtain from KeyStore", e);
-				throw new IllegalStateException("Unable to init keystore:" + e.getMessage(), e);
-			} catch (NoSuchAlgorithmException e) {
-				LOG.error("SSL algorithm is NOT available in the environment :" + e.getMessage(), e);
-				throw new IllegalStateException("SSL algorithm is NOT available in the environment :" + e.getMessage(), e);
-			} catch (CertificateException e) {
-				LOG.error("Unable to obtain the requested certification :" + e.getMessage(), e);
-				throw new IllegalStateException("Unable to obtain the requested certification :" + e.getMessage(), e);
-			} catch (FileNotFoundException e) {
-				LOG.error("Unable to find the necessary SSL TrustStore File:" + trustStoreFile, e);
-				throw new IllegalStateException("Unable to find trust store file :" + trustStoreFile + ", error :" + e.getMessage(), e);
-			} catch (IOException e) {
-				LOG.error("Unable to read the necessary SSL TrustStore Files :" + trustStoreFile, e);
-				throw new IllegalStateException("Unable to read the trust store file :" + trustStoreFile + ", error :" + e.getMessage(), e);
-			} finally {
-				close(in, trustStoreFile);
 			}
+
+			if (in != null) {
+				KeyStore trustStore = KeyStore.getInstance(mTrustStoreType);
+
+				trustStore.load(in, trustStoreFilepwd.toCharArray());
+
+				TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(RANGER_SSL_TRUSTMANAGER_ALGO_TYPE);
+
+				trustManagerFactory.init(trustStore);
+
+				tmList = trustManagerFactory.getTrustManagers();
+			} else {
+				LOG.error("Unable to obtain truststore from file [" + trustStoreFile + "]");
+				throw new IllegalStateException("Unable to find truststore file :" + trustStoreFile);
+			}
+		} catch (KeyStoreException e) {
+			LOG.error("Unable to obtain from KeyStore", e);
+			throw new IllegalStateException("Unable to init keystore:" + e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			LOG.error("SSL algorithm is NOT available in the environment :" + e.getMessage(), e);
+			throw new IllegalStateException("SSL algorithm is NOT available in the environment :" + e.getMessage(), e);
+		} catch (CertificateException e) {
+			LOG.error("Unable to obtain the requested certification :" + e.getMessage(), e);
+			throw new IllegalStateException("Unable to obtain the requested certification :" + e.getMessage(), e);
+		} catch (FileNotFoundException e) {
+			LOG.error("Unable to find the necessary SSL TrustStore File:" + trustStoreFile, e);
+			throw new IllegalStateException("Unable to find trust store file :" + trustStoreFile + ", error :" + e.getMessage(), e);
+		} catch (IOException e) {
+			LOG.error("Unable to read the necessary SSL TrustStore Files :" + trustStoreFile, e);
+			throw new IllegalStateException("Unable to read the trust store file :" + trustStoreFile + ", error :" + e.getMessage(), e);
+		} finally {
+			close(in, trustStoreFile);
 		}
-		
+
 		return tmList;
 	}
 

@@ -53,6 +53,8 @@ link_mapr_core_lib_for_usersync() {
   local STAX2_API_JAR="$RANGER_ADMIN_WEBAPP_LIB"/stax2-api-*
   local WOODSTOX_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/woodstox-core-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
+  local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
+  local JETTY_UTIL_JAR="$MAPR_CORE_LIB"/jetty-util-*
 
   # if already exists, unlink first. In case applying patch, we need to remove old links
   find $RANGER_USERSYNC_LIB -type l -name "maprfs-*" -delete
@@ -63,6 +65,8 @@ link_mapr_core_lib_for_usersync() {
   find $RANGER_USERSYNC_LIB -type l -name "stax2-api-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "woodstox-core-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "hadoop-shaded-guava-*" -delete
+  find $RANGER_USERSYNC_LIB -type l -name "mapr-security-web-*" -delete
+  find $RANGER_USERSYNC_LIB -type l -name "jetty-util-*" -delete
 
   # create the links again
   ln -sf $MAPRFS_JARS $RANGER_USERSYNC_LIB
@@ -73,6 +77,8 @@ link_mapr_core_lib_for_usersync() {
   ln -sf $STAX2_API_JAR $RANGER_USERSYNC_LIB
   ln -sf $WOODSTOX_CORE_JAR $RANGER_USERSYNC_LIB
   ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_USERSYNC_LIB
+  ln -sf $MAPR_WEB_SECURITY_JAR $RANGER_USERSYNC_LIB
+  ln -sf $JETTY_UTIL_JAR $RANGER_USERSYNC_LIB
 }
 
 # link following jars from core lib to ranger-usersync lib.
