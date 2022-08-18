@@ -27,6 +27,8 @@ else:
 print("Using Java:" + str(JAVA_BIN))
 
 RANGER_OPTS = os.getenv("RANGER_OPTS")
+if "-D" not in RANGER_OPTS:
+	RANGER_OPTS = None
 if RANGER_OPTS is not None:
 	RANGER_OPTS = RANGER_OPTS.strip()
 
