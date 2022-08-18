@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.ranger.authorization.utils.StringUtil;
 import org.apache.ranger.plugin.policyengine.RangerPolicyEngineOptions;
+import org.apache.ranger.util.MaprSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -75,7 +76,7 @@ public class RangerPluginConfig extends RangerConfiguration {
             clusterName = this.get(propertyPrefix + ".access.cluster.name", "");
 
             if (StringUtil.isEmpty(clusterName)) {
-                clusterName = this.get(propertyPrefix + ".ambari.cluster.name", "");
+                clusterName = this.get(propertyPrefix + ".ambari.cluster.name", MaprSecurity.getClusterName());
             }
         }
 

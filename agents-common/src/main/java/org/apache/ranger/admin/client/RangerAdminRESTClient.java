@@ -32,6 +32,7 @@ import org.apache.ranger.authorization.hadoop.config.RangerPluginConfig;
 import org.apache.ranger.authorization.utils.StringUtil;
 import org.apache.ranger.plugin.model.RangerRole;
 import org.apache.ranger.plugin.util.*;
+import org.apache.ranger.util.MaprSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,7 +99,7 @@ public class RangerAdminRESTClient extends AbstractRangerAdminClient {
 		String sslConfigFileName 		= config.get(propertyPrefix + ".policy.rest.ssl.config.file");
 		clusterName       				= config.get(propertyPrefix + ".access.cluster.name", "");
 		if(StringUtil.isEmpty(clusterName)){
-			clusterName =config.get(propertyPrefix + ".ambari.cluster.name", "");
+			clusterName =config.get(propertyPrefix + ".ambari.cluster.name", MaprSecurity.getClusterName());
 			if (StringUtil.isEmpty(clusterName)) {
 				if (config instanceof RangerPluginConfig) {
 					clusterName = ((RangerPluginConfig)config).getClusterName();
