@@ -21,6 +21,21 @@ RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
 RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
 RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
+FIPS_ENABLED="false"
+if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
+	FIPS_ENABLED="true"
+	JAVA_FIPS_OPTS="-Djava.security.properties=/opt/mapr/conf/java.security.fips"
+fi
+export FIPS_ENABLED
+
+export RANGER_OPTS="${RANGER_OPTS} ${JAVA_FIPS_OPTS}"
+
+KS_TYPE="jceks"
+if [ "$FIPS_ENABLED" == "true" ] ; then
+  KS_TYPE="bcfks"
+fi
+export KS_TYPE
+
 # source env.sh so that child processes (python) can read JAVA_HOME properly, otherwise it fails
 if [ -f "${MAPR_HOME}"/conf/env.sh ]; then
   . "${MAPR_HOME}"/conf/env.sh
@@ -339,24 +354,24 @@ log() {
 }
 
 
-create_jceks() {
+create_ks() {
 
 	alias=$1
 	pass=$2
-	jceksFile=$3
+	ksFile=$3
 
-	if [ -f "${jceksFile}" ]
+	if [ -f "${ksFile}" ]
 	then
-		jcebdir=`dirname ${jceksFile}`
-		jcebname=`basename ${jceksFile}`
+		jcebdir=`dirname ${ksFile}`
+		jcebname=`basename ${ksFile}`
 		archive_jce=${jcebdir}/.${jcebname}.`date '+%Y%m%d%H%M%S'`
-		log "Saving current JCE file: ${jceksFile} to ${archive_jce} ..."
-		cp ${jceksFile} ${archive_jce}
+		log "Saving current JCE file: ${ksFile} to ${archive_jce} ..."
+		cp ${ksFile} ${archive_jce}
 	fi
 
 	tempFile=/tmp/jce.$$.out
 
-    $JAVA_HOME/bin/java -cp ":${PROJ_INSTALL_LIB_DIR}/*:" org.apache.ranger.credentialapi.buildks create "${alias}" -value "${pass}" -provider "jceks://file${jceksFile}" > ${tempFile} 2>&1
+    $JAVA_HOME/bin/java ${RANGER_OPTS} -cp ":${PROJ_INSTALL_LIB_DIR}/*:" org.apache.ranger.credentialapi.buildks create "${alias}" -value "${pass}" -provider "${KS_TYPE}://file${ksFile}" > ${tempFile} 2>&1
 
 	if [ $? -ne 0 ]
 	then
@@ -473,7 +488,7 @@ then
 	#
 	REPO_NAME=$(getInstallProperty 'REPOSITORY_NAME')
 	export POLICY_CACHE_FILE_PATH=/etc/${PROJ_NAME}/${REPO_NAME}/policycache
-	export CREDENTIAL_PROVIDER_FILE=/etc/${PROJ_NAME}/${REPO_NAME}/cred.jceks
+	export CREDENTIAL_PROVIDER_FILE=/etc/${PROJ_NAME}/${REPO_NAME}/cred.${KS_TYPE}
 	if [ ! -d ${POLICY_CACHE_FILE_PATH} ]
 	then
 		mkdir -p ${POLICY_CACHE_FILE_PATH}
@@ -602,10 +617,10 @@ then
 	#
 	sslkeystoreAlias="sslKeyStore"
 	sslkeystoreCred=$(getInstallProperty 'SSL_KEYSTORE_PASSWORD')
-	create_jceks "${sslkeystoreAlias}" "${sslkeystoreCred}" "${CredFile}"
+	create_ks "${sslkeystoreAlias}" "${sslkeystoreCred}" "${CredFile}"
 	ssltruststoreAlias="sslTrustStore"
 	ssltruststoreCred=$(getInstallProperty 'SSL_TRUSTSTORE_PASSWORD')
-	create_jceks "${ssltruststoreAlias}" "${ssltruststoreCred}" "${CredFile}"
+	create_ks "${ssltruststoreAlias}" "${ssltruststoreCred}" "${CredFile}"
 	chown ${CFG_OWNER_INF} ${CredFile}
 	#
 	# To allow all users in the server (where Hive CLI and HBase CLI is used),
