@@ -311,58 +311,56 @@ public class RangerRESTClient {
 	public KeyManager[] getKeyManagers(String keyStoreFile, String keyStoreFilePwd) {
 		KeyManager[] kmList = null;
 
-		if (StringUtils.isNotEmpty(keyStoreFile) && StringUtils.isNotEmpty(keyStoreFilePwd)) {
-			InputStream in =  null;
+		InputStream in =  null;
 
-			try {
+		try {
+			in = getFileInputStream(keyStoreFile);
+
+			// try default ssl configuration if provided one fails
+			if (in == null) {
+				LOG.warn("Unable to obtain keystore from file [" + keyStoreFile + "]");
+				LOG.warn("Provided keystore either does not exist or is wrong. " +
+						"This may happen when it is not configured. " +
+						"Default one will be tried in case it is intended to do so.");
+				keyStoreFile = MapRSslConfigReader.getServerKeystoreLocation();
+				keyStoreFilePwd = MapRSslConfigReader.getServerKeystorePassword();
 				in = getFileInputStream(keyStoreFile);
-
-				// try default ssl configuration if provided one fails
-				if (in == null) {
-					LOG.warn("Unable to obtain keystore from file [" + keyStoreFile + "]");
-					LOG.warn("Provided keystore either does not exist or is wrong. " +
-							"This may happen when it is not configured. " +
-							"Default one will be tried in case it is intended to do so.");
-					keyStoreFile = MapRSslConfigReader.getServerKeystoreLocation();
-					keyStoreFilePwd = MapRSslConfigReader.getServerKeystorePassword();
-					in = getFileInputStream(keyStoreFile);
-				}
-
-				if (in != null) {
-					KeyStore keyStore = KeyStore.getInstance(mKeyStoreType);
-
-					keyStore.load(in, keyStoreFilePwd.toCharArray());
-
-					KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(RANGER_SSL_KEYMANAGER_ALGO_TYPE);
-
-					keyManagerFactory.init(keyStore, keyStoreFilePwd.toCharArray());
-
-					kmList = keyManagerFactory.getKeyManagers();
-				} else {
-					LOG.error("Unable to obtain keystore from file [" + keyStoreFile + "]");
-					throw new IllegalStateException("Unable to find keystore file :" + keyStoreFile);
-				}
-			} catch (KeyStoreException e) {
-				LOG.error("Unable to obtain from KeyStore :" + e.getMessage(), e);
-				throw new IllegalStateException("Unable to init keystore:" + e.getMessage(), e);
-			} catch (NoSuchAlgorithmException e) {
-				LOG.error("SSL algorithm is NOT available in the environment", e);
-				throw new IllegalStateException("SSL algorithm is NOT available in the environment :" + e.getMessage(), e);
-			} catch (CertificateException e) {
-				LOG.error("Unable to obtain the requested certification ", e);
-				throw new IllegalStateException("Unable to obtain the requested certification :" + e.getMessage(), e);
-			} catch (FileNotFoundException e) {
-				LOG.error("Unable to find the necessary SSL Keystore Files", e);
-				throw new IllegalStateException("Unable to find keystore file :" + keyStoreFile + ", error :" + e.getMessage(), e);
-			} catch (IOException e) {
-				LOG.error("Unable to read the necessary SSL Keystore Files", e);
-				throw new IllegalStateException("Unable to read keystore file :" + keyStoreFile + ", error :" + e.getMessage(), e);
-			} catch (UnrecoverableKeyException e) {
-				LOG.error("Unable to recover the key from keystore", e);
-				throw new IllegalStateException("Unable to recover the key from keystore :" + keyStoreFile+", error :" + e.getMessage(), e);
-			} finally {
-				close(in, keyStoreFile);
 			}
+
+			if (in != null) {
+				KeyStore keyStore = KeyStore.getInstance(mKeyStoreType);
+
+				keyStore.load(in, keyStoreFilePwd.toCharArray());
+
+				KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(RANGER_SSL_KEYMANAGER_ALGO_TYPE);
+
+				keyManagerFactory.init(keyStore, keyStoreFilePwd.toCharArray());
+
+				kmList = keyManagerFactory.getKeyManagers();
+			} else {
+				LOG.error("Unable to obtain keystore from file [" + keyStoreFile + "]");
+				throw new IllegalStateException("Unable to find keystore file :" + keyStoreFile);
+			}
+		} catch (KeyStoreException e) {
+			LOG.error("Unable to obtain from KeyStore :" + e.getMessage(), e);
+			throw new IllegalStateException("Unable to init keystore:" + e.getMessage(), e);
+		} catch (NoSuchAlgorithmException e) {
+			LOG.error("SSL algorithm is NOT available in the environment", e);
+			throw new IllegalStateException("SSL algorithm is NOT available in the environment :" + e.getMessage(), e);
+		} catch (CertificateException e) {
+			LOG.error("Unable to obtain the requested certification ", e);
+			throw new IllegalStateException("Unable to obtain the requested certification :" + e.getMessage(), e);
+		} catch (FileNotFoundException e) {
+			LOG.error("Unable to find the necessary SSL Keystore Files", e);
+			throw new IllegalStateException("Unable to find keystore file :" + keyStoreFile + ", error :" + e.getMessage(), e);
+		} catch (IOException e) {
+			LOG.error("Unable to read the necessary SSL Keystore Files", e);
+			throw new IllegalStateException("Unable to read keystore file :" + keyStoreFile + ", error :" + e.getMessage(), e);
+		} catch (UnrecoverableKeyException e) {
+			LOG.error("Unable to recover the key from keystore", e);
+			throw new IllegalStateException("Unable to recover the key from keystore :" + keyStoreFile+", error :" + e.getMessage(), e);
+		} finally {
+			close(in, keyStoreFile);
 		}
 
 		return kmList;
