@@ -108,7 +108,7 @@ public class RangerServiceAtlas extends RangerBaseService {
 	private static final String WEB_RESOURCE_CONTENT_TYPE = "application/x-www-form-urlencoded";
 	private static final String CONNECTION_ERROR_MSG      =   " You can still save the repository and start creating"
 	                                                        + " policies, but you would not be able to use autocomplete for"
-	                                                        + " resource names. Check $RANGER_HOME/ranger-admin/ews/log/ranger-admin-<hostname>-<username>.log for more info.";
+	                                                        + " resource names. Check ranger-admin logs in $RANGER_HOME/ranger-admin/ews/log/ for more info.";
 
 	public RangerServiceAtlas() {
 		super();

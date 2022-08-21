@@ -177,8 +177,8 @@ create_restart_file(){
 if [ -z "${MAPR_TICKETFILE_LOCATION}" ] && [ -e "${MAPR_HOME}/conf/mapruserticket" ]; then
     export MAPR_TICKETFILE_LOCATION="${MAPR_HOME}/conf/mapruserticket"
 fi
-maprcli node services -action restart -name ranger-admin -nodes $(hostname)
-maprcli node services -action restart -name ranger-usersync -nodes $(hostname)
+maprcli node services -action restart -name ranger-admin -nodes $(hostname) &>/dev/null
+maprcli node services -action restart -name ranger-usersync -nodes $(hostname) &>/dev/null
 EOF
   chmod +x "${MAPR_HOME}/conf/restart/ranger-${RANGER_VERSION}.restart"
   chown -R "$MAPR_USER":"$MAPR_GROUP" "${MAPR_HOME}/conf/restart/ranger-${RANGER_VERSION}.restart"

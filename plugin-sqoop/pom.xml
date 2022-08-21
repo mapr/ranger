@@ -98,5 +98,10 @@
             <version>${slf4j.version}</version>
 	    <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.mapr.hadoop</groupId>
+            <artifactId>maprfs</artifactId>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

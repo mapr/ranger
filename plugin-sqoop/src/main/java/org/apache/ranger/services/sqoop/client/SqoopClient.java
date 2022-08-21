@@ -65,7 +65,7 @@ public class SqoopClient extends BaseClient {
 
 	private static final String ERROR_MESSAGE = " You can still save the repository and start creating "
 			+ "policies, but you would not be able to use autocomplete for "
-			+ "resource names. Check $RANGER_HOME/ranger-admin/ews/log/ranger-admin-<hostname>-<username>.log for more info.";
+			+ "resource names. Check ranger-admin logs in $RANGER_HOME/ranger-admin/ews/log/ for more info.";
 
 	private String sqoopUrl;
 	private String userName;
