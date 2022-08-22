@@ -53,6 +53,7 @@ import org.apache.ranger.authorization.utils.StringUtil;
 import org.apache.ranger.util.MapRSslConfigReader;
 import org.apache.ranger.util.MaprAuthenticationUtils;
 import org.apache.ranger.util.MaprSecurity;
+import org.apache.ranger.util.RangerClientSecurity;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -252,7 +253,7 @@ public class RangerRESTClient {
 	private void init(Configuration config) {
 		if (MaprSecurity.MAPR_SASL) {
 			String challengeString = MaprAuthenticationUtils.generateChallengeString();
-			this.authHeader = String.format("MAPR-Negotiate %s", challengeString);
+			this.authHeader = RangerClientSecurity.NEGOTIATE + " " + challengeString;
 		}
 
 		try {

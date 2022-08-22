@@ -18,7 +18,6 @@
 
 package org.apache.ranger.util;
 
-import com.mapr.security.client.ClientSecurity;
 import com.mapr.security.client.MapRClientSecurityException;
 
 public class MaprAuthenticationUtils {
@@ -26,9 +25,8 @@ public class MaprAuthenticationUtils {
 
     public static String generateChallengeString() {
         try {
-            ClientSecurity cs = new ClientSecurity();
-            String challengeString = cs.generateChallenge();
-            return challengeString;
+            RangerClientSecurity cs = new RangerClientSecurity();
+            return cs.generateChallenge();
         } catch (MapRClientSecurityException e) {
             throw new RuntimeException("Could not generate challenge string", e);
         }
