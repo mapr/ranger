@@ -823,7 +823,7 @@ class BaseDB(object):
 
 class MysqlConf(BaseDB):
 	# Constructor
-	def __init__(self, host,SQL_CONNECTOR_JAR,JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,db_ssl_auth_type,is_db_override_jdbc_connection_string,db_override_jdbc_connection_string):
+	def __init__(self, host, SQL_CONNECTOR_JAR, JAVA_BIN, db_ssl_enabled, db_ssl_required, db_ssl_verifyServerCertificate, javax_net_ssl_keyStore, javax_net_ssl_keyStorePassword, javax_net_ssl_keyStoreType, javax_net_ssl_trustStore, javax_net_ssl_trustStorePassword, javax_net_ssl_trustStoreType, db_ssl_auth_type, is_db_override_jdbc_connection_string, db_override_jdbc_connection_string, enabled_tls_protocols):
 		self.host = host
 		self.SQL_CONNECTOR_JAR = SQL_CONNECTOR_JAR
 		self.JAVA_BIN = JAVA_BIN
@@ -833,8 +833,11 @@ class MysqlConf(BaseDB):
 		self.db_ssl_auth_type=db_ssl_auth_type.lower()
 		self.javax_net_ssl_keyStore=javax_net_ssl_keyStore
 		self.javax_net_ssl_keyStorePassword=javax_net_ssl_keyStorePassword
+		self.javax_net_ssl_keyStoreType=javax_net_ssl_keyStoreType
 		self.javax_net_ssl_trustStore=javax_net_ssl_trustStore
 		self.javax_net_ssl_trustStorePassword=javax_net_ssl_trustStorePassword
+		self.javax_net_ssl_trustStoreType=javax_net_ssl_trustStoreType
+		self.enabled_tls_protocols=enabled_tls_protocols
 		self.commandTerminator=" "
 		self.XA_DB_FLAVOR = "MYSQL"
 		self.is_db_override_jdbc_connection_string = is_db_override_jdbc_connection_string
@@ -845,12 +848,12 @@ class MysqlConf(BaseDB):
 		db_ssl_param=''
 		db_ssl_cert_param=''
 		if self.db_ssl_enabled == 'true':
-			db_ssl_param="?useSSL=%s&requireSSL=%s&verifyServerCertificate=%s" %(self.db_ssl_enabled,self.db_ssl_required,self.db_ssl_verifyServerCertificate)
+			db_ssl_param="?useSSL=%s&requireSSL=%s&verifyServerCertificate=%s&enabledTLSProtocols=%s" %(self.db_ssl_enabled,self.db_ssl_required,self.db_ssl_verifyServerCertificate,self.enabled_tls_protocols)
 			if self.db_ssl_verifyServerCertificate == 'true':
 				if self.db_ssl_auth_type == '1-way':
-					db_ssl_cert_param=" -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s " %(self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword)
+					db_ssl_cert_param=" -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s -Djavax.net.ssl.trustStoreType=%s " %(self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword,self.javax_net_ssl_trustStoreType)
 				else:
-					db_ssl_cert_param=" -Djavax.net.ssl.keyStore=%s -Djavax.net.ssl.keyStorePassword=%s -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s " %(self.javax_net_ssl_keyStore,self.javax_net_ssl_keyStorePassword,self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword)
+					db_ssl_cert_param=" -Djavax.net.ssl.keyStore=%s -Djavax.net.ssl.keyStorePassword=%s -Djavax.net.ssl.keyStoreType=%s -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s -Djavax.net.ssl.trustStoreType=%s " %(self.javax_net_ssl_keyStore,self.javax_net_ssl_keyStorePassword,self.javax_net_ssl_keyStoreType,self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword,self.javax_net_ssl_trustStoreType)
 		else:
 			if "useSSL" not in db_name:
 				db_ssl_param="?useSSL=false"
@@ -1323,7 +1326,7 @@ def main(argv):
 
 	if XA_DB_FLAVOR == "MYSQL":
 		MYSQL_CONNECTOR_JAR=globalDict['SQL_CONNECTOR_JAR']
-		xa_sqlObj = MysqlConf(xa_db_host, MYSQL_CONNECTOR_JAR, JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,db_ssl_auth_type,is_override_db_connection_string,db_override_jdbc_connection_string)
+		xa_sqlObj = MysqlConf(xa_db_host, MYSQL_CONNECTOR_JAR, JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_keyStore_type,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,javax_net_ssl_trustStore_type,db_ssl_auth_type,is_override_db_connection_string,db_override_jdbc_connection_string,globalDict['mysql_enabled_tls_protocols'])
 		xa_db_version_file = os.path.join(RANGER_ADMIN_HOME , mysql_dbversion_catalog)
 		xa_db_core_file = os.path.join(RANGER_ADMIN_HOME , mysql_core_file)
 		xa_patch_file = os.path.join(RANGER_ADMIN_HOME ,mysql_patches)

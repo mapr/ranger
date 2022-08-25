@@ -133,13 +133,14 @@ configure_hbase_jars_for_admin() {
 
 # link following jars to RANGER_HOME/ranger-admin/cred/lib
 # stax2-api and woodstox-core from RANGER_ADMIN_WEBAPP_LIB
-# bc-fips and bctls-fips from mapr core lib
+# bc-fips and bctls-fips from RANGER_ADMIN_WEBAPP_LIB lib
 # jackson-core-2, maprfs and protobuf-java-3 from mapr core lib
 # hadoop-shaded-guava from hadoop common lib
 configure_cred_lib_for_admin() {
   # libraries
   local MAPR_CORE_LIB="$MAPR_HOME"/lib
   local RANGER_ADMIN_CRED_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/cred/lib
+  local RANGER_ADMIN_JISQL_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/jisql/lib
   local RANGER_ADMIN_WEBAPP_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/webapp/WEB-INF/lib
   local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
 
@@ -147,8 +148,8 @@ configure_cred_lib_for_admin() {
   local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
   local JACKSON_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/jackson-core-2.*
-  local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
-  local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
+  local BC_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bc-fips-*
+  local BCTLS_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bctls-fips-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
   local STAX2_API_JAR="$RANGER_ADMIN_WEBAPP_LIB"/stax2-api-*
   local WOODSTOX_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/woodstox-core-*
@@ -163,6 +164,9 @@ configure_cred_lib_for_admin() {
   find $RANGER_ADMIN_CRED_LIB -type l -name "stax2-api-*" -delete
   find $RANGER_ADMIN_CRED_LIB -type l -name "woodstox-core-*" -delete
 
+  find $RANGER_ADMIN_JISQL_LIB -type l -name "bc-fips-*" -delete
+  find $RANGER_ADMIN_JISQL_LIB -type l -name "bctls-fips-*" -delete
+
   # create the links again
   ln -sf $MAPRFS_JARS $RANGER_ADMIN_CRED_LIB
   ln -sf $PROTOBUF_JARS $RANGER_ADMIN_CRED_LIB
@@ -172,6 +176,9 @@ configure_cred_lib_for_admin() {
   ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $STAX2_API_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $WOODSTOX_CORE_JAR $RANGER_ADMIN_CRED_LIB
+
+  ln -sf $BC_FIPS_JAR $RANGER_ADMIN_JISQL_LIB
+  ln -sf $BCTLS_FIPS_JAR $RANGER_ADMIN_JISQL_LIB
 }
 
 # if Hive exists and hive plugin is installed;

@@ -93,6 +93,7 @@ db_ssl_enabled=$(get_prop 'db_ssl_enabled' $PROPFILE)
 db_ssl_required=$(get_prop 'db_ssl_required' $PROPFILE)
 db_ssl_verifyServerCertificate=$(get_prop 'db_ssl_verifyServerCertificate' $PROPFILE)
 db_ssl_auth_type=$(get_prop 'db_ssl_auth_type' $PROPFILE)
+mysql_enabled_tls_protocols=$(get_prop 'mysql_enabled_tls_protocols' $PROPFILE)
 db_ssl_certificate_file=$(get_prop 'db_ssl_certificate_file' $PROPFILE)
 javax_net_ssl_trustStore_type=$(get_prop 'javax_net_ssl_trustStore_type' $PROPFILE)
 javax_net_ssl_keyStore_type=$(get_prop 'javax_net_ssl_keyStore_type' $PROPFILE)
@@ -644,6 +645,10 @@ update_properties() {
 
 		propertyName=ranger.db.ssl.auth.type
 		newPropertyValue="${db_ssl_auth_type}"
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+
+		propertyName=ranger.mysql.enabled.tls.protocols
+		newPropertyValue="${mysql_enabled_tls_protocols}"
 		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
 
 		if [ "${db_ssl_certificate_file}" != "" ]

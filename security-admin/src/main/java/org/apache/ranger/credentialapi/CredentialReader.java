@@ -47,6 +47,10 @@ public class CredentialReader {
 
 			  CrendentialProviderPath=CrendentialProviderPath.trim();
 			  alias=alias.trim();
+			  // JKS and JCEKS are case-insensitive and transform key aliases to lowercase when writing to keystore
+			  // so doing the same for them. But not for BCFKS, because it does not do any transformation
+			  if ("JKS".equalsIgnoreCase(storeType) || "JCEKS".equalsIgnoreCase(storeType))
+				  alias=alias.toLowerCase();
 			  if(CrendentialProviderPath.toLowerCase().startsWith(crendentialProviderPrefixJceks) ||
 					  CrendentialProviderPath.toLowerCase().startsWith(crendentialProviderPrefixLocalJceks) ||
 					  CrendentialProviderPath.toLowerCase().startsWith(crendentialProviderPrefixBcfks) ||
@@ -77,9 +81,9 @@ public class CredentialReader {
 			  for(CredentialProvider provider: providers) {
 	              //System.out.println("Credential Provider :" + provider);
 				  aliasesList=provider.getAliases();
-				  if(aliasesList!=null && aliasesList.contains(alias.toLowerCase())){
+				  if(aliasesList!=null && aliasesList.contains(alias)){
 					  credEntry=null;
-					  credEntry= provider.getCredentialEntry(alias.toLowerCase());
+					  credEntry= provider.getCredentialEntry(alias);
 					  pass = credEntry.getCredential();
 					  if(pass!=null && pass.length>0){
 						  credential=String.valueOf(pass);

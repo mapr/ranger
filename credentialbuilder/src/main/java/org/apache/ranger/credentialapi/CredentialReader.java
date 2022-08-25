@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.security.alias.BouncyCastleFipsKeyStoreProvider;
 import org.apache.hadoop.security.alias.CredentialProvider;
 import org.apache.hadoop.security.alias.CredentialProviderFactory;
 import org.apache.hadoop.security.alias.JavaKeyStoreProvider;
@@ -48,6 +49,10 @@ public class CredentialReader {
 
 		  CrendentialProviderPath=CrendentialProviderPath.trim();
 		  alias=alias.trim();
+		  // JKS and JCEKS are case-insensitive and transform key aliases to lowercase when writing to keystore
+		  // so doing the same for them. But not for BCFKS, because it does not do any transformation
+		  if ("JKS".equalsIgnoreCase(storeType) || "JCEKS".equalsIgnoreCase(storeType))
+			  alias=alias.toLowerCase();
 		  if(CrendentialProviderPath.toLowerCase().startsWith(crendentialProviderPrefixJceks) ||
 				  CrendentialProviderPath.toLowerCase().startsWith(crendentialProviderPrefixLocalJceks) ||
 				  CrendentialProviderPath.toLowerCase().startsWith(crendentialProviderPrefixBcfks) ||
@@ -58,7 +63,8 @@ public class CredentialReader {
 		  }else{
 			  if(CrendentialProviderPath.startsWith("/")){
 			  	 if(StringUtils.equalsIgnoreCase(storeType, "bcfks")) {
-					 conf.set(CredentialProviderFactory.CREDENTIAL_PROVIDER_PATH, CrendentialProviderPath);
+					 conf.set(CredentialProviderFactory.CREDENTIAL_PROVIDER_PATH,
+							 BouncyCastleFipsKeyStoreProvider.SCHEME_NAME + "://file" + CrendentialProviderPath);
 				 } else {
 					 conf.set(CredentialProviderFactory.CREDENTIAL_PROVIDER_PATH,
 							 //UserProvider.SCHEME_NAME + ":///," +
@@ -77,9 +83,9 @@ public class CredentialReader {
 		  for(CredentialProvider provider: providers) {
               //System.out.println("Credential Provider :" + provider);
 			  aliasesList=provider.getAliases();
-			  if(aliasesList!=null && aliasesList.contains(alias.toLowerCase())){
+			  if(aliasesList!=null && aliasesList.contains(alias)){
 				  credEntry=null;
-				  credEntry= provider.getCredentialEntry(alias.toLowerCase());
+				  credEntry= provider.getCredentialEntry(alias);
 				  pass = credEntry.getCredential();
 				  if(pass!=null && pass.length>0){
 					  credential=String.valueOf(pass);

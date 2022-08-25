@@ -168,7 +168,7 @@ class BaseDB(object):
 
 class MysqlConf(BaseDB):
 	# Constructor
-	def __init__(self, host,SQL_CONNECTOR_JAR,JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,db_ssl_auth_type):
+	def __init__(self, host, SQL_CONNECTOR_JAR, JAVA_BIN, db_ssl_enabled, db_ssl_required, db_ssl_verifyServerCertificate, javax_net_ssl_keyStore, javax_net_ssl_keyStorePassword, javax_net_ssl_keyStoreType, javax_net_ssl_trustStore, javax_net_ssl_trustStorePassword, javax_net_ssl_trustStoreType, db_ssl_auth_type, enabled_tls_protocols):
 		self.host = host.lower()
 		self.SQL_CONNECTOR_JAR = SQL_CONNECTOR_JAR
 		self.JAVA_BIN = JAVA_BIN
@@ -178,8 +178,11 @@ class MysqlConf(BaseDB):
 		self.db_ssl_auth_type=db_ssl_auth_type.lower()
 		self.javax_net_ssl_keyStore=javax_net_ssl_keyStore
 		self.javax_net_ssl_keyStorePassword=javax_net_ssl_keyStorePassword
+		self.javax_net_ssl_keyStoreType=javax_net_ssl_keyStoreType
 		self.javax_net_ssl_trustStore=javax_net_ssl_trustStore
 		self.javax_net_ssl_trustStorePassword=javax_net_ssl_trustStorePassword
+		self.javax_net_ssl_trustStoreType=javax_net_ssl_trustStoreType
+		self.enabled_tls_protocols=enabled_tls_protocols
 
 	def get_jisql_cmd(self, user, password ,db_name):
 		#TODO: User array for forming command
@@ -187,12 +190,12 @@ class MysqlConf(BaseDB):
 		db_ssl_param=''
 		db_ssl_cert_param=''
 		if self.db_ssl_enabled == 'true':
-			db_ssl_param="?useSSL=%s&requireSSL=%s&verifyServerCertificate=%s" %(self.db_ssl_enabled,self.db_ssl_required,self.db_ssl_verifyServerCertificate)
+			db_ssl_param="?useSSL=%s&requireSSL=%s&verifyServerCertificate=%s&enabledTLSProtocols=%s" %(self.db_ssl_enabled,self.db_ssl_required,self.db_ssl_verifyServerCertificate,self.enabled_tls_protocols)
 			if self.db_ssl_verifyServerCertificate == 'true':
 				if self.db_ssl_auth_type == '1-way':
-					db_ssl_cert_param=" -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s " %(self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword)
+					db_ssl_cert_param=" -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s -Djavax.net.ssl.trustStoreType=%s " %(self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword,self.javax_net_ssl_trustStoreType)
 				else:
-					db_ssl_cert_param=" -Djavax.net.ssl.keyStore=%s -Djavax.net.ssl.keyStorePassword=%s -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s " %(self.javax_net_ssl_keyStore,self.javax_net_ssl_keyStorePassword,self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword)
+					db_ssl_cert_param=" -Djavax.net.ssl.keyStore=%s -Djavax.net.ssl.keyStorePassword=%s -Djavax.net.ssl.keyStoreType=%s -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s -Djavax.net.ssl.trustStoreType=%s " %(self.javax_net_ssl_keyStore,self.javax_net_ssl_keyStorePassword,self.javax_net_ssl_keyStoreType,self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword,self.javax_net_ssl_trustStoreType)
 		if is_unix:
 			jisql_cmd = "%s %s %s -cp %s:%s/jisql/lib/* org.apache.util.sql.Jisql -driver mysqlconj -cstring jdbc:mysql://%s/%s%s -u %s -p '%s' -noheader -trim -c \;" %(self.JAVA_BIN,RANGER_OPTS,db_ssl_cert_param,self.SQL_CONNECTOR_JAR,path,self.host,db_name,db_ssl_param,user,password)
 		elif os_name == "WINDOWS":
@@ -728,7 +731,7 @@ class OracleConf(BaseDB):
 
 class PostgresConf(BaseDB):
 	# Constructor
-	def __init__(self, host,SQL_CONNECTOR_JAR,JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,db_ssl_auth_type):
+	def __init__(self, host,SQL_CONNECTOR_JAR,JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_keyStoreType,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,javax_net_ssl_trustStoreType,db_ssl_auth_type):
 		self.host = host.lower()
 		self.SQL_CONNECTOR_JAR = SQL_CONNECTOR_JAR
 		self.JAVA_BIN = JAVA_BIN
@@ -738,8 +741,10 @@ class PostgresConf(BaseDB):
 		self.db_ssl_auth_type=db_ssl_auth_type.lower()
 		self.javax_net_ssl_keyStore=javax_net_ssl_keyStore
 		self.javax_net_ssl_keyStorePassword=javax_net_ssl_keyStorePassword
+		self.javax_net_ssl_keyStoreType=javax_net_ssl_keyStoreType
 		self.javax_net_ssl_trustStore=javax_net_ssl_trustStore
 		self.javax_net_ssl_trustStorePassword=javax_net_ssl_trustStorePassword
+		self.javax_net_ssl_trustStoreType=javax_net_ssl_trustStoreType
 
 	def get_jisql_cmd(self, user, password, db_name):
 		#TODO: User array for forming command
@@ -751,9 +756,9 @@ class PostgresConf(BaseDB):
 			db_ssl_param="?ssl=%s" %(self.db_ssl_enabled)
 			if self.db_ssl_verifyServerCertificate == 'true' or self.db_ssl_required == 'true':
 				if self.db_ssl_auth_type == '1-way':
-					db_ssl_cert_param=" -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s " %(self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword)
+					db_ssl_cert_param=" -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s -Djavax.net.ssl.trustStoreType=%s " %(self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword,self.javax_net_ssl_trustStoreType)
 				else:
-					db_ssl_cert_param=" -Djavax.net.ssl.keyStore=%s -Djavax.net.ssl.keyStorePassword=%s -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s " %(self.javax_net_ssl_keyStore,self.javax_net_ssl_keyStorePassword,self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword)
+					db_ssl_cert_param=" -Djavax.net.ssl.keyStore=%s -Djavax.net.ssl.keyStorePassword=%s -Djavax.net.ssl.keyStoreType=%s -Djavax.net.ssl.trustStore=%s -Djavax.net.ssl.trustStorePassword=%s -Djavax.net.ssl.trustStoreType=%s " %(self.javax_net_ssl_keyStore,self.javax_net_ssl_keyStorePassword,self.javax_net_ssl_keyStoreType,self.javax_net_ssl_trustStore,self.javax_net_ssl_trustStorePassword,self.javax_net_ssl_trustStoreType)
 			else:
 				db_ssl_param="?ssl=%s&sslfactory=org.postgresql.ssl.NonValidatingFactory" %(self.db_ssl_enabled)
 		if is_unix:
@@ -1432,6 +1437,11 @@ def main(argv):
 	dryMode=False
 	is_revoke=False
 
+	if 'javax_net_ssl_trustStore_type' in globalDict:
+		javax_net_ssl_trustStore_type=globalDict['javax_net_ssl_trustStore_type']
+	if 'javax_net_ssl_keyStore_type' in globalDict:
+		javax_net_ssl_keyStore_type=globalDict['javax_net_ssl_keyStore_type']
+
 	if len(argv) == 4 and argv[3] == 'password_validation':
 			password_validation(argv[1],argv[2]);
 			return;
@@ -1717,7 +1727,7 @@ def main(argv):
 
 	if XA_DB_FLAVOR == "MYSQL":
 		MYSQL_CONNECTOR_JAR=CONNECTOR_JAR
-		xa_sqlObj = MysqlConf(xa_db_host, MYSQL_CONNECTOR_JAR, JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,db_ssl_auth_type)
+		xa_sqlObj = MysqlConf(xa_db_host, MYSQL_CONNECTOR_JAR, JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_keyStore_type,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,javax_net_ssl_trustStore_type,db_ssl_auth_type, globalDict['mysql_enabled_tls_protocols'])
 		xa_db_version_file = os.path.join(RANGER_ADMIN_HOME,mysql_dbversion_catalog)
 		xa_db_core_file = os.path.join(RANGER_ADMIN_HOME,mysql_core_file)
 		xa_patch_file = os.path.join(RANGER_ADMIN_HOME,mysql_patches)
@@ -1762,7 +1772,7 @@ def main(argv):
 
 	if AUDIT_DB_FLAVOR == "MYSQL":
 		MYSQL_CONNECTOR_JAR=CONNECTOR_JAR
-		audit_sqlObj = MysqlConf(audit_db_host,MYSQL_CONNECTOR_JAR,JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,db_ssl_auth_type)
+		audit_sqlObj = MysqlConf(audit_db_host,MYSQL_CONNECTOR_JAR,JAVA_BIN,db_ssl_enabled,db_ssl_required,db_ssl_verifyServerCertificate,javax_net_ssl_keyStore,javax_net_ssl_keyStorePassword,javax_net_ssl_keyStore_type,javax_net_ssl_trustStore,javax_net_ssl_trustStorePassword,javax_net_ssl_trustStore_type,db_ssl_auth_type, globalDict['mysql_enabled_tls_protocols'])
 		audit_db_file = os.path.join(RANGER_ADMIN_HOME,mysql_audit_file)
 
 	elif AUDIT_DB_FLAVOR == "ORACLE":

@@ -613,6 +613,10 @@
 		<value>2-way</value>
 	</property>
 	<property>
+		<name>ranger.mysql.enabled.tls.protocols</name>
+		<value>TLSv1.2</value>
+	</property>
+	<property>
 		<name>ranger.db.ssl.certificateFile</name>
 		<value></value>
 	</property>

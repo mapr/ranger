@@ -262,6 +262,7 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer {
 			db_ssl_enabled=db_ssl_enabled.toLowerCase();
                        String ranger_jpa_jdbc_url=propertiesMap.get("ranger.jpa.jdbc.url");
 			if("true".equalsIgnoreCase(db_ssl_enabled)){
+				String mysql_enabled_tls_protocols=propertiesMap.get("ranger.mysql.enabled.tls.protocols");
 				String db_ssl_required=propertiesMap.get("ranger.db.ssl.required");
 				if(StringUtils.isEmpty(db_ssl_required)|| !"true".equalsIgnoreCase(db_ssl_required)){
 					db_ssl_required="false";
@@ -284,11 +285,15 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer {
 				props.put("ranger.db.ssl.verifyServerCertificate", db_ssl_verifyServerCertificate);
 				propertiesMap.put("ranger.db.ssl.auth.type", db_ssl_auth_type);
 				props.put("ranger.db.ssl.auth.type", db_ssl_auth_type);
+				propertiesMap.put("ranger.mysql.enabled.tls.protocols", mysql_enabled_tls_protocols);
+				props.put("ranger.mysql.enabled.tls.protocols", mysql_enabled_tls_protocols);
 
 				if(StringUtils.isNotEmpty(ranger_jpa_jdbc_url) && !ranger_jpa_jdbc_url.contains("?")){
 					StringBuffer ranger_jpa_jdbc_url_ssl=new StringBuffer(ranger_jpa_jdbc_url);
 					if (RangerBizUtil.getDBFlavor()==AppConstants.DB_FLAVOR_MYSQL) {
 						ranger_jpa_jdbc_url_ssl.append("?useSSL="+db_ssl_enabled+"&requireSSL="+db_ssl_required+"&verifyServerCertificate="+db_ssl_verifyServerCertificate);
+						if (mysql_enabled_tls_protocols != null)
+							ranger_jpa_jdbc_url_ssl.append("&enabledTLSProtocols="+mysql_enabled_tls_protocols);
 					}else if(RangerBizUtil.getDBFlavor()==AppConstants.DB_FLAVOR_POSTGRES) {
 						String db_ssl_certificate_file = propertiesMap.get("ranger.db.ssl.certificateFile");
 						if(StringUtils.isNotEmpty(db_ssl_certificate_file)) {
