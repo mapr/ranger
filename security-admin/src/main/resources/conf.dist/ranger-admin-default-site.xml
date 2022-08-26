@@ -661,23 +661,39 @@
                 <value>TLSv1.2</value>
         </property>
         <!-- Encryption -->
-       <property>
-               <name>ranger.password.encryption.key</name>
-               <value>tzL1AKl5uc4NKYaoQ4P3WLGIBFPXWPWdu1fRm9004jtQiV</value>
-       </property>
-       <property>
-               <name>ranger.password.salt</name>
-               <value>f77aLYLo</value>
-       </property>
-       <property>
-               <name>ranger.password.iteration.count</name>
-               <value>1000</value>
-       </property>
-       <property>
-               <name>ranger.password.encryption.algorithm</name>
-               <value>PBEWithHmacSHA512AndAES_128</value>
-       </property>
-	   <property>
+	<property>
+		<name>ranger.password.encryption.key</name>
+		<value/>
+	</property>
+	<property>
+		<name>ranger.password.encryption.key.alias</name>
+		<value/>
+	</property>
+	<property>
+		<name>ranger.password.salt</name>
+		<value/>
+	</property>
+	<property>
+		<name>ranger.password.salt.alias</name>
+		<value/>
+	</property>
+	<property>
+		<name>ranger.password.iteration.count</name>
+		<value/>
+	</property>
+	<property>
+		<name>ranger.password.iteration.count.alias</name>
+		<value/>
+	</property>
+	<property>
+		<name>ranger.password.encryption.algorithm</name>
+		<value/>
+	</property>
+	<property>
+		<name>ranger.password.encryption.algorithm.alias</name>
+		<value/>
+	</property>
+	<property>
 			<name>ranger.default.browser-useragents</name>
 			<value>Mozilla,Opera,Chrome</value>
 	   </property>

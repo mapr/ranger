@@ -105,6 +105,10 @@ javax_net_ssl_keyStore=$(get_prop 'javax_net_ssl_keyStore' $PROPFILE)
 javax_net_ssl_keyStorePassword=$(get_prop 'javax_net_ssl_keyStorePassword' $PROPFILE)
 javax_net_ssl_trustStore=$(get_prop 'javax_net_ssl_trustStore' $PROPFILE)
 javax_net_ssl_trustStorePassword=$(get_prop 'javax_net_ssl_trustStorePassword' $PROPFILE)
+password_encryption_key=$(get_prop 'password_encryption_key' $PROPFILE)
+password_salt=$(get_prop 'password_salt' $PROPFILE)
+password_iteration_count=$(get_prop 'password_iteration_count' $PROPFILE)
+password_encryption_algorithm=$(get_prop 'password_encryption_algorithm' $PROPFILE)
 audit_store=$(get_prop 'audit_store' $PROPFILE)
 audit_elasticsearch_urls=$(get_prop 'audit_elasticsearch_urls' $PROPFILE)
 audit_elasticsearch_port=$(get_prop 'audit_elasticsearch_port' $PROPFILE)
@@ -1087,6 +1091,118 @@ update_properties() {
 			updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
 		fi
 
+	fi
+	if [ "${password_encryption_key}" != "" ]
+	then
+		password_encryption_key_alias=passwordEncryptionKeyAlias
+
+		propertyName=ranger.password.encryption.key.alias
+		newPropertyValue="${password_encryption_key_alias}"
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		if [ "${keystore}" != "" ]
+		then
+			propertyName=ranger.password.encryption.key
+			newPropertyValue="_"
+			updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+
+			$PYTHON_COMMAND_INVOKER ranger_credential_helper.py -l "cred/lib/*" -f "$keystore" -k "$password_encryption_key_alias" -v "$password_encryption_key" -c 1
+
+			if test -f "${keystore}"; then
+				chown -R ${unix_user}:${unix_group} ${keystore}
+			else
+        propertyName=ranger.password.encryption.key
+        newPropertyValue="${password_encryption_key}"
+        updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+			fi
+		else
+      propertyName=ranger.password.encryption.key
+      newPropertyValue="${password_encryption_key}"
+      updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		fi
+	fi
+	if [ "${password_salt}" != "" ]
+	then
+		password_salt_alias=passwordSaltAlias
+
+		propertyName=ranger.password.salt.alias
+		newPropertyValue="${password_salt_alias}"
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		if [ "${keystore}" != "" ]
+		then
+			propertyName=ranger.password.salt
+			newPropertyValue="_"
+			updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+
+			$PYTHON_COMMAND_INVOKER ranger_credential_helper.py -l "cred/lib/*" -f "$keystore" -k "$password_salt_alias" -v "$password_salt" -c 1
+
+			if test -f "${keystore}"; then
+				chown -R ${unix_user}:${unix_group} ${keystore}
+			else
+        propertyName=ranger.password.salt
+        newPropertyValue="${password_salt}"
+        updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+			fi
+		else
+      propertyName=ranger.password.salt
+      newPropertyValue="${password_salt}"
+      updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		fi
+	fi
+	if [ "${password_iteration_count}" != "" ]
+	then
+		password_iteration_count_alias=passwordIterationCountAlias
+
+		propertyName=ranger.password.iteration.count.alias
+		newPropertyValue="${password_iteration_count_alias}"
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		if [ "${keystore}" != "" ]
+		then
+			propertyName=ranger.password.iteration.count
+			newPropertyValue="_"
+			updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+
+			$PYTHON_COMMAND_INVOKER ranger_credential_helper.py -l "cred/lib/*" -f "$keystore" -k "$password_iteration_count_alias" -v "$password_iteration_count" -c 1
+
+			if test -f "${keystore}"; then
+				chown -R ${unix_user}:${unix_group} ${keystore}
+			else
+        propertyName=ranger.password.iteration.count
+        newPropertyValue="${password_iteration_count}"
+        updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+			fi
+		else
+      propertyName=ranger.password.iteration.count
+      newPropertyValue="${password_iteration_count}"
+      updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		fi
+	fi
+	if [ "${password_encryption_algorithm}" != "" ]
+	then
+		password_encryption_algorithm_alias=passwordEncryptionAlgorithmAlias
+
+		propertyName=ranger.password.encryption.algorithm.alias
+		newPropertyValue="${password_encryption_algorithm_alias}"
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		if [ "${keystore}" != "" ]
+		then
+			propertyName=ranger.password.encryption.algorithm
+			newPropertyValue="_"
+			updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+
+			$PYTHON_COMMAND_INVOKER ranger_credential_helper.py -l "cred/lib/*" -f "$keystore" -k "$password_encryption_algorithm_alias" -v "$password_encryption_algorithm" -c 1
+
+			if test -f "${keystore}"; then
+				chown -R ${unix_user}:${unix_group} ${keystore}
+			else
+        propertyName=ranger.password.encryption.algorithm
+        newPropertyValue="${password_encryption_algorithm}"
+        updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+			fi
+		else
+      propertyName=ranger.password.encryption.algorithm
+      newPropertyValue="${password_encryption_algorithm}"
+      updatePropertyToFilePy $propertyName $newPropertyValue $to_file_default
+		fi
 	fi
 	if [ "${policymgr_http_enabled}" == "false" ]
 	then

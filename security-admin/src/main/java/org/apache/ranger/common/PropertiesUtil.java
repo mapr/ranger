@@ -242,7 +242,63 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer {
 			}
 		}
 	}
-	if(propertiesMap!=null){
+		if(propertiesMap!=null && propertiesMap.containsKey("ranger.credential.provider.path") && propertiesMap.containsKey("ranger.password.encryption.key.alias")){
+			String path=propertiesMap.get("ranger.credential.provider.path");
+			String alias=propertiesMap.get("ranger.password.encryption.key.alias");
+			if(path!=null && alias!=null){
+				String passwordEncryptionKey=CredentialReader.getDecryptedString(path.trim(), alias.trim(), storeType);
+				if(passwordEncryptionKey!=null&& !passwordEncryptionKey.trim().isEmpty() &&
+								!"none".equalsIgnoreCase(passwordEncryptionKey.trim())){
+					propertiesMap.put("ranger.password.encryption.key", passwordEncryptionKey);
+					props.put("ranger.password.encryption.key", passwordEncryptionKey);
+				}else{
+					logger.info("Encryption key not applied; clear text password shall be applicable");
+				}
+			}
+		}
+		if(propertiesMap!=null && propertiesMap.containsKey("ranger.credential.provider.path") && propertiesMap.containsKey("ranger.password.salt.alias")){
+			String path=propertiesMap.get("ranger.credential.provider.path");
+			String alias=propertiesMap.get("ranger.password.salt.alias");
+			if(path!=null && alias!=null){
+				String passwordSalt=CredentialReader.getDecryptedString(path.trim(), alias.trim(), storeType);
+				if(passwordSalt!=null&& !passwordSalt.trim().isEmpty() &&
+								!"none".equalsIgnoreCase(passwordSalt.trim())){
+					propertiesMap.put("ranger.password.salt", passwordSalt);
+					props.put("ranger.password.salt", passwordSalt);
+				}else{
+					logger.info("Password salt not applied; clear text password shall be applicable");
+				}
+			}
+		}
+		if(propertiesMap!=null && propertiesMap.containsKey("ranger.credential.provider.path") && propertiesMap.containsKey("ranger.password.iteration.count.alias")){
+			String path=propertiesMap.get("ranger.credential.provider.path");
+			String alias=propertiesMap.get("ranger.password.iteration.count.alias");
+			if(path!=null && alias!=null){
+				String passwordIterationCount=CredentialReader.getDecryptedString(path.trim(), alias.trim(), storeType);
+				if(passwordIterationCount!=null&& !passwordIterationCount.trim().isEmpty() &&
+								!"none".equalsIgnoreCase(passwordIterationCount.trim())){
+					propertiesMap.put("ranger.password.iteration.count", passwordIterationCount);
+					props.put("ranger.password.iteration.count", passwordIterationCount);
+				}else{
+					logger.info("Password iteration count not applied; clear text password shall be applicable");
+				}
+			}
+		}
+		if(propertiesMap!=null && propertiesMap.containsKey("ranger.credential.provider.path") && propertiesMap.containsKey("ranger.password.encryption.algorithm.alias")){
+			String path=propertiesMap.get("ranger.credential.provider.path");
+			String alias=propertiesMap.get("ranger.password.encryption.algorithm.alias");
+			if(path!=null && alias!=null){
+				String passwordEncryptionAlgorithm=CredentialReader.getDecryptedString(path.trim(), alias.trim(), storeType);
+				if(passwordEncryptionAlgorithm!=null&& !passwordEncryptionAlgorithm.trim().isEmpty() &&
+								!"none".equalsIgnoreCase(passwordEncryptionAlgorithm.trim())){
+					propertiesMap.put("ranger.password.encryption.algorithm", passwordEncryptionAlgorithm);
+					props.put("ranger.password.encryption.algorithm", passwordEncryptionAlgorithm);
+				}else{
+					logger.info("Password encryption algorithm not applied; clear text password shall be applicable");
+				}
+			}
+		}
+		if(propertiesMap!=null){
 		String sha256PasswordUpdateDisable="false";
 		if(propertiesMap.containsKey("ranger.sha256Password.update.disable")){
 			sha256PasswordUpdateDisable=propertiesMap.get("ranger.sha256Password.update.disable");
