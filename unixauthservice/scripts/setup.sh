@@ -27,7 +27,7 @@ RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 cd "$RANGER_HOME"/ranger-usersync || { echo "Error: Could not find $RANGER_HOME/ranger-usersync"; exit 1; }
 
 FIPS_ENABLED="false"
-if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
+if [[ "$(fips-mode-setup --check 2>/dev/null)" =~ "FIPS mode is enabled" ]] ; then
 	FIPS_ENABLED="true"
 	JAVA_FIPS_OPTS="-Djava.security.properties=/opt/mapr/conf/java.security.fips"
 fi

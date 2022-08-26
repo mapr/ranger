@@ -69,7 +69,7 @@ then
 fi
 
 FIPS_ENABLED="false"
-if [[ "$(fips-mode-setup --check)" =~ "FIPS mode is enabled" ]] ; then
+if [[ "$(fips-mode-setup --check 2>/dev/null)" =~ "FIPS mode is enabled" ]] ; then
 	FIPS_ENABLED="true"
 	JAVA_FIPS_OPTS="-Djava.security.properties=/opt/mapr/conf/java.security.fips"
 fi
