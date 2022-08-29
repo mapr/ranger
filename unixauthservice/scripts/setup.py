@@ -250,6 +250,8 @@ def password_validation(password, userType):
         sys.exit(1)
 
 
+properties_to_be_skipped = ["ranger_base_dir", "rangerUsersync_password", "hadoop_conf",
+                            "USERSYNC_PID_DIR_PATH", "SYNC_GROUP_USER_MAP_SYNC_ENABLED"]
 def convertInstallPropsToXML(props):
     directKeyMap = getPropertiesConfigMap(join(installTemplateDirName, install2xmlMapFileName))
     ret = {}
@@ -258,7 +260,8 @@ def convertInstallPropsToXML(props):
             newKey = directKeyMap[k]
             ret[newKey] = v
         else:
-            print("Direct Key not found:%s" % (k))
+            if k not in properties_to_be_skipped:
+                print("Direct Key not found:%s" % (k))
 
     ret['ranger.usersync.sink.impl.class'] = 'org.apache.ranger.unixusersync.process.PolicyMgrUserGroupBuilder'
     if (SYNC_SOURCE_KEY in ret):
