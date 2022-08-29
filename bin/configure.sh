@@ -55,7 +55,7 @@ RANGER_ADMIN_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin
 if [ -d "$RANGER_ADMIN_HOME"/ews/webapp/WEB-INF/classes/conf ]; then
   RANGER_ADMIN_CONF_DIR="$RANGER_ADMIN_HOME"/ews/webapp/WEB-INF/classes/conf
 else
-  echo "Warning!: Ranger is not configured, please check the logs in ${MAPR_HOME}/logs/configure.log."
+  echo "Warning: Ranger is not configured, please check the logs in ${MAPR_HOME}/logs/configure.log."
   logWarn "Ranger: Ranger is not configured! Could not found ${RANGER_ADMIN_HOME}/ews/webapp/WEB-INF/classes/conf directory."
   logWarn "Ranger: Please make sure that install.properties file for Ranger-Admin is ready and its setup.sh file is executed."
   exit 1
@@ -69,7 +69,7 @@ RANGER_USERSYNC_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-usersyn
 if [ -d "$RANGER_USERSYNC_HOME"/conf ]; then
   RANGER_USERSYNC_CONF_DIR="$RANGER_USERSYNC_HOME"/conf
 else
-  echo "Warning!: Ranger is not configured, please check the logs in ${MAPR_HOME}/logs/configure.log."
+  echo "Warning: Ranger is not configured, please check the logs in ${MAPR_HOME}/logs/configure.log."
   logWarn "Ranger: Ranger is not configured! Could not found ${RANGER_USERSYNC_HOME}/conf directory."
   logWarn "Ranger: Please make sure that install.properties file for Ranger-Usersync is ready and its setup.sh file is executed."
   exit 1

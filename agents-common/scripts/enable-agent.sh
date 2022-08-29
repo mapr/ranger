@@ -163,6 +163,9 @@ if [ "${PLUGIN_NAME}" = "ranger-hive-plugin" ]; then
   configure_symlinks_for_hive_plugin
 fi
 
+# install.properties should be read by only cluster admin
+chmod 700 "${INSTALL_ARGS}"
+
 # Install Environment property used for trino plugin.
 INSTALL_ENV=$(getInstallProperty 'INSTALL_ENV')
 
