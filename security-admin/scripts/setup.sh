@@ -1920,10 +1920,14 @@ echo
 log "[I] Transferring properties from Admin to Usersync"
 RANGER_USER_SYNC_PASSWORD_PROP="rangerUsersync_password"
 RANGER_USER_SYNC_PASSWORD=$(get_prop "$RANGER_USER_SYNC_PASSWORD_PROP" "$PROPFILE")
+RANGER_ADMIN_BASE_URL_PROP="policymgr_external_url"
+RANGER_ADMIN_BASE_URL=$(get_prop "$RANGER_ADMIN_BASE_URL_PROP" "$PROPFILE")
 RANGER_USER_SYNC_PROP_FILE="$RANGER_HOME"/ranger-usersync/install.properties
 
 # getting password
 sed -i --expression "s@${RANGER_USER_SYNC_PASSWORD_PROP}=.*@${RANGER_USER_SYNC_PASSWORD_PROP}=${RANGER_USER_SYNC_PASSWORD}@" "${RANGER_USER_SYNC_PROP_FILE}"
+# getting base admin url
+sed -i --expression "s@POLICY_MGR_URL.*=.*@POLICY_MGR_URL = ${RANGER_ADMIN_BASE_URL}@" "${RANGER_USER_SYNC_PROP_FILE}"
 
 log "[I] Changing properties file permission"
 chmod 700 "${RANGER_USER_SYNC_PROP_FILE}"
