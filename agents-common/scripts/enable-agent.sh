@@ -527,7 +527,7 @@ then
             cp ${fullpathorgfn} ${archivefn}
 			if [ $? -eq 0 ]
 			then
-				${JAVA} -cp "${INSTALL_CP}" org.apache.ranger.utils.install.XmlConfigChanger -i ${archivefn} -o ${newfn} -c ${f} -p  ${INSTALL_ARGS}
+				${JAVA} ${RANGER_OPTS} -cp "${INSTALL_CP}" org.apache.ranger.utils.install.XmlConfigChanger -i ${archivefn} -o ${newfn} -c ${f} -p  ${INSTALL_ARGS}
 				if [ $? -eq 0 ]
                 then
                 	diff -w ${newfn} ${fullpathorgfn} > /dev/null 2>&1
