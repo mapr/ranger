@@ -21,6 +21,13 @@ RANGER_VERSION_FILE="$MAPR_HOME"/ranger/rangerversion
 RANGER_VERSION=$(cat "$RANGER_VERSION_FILE")
 RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 
+# get cluster admin
+DAEMON_CONF="${MAPR_HOME}/conf/daemon.conf"
+MAPR_USER=${MAPR_USER:-$( [ -f "$DAEMON_CONF" ] && awk -F = '$1 == "mapr.daemon.user" { print $2 }' "$DAEMON_CONF" )}
+MAPR_USER=${MAPR_USER:-"mapr"}
+MAPR_GROUP=${MAPR_GROUP:-$( [ -f "$DAEMON_CONF" ] && awk -F = '$1 == "mapr.daemon.group" { print $2 }' "$DAEMON_CONF" )}
+MAPR_GROUP=${MAPR_GROUP:-"$MAPR_USER"}
+
 FIPS_ENABLED="false"
 if [[ "$(fips-mode-setup --check 2>/dev/null)" =~ "FIPS mode is enabled" ]] ; then
 	FIPS_ENABLED="true"
@@ -116,7 +123,7 @@ fi
 
 HCOMPONENT_NAME=`echo ${COMPONENT_NAME} | sed -e 's:-plugin::'`
 
-CFG_OWNER_INF="${HCOMPONENT_NAME}:${HCOMPONENT_NAME}"
+CFG_OWNER_INF="${MAPR_USER}:${MAPR_GROUP}"
 
 if [ "${HCOMPONENT_NAME}" = "hdfs" ]
 then
