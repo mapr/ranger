@@ -913,6 +913,9 @@ fi
 # Set notice to restart the ${HCOMPONENT_NAME}
 #
 
+# Ensure that POLICY_CACHE_FILE_PATH is accessible, even hidden files
+chmod -R a+r /etc/${PROJ_NAME}/${REPO_NAME}
+
 echo "Ranger Plugin for ${HCOMPONENT_NAME} has been ${action}d. Please restart ${HCOMPONENT_NAME} to ensure that changes are effective."
 
 exit 0
