@@ -170,6 +170,28 @@ if [ "${PLUGIN_NAME}" = "ranger-hive-plugin" ]; then
   configure_symlinks_for_hive_plugin
 fi
 
+# check component's installation dir is valid or not.
+# If not, attempt to find it
+if [ ! -d "${HCOMPONENT_INSTALL_DIR_NAME}" ]; then
+  if [ -z "${HCOMPONENT_INSTALL_DIR_NAME}" ]; then
+    echo "WARN: COMPONENT_INSTALL_DIR_NAME property is not set in install.properties file."
+  else
+    echo "WARN: ${HCOMPONENT_INSTALL_DIR_NAME} is not a valid path for COMPONENT_INSTALL_DIR_NAME property."
+  fi
+
+  # attempt to find the valid path if exist
+  echo "INFO: Attempting to find component's installation directory for [${HCOMPONENT_NAME}]."
+  HCOMPONENT_VERSION=$(cat "${MAPR_HOME}/${HCOMPONENT_NAME}/${HCOMPONENT_NAME}version")
+  if [ -d "${MAPR_HOME}/${HCOMPONENT_NAME}/${HCOMPONENT_NAME}-${HCOMPONENT_VERSION}" ]; then
+    HCOMPONENT_INSTALL_DIR_NAME="${MAPR_HOME}/${HCOMPONENT_NAME}/${HCOMPONENT_NAME}-${HCOMPONENT_VERSION}"
+    echo "INFO: Found component's installation directory; [${HCOMPONENT_INSTALL_DIR_NAME}]."
+    echo "INFO: Writing component's installation directory to install.properties."
+    sed -i --expression "s@COMPONENT_INSTALL_DIR_NAME.*=.*@COMPONENT_INSTALL_DIR_NAME=${HCOMPONENT_INSTALL_DIR_NAME}@" "${INSTALL_ARGS}"
+  else
+    echo "WARN: Could not find component's installation directory for [${HCOMPONENT_NAME}]."
+  fi
+fi
+
 # install.properties should be read by only cluster admin
 chmod 700 "${INSTALL_ARGS}"
 
