@@ -273,6 +273,8 @@
           <include>org.slf4j:log4j-over-slf4j:jar:${slf4j.version}</include>
           <include>ch.qos.logback:logback-classic:jar:${logback.version}</include>
           <include>ch.qos.logback:logback-core:jar:${logback.version}</include>
+          <include>org.apache.curator:curator-client:${curator.version}</include>
+          <include>org.apache.curator:curator-framework:${curator.version}</include>
         </includes>
       </binaries>
     </moduleSet>
