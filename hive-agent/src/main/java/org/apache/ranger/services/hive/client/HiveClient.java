@@ -33,9 +33,11 @@ import java.sql.SQLTimeoutException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -290,6 +292,9 @@ public class HiveClient extends BaseClient implements Closeable {
 
 			try {
 				if (dbList != null && !dbList.isEmpty()) {
+					//if there is wildcard in db list, replace it with all existing dbs
+					if (dbList.contains("*"))
+						dbList = this.getDBList(null, null);
 					for (String db : dbList) {
 						sql = "use " + db;
 						
@@ -348,6 +353,12 @@ public class HiveClient extends BaseClient implements Closeable {
 			}
 			
 		}
+
+		//since we are searching against many DBs, there might be duplicates if two or more DBs have tables with
+		//the same name, so we need to get rid of them
+		Set<String> retSet = new HashSet<>(ret);
+		ret.clear();
+		ret.addAll(retSet);
 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("<== HiveClient getTblList() " +  ret);
@@ -457,6 +468,12 @@ public class HiveClient extends BaseClient implements Closeable {
 
 			if (dbList != null && !dbList.isEmpty() &&
 				tblList != null && !tblList.isEmpty()) {
+				//if there is wildcard in db list, replace it with all existing dbs
+				if (dbList.contains("*"))
+					dbList = this.getDBList(null, null);
+				//if there is wildcard in table list, replace it with all existing tables
+				if (tblList.contains("*"))
+					tblList = this.getTblList(null, dbList, null);
 				for (String db : dbList) {
 					for (String tbl : tblList) {
 						try {
@@ -515,6 +532,12 @@ public class HiveClient extends BaseClient implements Closeable {
 				}
 			}
 		}
+
+		//since we are searching against many tables, there might be duplicates if two or more tables have columns with
+		//the same name, so we need to get rid of them
+		Set<String> retSet = new HashSet<>(ret);
+		ret.clear();
+		ret.addAll(retSet);
 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("<== HiveClient.getClmList() " + ret );
