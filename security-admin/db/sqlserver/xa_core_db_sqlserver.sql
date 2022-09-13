@@ -346,7 +346,7 @@ CREATE TABLE [dbo].[x_portal_user](
 	[email] [varchar](512) DEFAULT NULL NULL,
 	[status] [int] DEFAULT 0 NOT NULL,
 	[user_src] [int] DEFAULT 0 NOT NULL,
-	[notes] [varchar](4000) DEFAULT NULL NULL,
+	[notes] [nvarchar](max) DEFAULT NULL NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -411,8 +411,8 @@ CREATE TABLE [dbo].[xa_access_audit](
 	[event_time] [datetime2] DEFAULT NULL NULL,
 	[request_user] [varchar](255) DEFAULT NULL NULL,
 	[action] [varchar](2000) DEFAULT NULL NULL,
-	[request_data] [varchar](4000) DEFAULT NULL NULL,
-	[resource_path] [varchar](4000) DEFAULT NULL NULL,
+	[request_data] [nvarchar](max) DEFAULT NULL NULL,
+	[resource_path] [nvarchar](max) DEFAULT NULL NULL,
 	[resource_type] [varchar](255) DEFAULT NULL NULL,
 PRIMARY KEY CLUSTERED
 (
@@ -436,7 +436,7 @@ CREATE TABLE [dbo].[x_asset](
 	[added_by_id] [bigint] DEFAULT NULL NULL,
 	[upd_by_id] [bigint] DEFAULT NULL NULL,
 	[asset_name] [varchar](1024) NOT NULL,
-	[descr] [varchar](4000) NOT NULL,
+	[descr] [nvarchar](max) NOT NULL,
 	[act_status] [int] DEFAULT 0 NOT NULL,
 	[asset_type] [int] DEFAULT 0 NOT NULL,
 	[config] [nvarchar](max) NULL,
@@ -490,7 +490,7 @@ CREATE TABLE [dbo].[x_cred_store](
 	[added_by_id] [bigint] DEFAULT NULL NULL,
 	[upd_by_id] [bigint] DEFAULT NULL NULL,
 	[store_name] [varchar](1024) NOT NULL,
-	[descr] [varchar](4000) NOT NULL,
+	[descr] [nvarchar](max) NOT NULL,
 PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -528,7 +528,7 @@ CREATE TABLE [dbo].[x_group](
 	[added_by_id] [bigint] DEFAULT NULL NULL,
 	[upd_by_id] [bigint] DEFAULT NULL NULL,
 	[group_name] [varchar](1024) NOT NULL,
-	[descr] [varchar](4000) NOT NULL,
+	[descr] [nvarchar](max) NOT NULL,
 	[status] [int] DEFAULT 0  NOT NULL,
 	[group_type] [int] DEFAULT 0 NOT NULL,
 	[cred_store_id] [bigint] DEFAULT NULL NULL,
@@ -576,7 +576,7 @@ CREATE TABLE [dbo].[x_user](
 	[added_by_id] [bigint] DEFAULT NULL NULL,
 	[upd_by_id] [bigint] DEFAULT NULL NULL,
 	[user_name] [varchar](1024) NOT NULL,
-	[descr] [varchar](4000) NOT NULL,
+	[descr] [nvarchar](max) NOT NULL,
 	[status] [int] DEFAULT 0 NOT NULL,
 	[cred_store_id] [bigint] DEFAULT NULL NULL,
 	[is_visible] [int] DEFAULT 1 NOT NULL,
@@ -648,12 +648,12 @@ CREATE TABLE [dbo].[x_resource](
 	[update_time] [datetime2] DEFAULT NULL NULL,
 	[added_by_id] [bigint] DEFAULT NULL NULL,
 	[upd_by_id] [bigint] DEFAULT NULL NULL,
-	[res_name] [varchar](4000) DEFAULT NULL  NULL,
-	[descr] [varchar](4000) DEFAULT NULL  NULL,
+	[res_name] [nvarchar](max) DEFAULT NULL  NULL,
+	[descr] [nvarchar](max) DEFAULT NULL  NULL,
 	[res_type] [int] DEFAULT 0 NOT NULL,
 	[asset_id] [bigint] NOT NULL,
 	[parent_id] [bigint]  DEFAULT NULL NULL,
-	[parent_path] [varchar](4000) DEFAULT NULL  NULL,
+	[parent_path] [nvarchar](max) DEFAULT NULL  NULL,
 	[is_encrypt] [int] DEFAULT 0 NOT NULL,
 	[is_recursive] [int] DEFAULT 0 NOT NULL,
 	[res_group] [varchar](1024)  DEFAULT NULL NULL,
@@ -2056,7 +2056,7 @@ CREATE TABLE [dbo].[x_service_config_map] (
 	[upd_by_id] [bigint] DEFAULT NULL NULL,
 	[service] [bigint] NOT NULL, 
 	[config_key] [varchar](1024) DEFAULT NULL NULL,   
-	[config_value] [varchar](4000) DEFAULT NULL NULL,    
+	[config_value] [nvarchar](max) DEFAULT NULL NULL,
     PRIMARY KEY CLUSTERED 
 (
 	[id] ASC

@@ -23,7 +23,7 @@ BEGIN
       and table_name = upper('XA_ACCESS_AUDIT') and DATA_TYPE='VARCHAR2' and DATA_LENGTH=2000;
 
   if (v_column_exists = 1) then
-      execute immediate 'ALTER TABLE XA_ACCESS_AUDIT modify(REQUEST_DATA VARCHAR(4000) DEFAULT NULL,RESOURCE_PATH VARCHAR(4000) DEFAULT NULL)';
+      execute immediate 'ALTER TABLE XA_ACCESS_AUDIT modify(REQUEST_DATA CLOB DEFAULT NULL,RESOURCE_PATH CLOB DEFAULT NULL)';
       commit;
   end if;
 end;/

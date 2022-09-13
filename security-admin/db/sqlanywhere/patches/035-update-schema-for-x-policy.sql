@@ -56,7 +56,7 @@ create table dbo.x_policy_ref_resource (
 	upd_by_id bigint DEFAULT NULL NULL,
 	policy_id bigint NOT NULL,
 	resource_def_id bigint NOT NULL,
-	resource_name varchar(4000) DEFAULT NULL NULL,
+	resource_name TEXT DEFAULT NULL NULL,
 	CONSTRAINT x_policy_ref_res_PK_id PRIMARY KEY CLUSTERED(id),
 	CONSTRAINT x_p_ref_res_UK_polId_resDefId UNIQUE NONCLUSTERED (policy_id, resource_def_id)
 )
@@ -71,7 +71,7 @@ create table dbo.x_policy_ref_access_type (
         upd_by_id bigint DEFAULT NULL NULL,
         policy_id bigint NOT NULL,
         access_def_id bigint NOT NULL,
-        access_type_name varchar(4000) DEFAULT NULL NULL,
+        access_type_name TEXT DEFAULT NULL NULL,
         CONSTRAINT x_policy_ref_acc_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_acc_UK_polId_accDefId UNIQUE NONCLUSTERED (policy_id, access_def_id)
 )
@@ -86,7 +86,7 @@ create table dbo.x_policy_ref_condition (
         upd_by_id bigint DEFAULT NULL NULL,
         policy_id bigint NOT NULL,
         condition_def_id bigint NOT NULL,
-        condition_name varchar(4000) DEFAULT NULL NULL,
+        condition_name TEXT DEFAULT NULL NULL,
         CONSTRAINT x_policy_ref_cond_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_cond_UK_polId_cDefId UNIQUE NONCLUSTERED (policy_id, condition_def_id)
 )
@@ -101,7 +101,7 @@ create table dbo.x_policy_ref_datamask_type (
         upd_by_id bigint DEFAULT NULL NULL,
         policy_id bigint NOT NULL,
         datamask_def_id bigint NOT NULL,
-        datamask_type_name varchar(4000) DEFAULT NULL NULL,
+        datamask_type_name TEXT DEFAULT NULL NULL,
         CONSTRAINT x_policy_ref_dmk_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_dmk_UK_polId_dDefId UNIQUE NONCLUSTERED (policy_id, datamask_def_id)
 )
@@ -116,7 +116,7 @@ create table dbo.x_policy_ref_user (
         upd_by_id bigint DEFAULT NULL NULL,
         policy_id bigint NOT NULL,
         user_id bigint NOT NULL,
-        user_name varchar(4000) DEFAULT NULL NULL,
+        user_name TEXT DEFAULT NULL NULL,
         CONSTRAINT x_policy_ref_user_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_usr_UK_polId_userId UNIQUE NONCLUSTERED (policy_id, user_id)
 )
@@ -131,7 +131,7 @@ create table dbo.x_policy_ref_group (
         upd_by_id bigint DEFAULT NULL NULL,
         policy_id bigint NOT NULL,
         group_id bigint NOT NULL,
-        group_name varchar(4000) DEFAULT NULL NULL,
+        group_name TEXT DEFAULT NULL NULL,
         CONSTRAINT x_policy_ref_group_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_grp_UK_polId_grpId UNIQUE NONCLUSTERED (policy_id, group_id)
 )

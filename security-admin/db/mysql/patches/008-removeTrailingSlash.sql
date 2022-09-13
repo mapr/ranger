@@ -20,7 +20,7 @@
 DELIMITER $$
 
 DROP PROCEDURE if exists getUpdatedResourceName $$
-CREATE PROCEDURE `getUpdatedResourceName`(IN resName varchar(4000), IN resId bigint, IN assetId bigint, IN policyName varchar(1000), OUT updatedResName varchar(4000)) 
+CREATE PROCEDURE `getUpdatedResourceName`(IN resName MEDIUMTEXT, IN resId bigint, IN assetId bigint, IN policyName varchar(1000), OUT updatedResName MEDIUMTEXT)
 BEGIN
 
 DECLARE noOfCommas int;
@@ -147,8 +147,8 @@ DECLARE done INT;
 DECLARE resId bigint;
 DECLARE assetId bigint;
 DECLARE policyName varchar(1000);
-DECLARE resourceName varchar(4000);
-DECLARE trimmedResourceName varchar(4000);
+DECLARE resourceName MEDIUMTEXT;
+DECLARE trimmedResourceName MEDIUMTEXT;
 
 DECLARE resourceNames CURSOR FOR 
 	select res.res_name, res.id, res.asset_id, res.policy_name from x_resource res, x_asset asset

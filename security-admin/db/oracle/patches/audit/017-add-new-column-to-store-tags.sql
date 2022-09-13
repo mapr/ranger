@@ -22,7 +22,7 @@ BEGIN
       and table_name = upper('XA_ACCESS_AUDIT');
 
   if (v_column_exists = 0) then
-      execute immediate 'ALTER TABLE XA_ACCESS_AUDIT ADD tags VARCHAR(4000) DEFAULT NULL NULL';
+      execute immediate 'ALTER TABLE XA_ACCESS_AUDIT ADD tags CLOB DEFAULT NULL NULL';
       commit;
   end if;
 end;/

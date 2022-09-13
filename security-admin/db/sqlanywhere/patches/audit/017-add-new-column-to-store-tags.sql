@@ -14,7 +14,7 @@
 -- limitations under the License.
 
 IF NOT EXISTS(select * from SYS.SYSCOLUMNS where tname = 'xa_access_audit' and cname = 'tags') THEN
-	ALTER TABLE dbo.xa_access_audit ADD "tags" varchar(4000) DEFAULT NULL NULL;
+	ALTER TABLE dbo.xa_access_audit ADD "tags" TEXT DEFAULT NULL NULL;
 END IF;
 GO
 exit

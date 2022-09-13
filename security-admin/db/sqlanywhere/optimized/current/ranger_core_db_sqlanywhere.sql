@@ -215,9 +215,9 @@ create table dbo.x_portal_user(
 	email varchar(512) DEFAULT NULL NULL,
 	status int DEFAULT 0 NOT NULL,
 	user_src int DEFAULT 0 NOT NULL,
-	notes text DEFAULT NULL NULL,
-	other_attributes text DEFAULT NULL NULL,
-	sync_source text DEFAULT NULL NULL,
+	notes TEXT DEFAULT NULL NULL,
+	other_attributes TEXT DEFAULT NULL NULL,
+	sync_source TEXT DEFAULT NULL NULL,
 	old_passwords text DEFAULT NULL,
 	password_updated_time datetime DEFAULT NULL,
 	CONSTRAINT x_portal_user_PK_id PRIMARY KEY CLUSTERED(id),
@@ -257,8 +257,8 @@ create table dbo.xa_access_audit(
 	event_time datetime DEFAULT NULL NULL,
 	request_user varchar(255) DEFAULT NULL NULL,
 	action varchar(2000) DEFAULT NULL NULL,
-	request_data varchar(4000) DEFAULT NULL NULL,
-	resource_path varchar(4000) DEFAULT NULL NULL,
+	request_data TEXT DEFAULT NULL NULL,
+	resource_path TEXT DEFAULT NULL NULL,
 	resource_type varchar(255) DEFAULT NULL NULL,
 	seq_num bigint DEFAULT 0 NULL,
 	event_count bigint DEFAULT 1 NULL,
@@ -273,7 +273,7 @@ create table dbo.x_asset(
 	added_by_id bigint DEFAULT NULL NULL,
 	upd_by_id bigint DEFAULT NULL NULL,
 	asset_name varchar(1024) NOT NULL,
-	descr varchar(4000) NOT NULL,
+	descr TEXT NOT NULL,
 	act_status int DEFAULT 0 NOT NULL,
 	asset_type int DEFAULT 0 NOT NULL,
 	config text NULL,
@@ -307,7 +307,7 @@ create table dbo.x_cred_store(
 	added_by_id bigint DEFAULT NULL NULL,
 	upd_by_id bigint DEFAULT NULL NULL,
 	store_name varchar(1024) NOT NULL,
-	descr varchar(4000) NOT NULL,
+	descr TEXT NOT NULL,
 	CONSTRAINT x_cred_store_PK_id PRIMARY KEY CLUSTERED(id)
 )
 GO
@@ -327,14 +327,14 @@ create table dbo.x_group(
 	added_by_id bigint DEFAULT NULL NULL,
 	upd_by_id bigint DEFAULT NULL NULL,
 	group_name varchar(767) NOT NULL,
-	descr text DEFAULT NULL NULL,
+	descr TEXT NOT NULL,
 	status int DEFAULT 0 NOT NULL,
 	group_type int DEFAULT 0 NOT NULL,
 	cred_store_id bigint DEFAULT NULL NULL,
 	group_src int DEFAULT 0 NOT NULL,
 	is_visible int DEFAULT 1 NOT NULL,
-	other_attributes text DEFAULT NULL NULL,
-	sync_source text DEFAULT NULL NULL,
+	other_attributes TEXT DEFAULT NULL NULL,
+	sync_source TEXT DEFAULT NULL NULL,
 	CONSTRAINT x_group_PK_id PRIMARY KEY CLUSTERED(id),
 	CONSTRAINT x_group_UK_group_name UNIQUE NONCLUSTERED (group_name)
 )
@@ -358,12 +358,12 @@ create table dbo.x_user(
 	added_by_id bigint DEFAULT NULL NULL,
 	upd_by_id bigint DEFAULT NULL NULL,
 	user_name varchar(767) NOT NULL,
-	descr text DEFAULT NULL NULL,
+	descr TEXT NOT NULL,
 	status int DEFAULT 0 NOT NULL,
 	cred_store_id bigint DEFAULT NULL NULL,
 	is_visible int DEFAULT 1 NOT NULL,
-	other_attributes text DEFAULT NULL NULL,
-	sync_source text DEFAULT NULL NULL,
+	other_attributes TEXT DEFAULT NULL NULL,
+	sync_source TEXT DEFAULT NULL NULL,
 	CONSTRAINT x_user_PK_id PRIMARY KEY CLUSTERED(id),
 	CONSTRAINT x_user_UK_user_name UNIQUE NONCLUSTERED (user_name)
 )
@@ -405,12 +405,12 @@ create table dbo.x_resource(
 	update_time datetime DEFAULT NULL NULL,
 	added_by_id bigint DEFAULT NULL NULL,
 	upd_by_id bigint DEFAULT NULL NULL,
-	res_name varchar(4000) DEFAULT NULL NULL,
-	descr varchar(4000) DEFAULT NULL NULL,
+	res_name TEXT DEFAULT NULL NULL,
+	descr TEXT DEFAULT NULL NULL,
 	res_type int DEFAULT 0 NOT NULL,
 	asset_id bigint NOT NULL,
 	parent_id bigint DEFAULT NULL NULL,
-	parent_path varchar(4000) DEFAULT NULL NULL,
+	parent_path TEXT DEFAULT NULL NULL,
 	is_encrypt int DEFAULT 0 NOT NULL,
 	is_recursive int DEFAULT 0 NOT NULL,
 	res_group varchar(1024) DEFAULT NULL NULL,
@@ -570,7 +570,7 @@ create table dbo.x_policy (
 	resource_signature varchar(128) NOT NULL,
 	is_enabled tinyint DEFAULT 0 NOT NULL,
 	is_audit_enabled tinyint DEFAULT 0 NOT NULL,
-	policy_options varchar(4000) DEFAULT NULL NULL,
+	policy_options TEXT DEFAULT NULL NULL,
 	policy_priority int DEFAULT 0 NOT NULL,
 	policy_text text DEFAULT NULL NULL,
 	zone_id bigint DEFAULT '1' NOT NULL,
@@ -748,7 +748,7 @@ create table dbo.x_service_config_map (
 	upd_by_id bigint DEFAULT NULL NULL,
 	service bigint NOT NULL,
 	config_key varchar(1024) DEFAULT NULL NULL,
-	config_value varchar(4000) DEFAULT NULL NULL,
+	config_value TEXT DEFAULT NULL NULL,
 	CONSTRAINT x_service_config_map_PK_id PRIMARY KEY CLUSTERED(id)
 )
 GO
@@ -927,7 +927,7 @@ CREATE TABLE dbo.x_tag(
 	version bigint DEFAULT NULL NULL,
 	type bigint NOT NULL,
 	owned_by smallint DEFAULT 0 NOT NULL,
-	policy_options varchar(4000) DEFAULT NULL NULL,
+	policy_options TEXT DEFAULT NULL NULL,
 	tag_attrs_text text DEFAULT NULL NULL,
 	CONSTRAINT x_tag_PK_id PRIMARY KEY CLUSTERED(id),
 	CONSTRAINT x_tag_UK_guid UNIQUE NONCLUSTERED (guid)
@@ -1087,7 +1087,7 @@ create table dbo.x_policy_ref_resource (
 	upd_by_id bigint DEFAULT NULL NULL,
 	policy_id bigint NOT NULL,
 	resource_def_id bigint NOT NULL,
-	resource_name varchar(4000) DEFAULT NULL NULL,
+	resource_name TEXT DEFAULT NULL NULL,
 	CONSTRAINT x_policy_ref_res_PK_id PRIMARY KEY CLUSTERED(id),
 	CONSTRAINT x_p_ref_res_UK_polId_resDefId UNIQUE NONCLUSTERED (policy_id, resource_def_id)
 )
@@ -1101,7 +1101,7 @@ create table dbo.x_policy_ref_access_type (
 		upd_by_id bigint DEFAULT NULL NULL,
 		policy_id bigint NOT NULL,
 		access_def_id bigint NOT NULL,
-		access_type_name varchar(4000) DEFAULT NULL NULL,
+		access_type_name TEXT DEFAULT NULL NULL,
 		CONSTRAINT x_policy_ref_acc_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_acc_UK_polId_accDefId UNIQUE NONCLUSTERED (policy_id, access_def_id)
 )
@@ -1115,7 +1115,7 @@ create table dbo.x_policy_ref_condition (
 		upd_by_id bigint DEFAULT NULL NULL,
 		policy_id bigint NOT NULL,
 		condition_def_id bigint NOT NULL,
-		condition_name varchar(4000) DEFAULT NULL NULL,
+		condition_name TEXT DEFAULT NULL NULL,
 		CONSTRAINT x_policy_ref_cond_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_cond_UK_polId_cDefId UNIQUE NONCLUSTERED (policy_id, condition_def_id)
 )
@@ -1129,7 +1129,7 @@ create table dbo.x_policy_ref_datamask_type (
 		upd_by_id bigint DEFAULT NULL NULL,
 		policy_id bigint NOT NULL,
 		datamask_def_id bigint NOT NULL,
-		datamask_type_name varchar(4000) DEFAULT NULL NULL,
+		datamask_type_name TEXT DEFAULT NULL NULL,
 		CONSTRAINT x_policy_ref_dmk_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_dmk_UK_polId_dDefId UNIQUE NONCLUSTERED (policy_id, datamask_def_id)
 )
@@ -1143,7 +1143,7 @@ create table dbo.x_policy_ref_user (
 		upd_by_id bigint DEFAULT NULL NULL,
 		policy_id bigint NOT NULL,
 		user_id bigint NOT NULL,
-		user_name varchar(4000) DEFAULT NULL NULL,
+		user_name TEXT DEFAULT NULL NULL,
 		CONSTRAINT x_policy_ref_user_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_usr_UK_polId_userId UNIQUE NONCLUSTERED (policy_id, user_id)
 )
@@ -1157,7 +1157,7 @@ create table dbo.x_policy_ref_group (
 		upd_by_id bigint DEFAULT NULL NULL,
 		policy_id bigint NOT NULL,
 		group_id bigint NOT NULL,
-		group_name varchar(4000) DEFAULT NULL NULL,
+		group_name TEXT DEFAULT NULL NULL,
 		CONSTRAINT x_policy_ref_group_PK_id PRIMARY KEY CLUSTERED(id),
 		CONSTRAINT x_p_ref_grp_UK_polId_grpId UNIQUE NONCLUSTERED (policy_id, group_id)
 )
@@ -1260,7 +1260,7 @@ upd_by_id bigint  DEFAULT NULL NULL,
 version bigint  DEFAULT 0 NOT NULL,
 name varchar(255) NOT NULL,
 description varchar(1024) DEFAULT NULL NULL,
-role_options varchar(4000) DEFAULT NULL NULL,
+role_options TEXT DEFAULT NULL NULL,
 role_text text DEFAULT NULL NULL,
 CONSTRAINT x_role_PK_id PRIMARY KEY CLUSTERED(id),
 CONSTRAINT x_role_UK_name UNIQUE NONCLUSTERED (name)

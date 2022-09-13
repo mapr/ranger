@@ -53,7 +53,7 @@ CREATE TABLE [dbo].[x_role](
 [version] [bigint] DEFAULT NULL NULL,
 [name] [varchar](255) NOT NULL,
 [description] [varchar](1024) DEFAULT NULL NULL,
-[role_options] [varchar](4000) DEFAULT NULL NULL,
+[role_options] [nvarchar](max) DEFAULT NULL NULL,
 [role_text] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
 (

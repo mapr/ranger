@@ -1019,8 +1019,8 @@ CREATE TABLE [dbo].[xa_access_audit](
         [event_time] [datetime2] DEFAULT NULL NULL,
         [request_user] [varchar](255) DEFAULT NULL NULL,
         [action] [varchar](2000) DEFAULT NULL NULL,
-        [request_data] [varchar](4000) DEFAULT NULL NULL,
-        [resource_path] [varchar](4000) DEFAULT NULL NULL,
+        [request_data] [nvarchar](max) DEFAULT NULL NULL,
+        [resource_path] [nvarchar](max) DEFAULT NULL NULL,
         [resource_type] [varchar](255) DEFAULT NULL NULL,
 PRIMARY KEY CLUSTERED
 (
@@ -1038,7 +1038,7 @@ CREATE TABLE [dbo].[x_asset](
         [added_by_id] [bigint] DEFAULT NULL NULL,
         [upd_by_id] [bigint] DEFAULT NULL NULL,
         [asset_name] [varchar](1024) NOT NULL,
-        [descr] [varchar](4000) NOT NULL,
+        [descr] [nvarchar](max) NOT NULL,
         [act_status] [int] DEFAULT 0 NOT NULL,
         [asset_type] [int] DEFAULT 0 NOT NULL,
         [config] [nvarchar](max) NULL,
@@ -1083,7 +1083,7 @@ CREATE TABLE [dbo].[x_cred_store](
         [added_by_id] [bigint] DEFAULT NULL NULL,
         [upd_by_id] [bigint] DEFAULT NULL NULL,
         [store_name] [varchar](1024) NOT NULL,
-        [descr] [varchar](4000) NOT NULL,
+        [descr] [nvarchar](max) NOT NULL,
 PRIMARY KEY CLUSTERED
 (
         [id] ASC
@@ -1233,12 +1233,12 @@ CREATE TABLE [dbo].[x_resource](
         [update_time] [datetime2] DEFAULT NULL NULL,
         [added_by_id] [bigint] DEFAULT NULL NULL,
         [upd_by_id] [bigint] DEFAULT NULL NULL,
-        [res_name] [varchar](4000) DEFAULT NULL  NULL,
-        [descr] [varchar](4000) DEFAULT NULL  NULL,
+        [res_name] [nvarchar](max) DEFAULT NULL  NULL,
+        [descr] [nvarchar](max) DEFAULT NULL  NULL,
         [res_type] [int] DEFAULT 0 NOT NULL,
         [asset_id] [bigint] NOT NULL,
         [parent_id] [bigint]  DEFAULT NULL NULL,
-        [parent_path] [varchar](4000) DEFAULT NULL  NULL,
+        [parent_path] [nvarchar](max) DEFAULT NULL  NULL,
         [is_encrypt] [int] DEFAULT 0 NOT NULL,
         [is_recursive] [int] DEFAULT 0 NOT NULL,
         [res_group] [varchar](1024)  DEFAULT NULL NULL,
@@ -1455,7 +1455,7 @@ CREATE TABLE [dbo].[x_policy] (
         [resource_signature] [varchar](128) DEFAULT NULL NULL,
         [is_enabled] [tinyint] DEFAULT 0 NOT NULL,
         [is_audit_enabled] [tinyint] DEFAULT 0 NOT NULL,
-        [policy_options] [varchar](4000) DEFAULT NULL NULL,
+        [policy_options] [nvarchar](max) DEFAULT NULL NULL,
         [policy_priority] [int] DEFAULT 0 NOT NULL,
 		[policy_text] [nvarchar](max) DEFAULT NULL NULL,
 		[zone_id] [bigint] DEFAULT 1 NOT NULL,
@@ -1684,7 +1684,7 @@ CREATE TABLE [dbo].[x_service_config_map] (
         [upd_by_id] [bigint] DEFAULT NULL NULL,
         [service] [bigint] NOT NULL,
         [config_key] [varchar](1024) DEFAULT NULL NULL,
-        [config_value] [varchar](4000) DEFAULT NULL NULL,
+        [config_value] [nvarchar](max) DEFAULT NULL NULL,
     PRIMARY KEY CLUSTERED
 (
         [id] ASC
@@ -1934,7 +1934,7 @@ CREATE TABLE [dbo].[x_tag](
         [version] [bigint] DEFAULT NULL NULL,
         [type] [bigint] NOT NULL,
         [owned_by] [smallint] DEFAULT 0 NOT NULL,
-        [policy_options] [varchar](4000) DEFAULT NULL NULL,
+        [policy_options] [nvarchar](max) DEFAULT NULL NULL,
         [tag_attrs_text] [nvarchar](max) DEFAULT NULL NULL,
         PRIMARY KEY CLUSTERED
 (
@@ -2161,7 +2161,7 @@ CREATE TABLE [dbo].[x_policy_ref_resource] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [resource_def_id] [bigint] NOT NULL,
-  [resource_name] [varchar](4000) DEFAULT NULL NULL,
+  [resource_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -2183,7 +2183,7 @@ CREATE TABLE [dbo].[x_policy_ref_access_type] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [access_def_id] [bigint] NOT NULL,
-  [access_type_name] [varchar](4000) DEFAULT NULL NULL,
+  [access_type_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -2205,7 +2205,7 @@ CREATE TABLE [dbo].[x_policy_ref_condition] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [condition_def_id] [bigint] NOT NULL,
-  [condition_name] [varchar](4000) DEFAULT NULL NULL,
+  [condition_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -2227,7 +2227,7 @@ CREATE TABLE [dbo].[x_policy_ref_datamask_type] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [datamask_def_id] [bigint] NOT NULL,
-  [datamask_type_name] [varchar](4000) DEFAULT NULL NULL,
+  [datamask_type_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -2466,7 +2466,7 @@ CREATE TABLE [dbo].[x_role](
 [version] [bigint] DEFAULT NULL NULL,
 [name] [nvarchar](255) NOT NULL,
 [description] [nvarchar](1024) DEFAULT NULL NULL,
-[role_options] [varchar](4000) DEFAULT NULL NULL,
+[role_options] [nvarchar](max) DEFAULT NULL NULL,
 [role_text] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
 (

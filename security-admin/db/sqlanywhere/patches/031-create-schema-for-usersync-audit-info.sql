@@ -50,7 +50,7 @@ CREATE TABLE dbo.x_ugsync_audit_info(
         no_of_new_groups bigint NOT NULL,
         no_of_modified_users bigint NOT NULL,
         no_of_modified_groups bigint NOT NULL,
-        sync_source_info varchar(4000) NOT NULL,
+        sync_source_info TEXT NOT NULL,
         session_id varchar(255) DEFAULT NULL NULL,
         CONSTRAINT x_ugsync_audit_info_PK_id PRIMARY KEY CLUSTERED(id)
 )

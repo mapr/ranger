@@ -16,7 +16,7 @@
 GO
 IF NOT EXISTS(select * from INFORMATION_SCHEMA.columns where table_name = 'x_policy' and column_name = 'policy_options')
 BEGIN
-	ALTER TABLE [dbo].[x_policy] ADD [policy_options] [varchar](4000) DEFAULT NULL NULL;
+	ALTER TABLE [dbo].[x_policy] ADD [policy_options] [nvarchar](max) DEFAULT NULL NULL;
 END
 GO
 GO
@@ -28,7 +28,7 @@ GO
 GO
 IF NOT EXISTS(select * from INFORMATION_SCHEMA.columns where table_name = 'x_tag' and column_name = 'policy_options')
 BEGIN
-	ALTER TABLE [dbo].[x_tag] ADD [policy_options] [varchar](4000) DEFAULT NULL NULL;
+	ALTER TABLE [dbo].[x_tag] ADD [policy_options] [nvarchar](max) DEFAULT NULL NULL;
 END
 GO
 

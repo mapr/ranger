@@ -20,7 +20,7 @@ create procedure increase_column_size_of_xa_access_audit_table() begin
 
  /* change request_data and resource_path column size from 2000 to 4000 */
  if exists (select * from information_schema.columns where table_schema=database() and table_name = 'xa_access_audit' and (column_name = 'request_data' or column_name = 'resource_path') and data_type='varchar' and CHARACTER_MAXIMUM_LENGTH=2000) then
-	ALTER TABLE  `xa_access_audit` CHANGE  `request_data`  `request_data` VARCHAR(4000) NULL DEFAULT NULL,CHANGE  `resource_path`  `resource_path` VARCHAR(4000) NULL DEFAULT NULL;
+	ALTER TABLE  `xa_access_audit` CHANGE  `request_data`  `request_data` MEDIUMTEXT NULL DEFAULT NULL,CHANGE  `resource_path`  `resource_path` MEDIUMTEXT NULL DEFAULT NULL;
  end if;
 
 end;;

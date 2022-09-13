@@ -18,13 +18,13 @@ DECLARE
 BEGIN
     select count(*) into v_count from user_tab_cols where lower(table_name)='x_portal_user' and lower(column_name)='sync_source';
     if (v_count = 0) then
-        execute immediate 'ALTER TABLE x_portal_user ADD sync_source CLOB DEFAULT NULL NULL';
+                execute immediate 'ALTER TABLE x_portal_user ADD sync_source CLOB DEFAULT NULL NULL';
     end if;
 
     v_count:=0;
     select count(*) into v_count from user_tab_cols where lower(table_name)='x_user' and lower(column_name)='sync_source';
     if (v_count = 0) then
-        execute immediate 'ALTER TABLE x_user ADD sync_source CLOB DEFAULT NULL NULL';
+                execute immediate 'ALTER TABLE x_user ADD sync_source CLOB DEFAULT NULL NULL';
     end if;
 
     v_count:=0;

@@ -56,7 +56,7 @@ upd_by_id bigint  DEFAULT NULL NULL,
 version bigint  DEFAULT 0 NOT NULL,
 name varchar(255) NOT NULL,
 description varchar(1024) DEFAULT NULL NULL,
-role_options varchar(4000) DEFAULT NULL NULL,
+role_options TEXT DEFAULT NULL NULL,
 role_text text DEFAULT NULL NULL,
 CONSTRAINT x_role_PK_id PRIMARY KEY CLUSTERED(id),
 CONSTRAINT x_role_UK_name UNIQUE NONCLUSTERED (name)

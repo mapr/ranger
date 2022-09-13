@@ -14,7 +14,7 @@
 -- limitations under the License.
 GO
 
-DECLARE @SQL nvarchar(4000),
+DECLARE @SQL nvarchar(max),
   @TableName sysname,
   @ColumnName sysname,
   @DefaultConstraint varchar(256),
@@ -81,7 +81,7 @@ END
 GO
   ALTER TABLE [dbo].[x_group] ALTER COLUMN group_name nvarchar(767);
   ALTER TABLE [dbo].[x_group] ADD CONSTRAINT  [x_group$x_group_UK_group_name] UNIQUE (group_name);
-  ALTER TABLE [dbo].[x_group] ALTER COLUMN descr nvarchar(4000);
+  ALTER TABLE [dbo].[x_group] ALTER COLUMN descr nvarchar(max);
 GO
 
 IF (OBJECT_ID('x_group_users$x_group_users_UK_uid_gname') IS NOT NULL)
@@ -108,7 +108,7 @@ BEGIN
  ALTER TABLE [dbo].[x_policy_ref_group] DROP CONSTRAINT df_x_policy_ref_group_group_name;
 END
 GO
- ALTER TABLE [dbo].[x_policy_ref_group] ALTER COLUMN group_name nvarchar(4000);
+ ALTER TABLE [dbo].[x_policy_ref_group] ALTER COLUMN group_name nvarchar(max);
  ALTER TABLE [dbo].[x_policy_ref_group] ADD CONSTRAINT df_x_policy_ref_group_group_name DEFAULT NULL FOR group_name;
 GO
 
@@ -177,7 +177,7 @@ GO
  ALTER TABLE [dbo].[x_security_zone_ref_user] ALTER COLUMN user_name nvarchar(767);
  ALTER TABLE [dbo].[x_security_zone_ref_user] ADD CONSTRAINT df_x_security_zone_ref_user_user_name DEFAULT NULL FOR user_name ;
  ALTER TABLE [dbo].[x_security_zone_ref_user] WITH CHECK ADD CONSTRAINT [x_sz_ref_user_FK_user_name] FOREIGN KEY([user_name]) REFERENCES [dbo].[x_user] ([user_name]);
- ALTER TABLE [dbo].[x_user] ALTER COLUMN descr nvarchar(4000);
+ ALTER TABLE [dbo].[x_user] ALTER COLUMN descr nvarchar(max);
 GO
 IF EXISTS(SELECT * FROM sys.indexes WHERE name = 'x_ugsync_audit_info_uname' AND object_id = OBJECT_ID('x_ugsync_audit_info'))
 BEGIN
@@ -194,7 +194,7 @@ BEGIN
  ALTER TABLE [dbo].[x_policy_ref_user] DROP CONSTRAINT df_x_policy_ref_user_user_name;
 END
 GO
- ALTER TABLE [dbo].[x_policy_ref_user] ALTER COLUMN user_name nvarchar(4000);
+ ALTER TABLE [dbo].[x_policy_ref_user] ALTER COLUMN user_name nvarchar(max);
  ALTER TABLE [dbo].[x_policy_ref_user] ADD CONSTRAINT df_x_policy_ref_user_user_name DEFAULT NULL FOR user_name ;
 GO
 

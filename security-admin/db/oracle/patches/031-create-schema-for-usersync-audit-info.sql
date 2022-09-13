@@ -53,7 +53,7 @@ no_of_new_users NUMBER(20) NOT NULL,
 no_of_new_groups NUMBER(20) NOT NULL,
 no_of_modified_users NUMBER(20) NOT NULL,
 no_of_modified_groups NUMBER(20) NOT NULL,
-sync_source_info VARCHAR(4000) NOT NULL,
+sync_source_info CLOB NOT NULL,
 session_id VARCHAR(255) DEFAULT NULL,
  PRIMARY KEY (id)
 );

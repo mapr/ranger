@@ -22,7 +22,7 @@ DECLARE
 BEGIN
  select count(*) into v_column_exists from pg_attribute where attrelid in(select oid from pg_class where relname='xa_access_audit') and attname='tags';
  IF v_column_exists = 0 THEN
- 	ALTER TABLE xa_access_audit ADD COLUMN tags VARCHAR(4000) DEFAULT NULL NULL;
+ 	ALTER TABLE xa_access_audit ADD COLUMN tags TEXT DEFAULT NULL NULL;
  END IF;
 END;
 $$ LANGUAGE plpgsql;

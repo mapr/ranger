@@ -15,7 +15,7 @@
 
 IF NOT EXISTS(select * from INFORMATION_SCHEMA.columns where table_name = 'xa_access_audit' and column_name = 'tags')
 BEGIN
-	ALTER TABLE [dbo].[xa_access_audit] ADD [tags] [varchar](4000) DEFAULT NULL NULL;
+	ALTER TABLE [dbo].[xa_access_audit] ADD [tags] [nvarchar](max) DEFAULT NULL NULL;
 END
 GO
 exit

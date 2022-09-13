@@ -71,7 +71,7 @@ DECLARE policyCount bigint;
 DECLARE currentTime varchar(100);
 DECLARE tempPolicyCount int;
 DECLARE totalPolicyCount int;
-DECLARE resourceName varchar(4000);
+DECLARE resourceName MEDIUMTEXT;
 
 -- TrxLog fields
 DECLARE createTime datetime;

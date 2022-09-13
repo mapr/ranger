@@ -20,7 +20,7 @@ DELIMITER ;;
 CREATE PROCEDURE add_column_xa_access_audit_tags() BEGIN
   IF EXISTS (SELECT * FROM information_schema.tables WHERE table_schema=database() AND table_name = 'xa_access_audit') THEN
     IF NOT EXISTS (SELECT * FROM information_schema.columns WHERE table_schema=database() AND table_name = 'x_access_audit' AND column_name = 'tags') THEN
-      ALTER TABLE xa_access_audit ADD COLUMN `tags` VARCHAR(4000) DEFAULT NULL NULL;
+      ALTER TABLE xa_access_audit ADD COLUMN `tags` MEDIUMTEXT DEFAULT NULL NULL;
     END IF;
   END IF;
 END;;

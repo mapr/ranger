@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `x_role`(
 `version` bigint(20) NULL DEFAULT NULL,
 `name` varchar(255) NOT NULL,
 `description` varchar(1024) NULL DEFAULT NULL,
-`role_options` varchar(4000) NULL DEFAULT NULL,
+`role_options` MEDIUMTEXT NULL DEFAULT NULL,
 `role_text` MEDIUMTEXT NULL DEFAULT NULL,
  PRIMARY KEY (`id`),
  UNIQUE KEY `x_role_UK_name`(`name`(190)),

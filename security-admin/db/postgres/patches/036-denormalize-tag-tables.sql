@@ -44,12 +44,12 @@ select denormalize_tag_tables();
 select 'delimiter end';
 
 select 'delimiter start';
-CREATE OR REPLACE FUNCTION remove_foreign_key(objName varchar(4000))
+CREATE OR REPLACE FUNCTION remove_foreign_key(objName TEXT)
 RETURNS void AS $$
 declare
  tableName VARCHAR(256);
  constraintName VARCHAR(512);
- query varchar(4000);
+ query TEXT;
  curs CURSOR FOR SELECT table_name,constraint_name from information_schema.key_column_usage where constraint_catalog=current_catalog and table_name=objName and position_in_unique_constraint notnull;
 begin
   OPEN curs;

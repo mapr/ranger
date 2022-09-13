@@ -14,7 +14,7 @@
 -- limitations under the License.
 
 IF NOT EXISTS(select * from SYS.SYSCOLUMNS where tname = 'x_policy' and cname = 'policy_options') THEN
-		ALTER TABLE dbo.x_policy ADD policy_options varchar(4000) DEFAULT NULL NULL;
+		ALTER TABLE dbo.x_policy ADD policy_options TEXT DEFAULT NULL NULL;
 END IF;
 GO
 IF NOT EXISTS(select * from SYS.SYSCOLUMNS where tname = 'x_policy' and cname = 'policy_priority') THEN
@@ -22,7 +22,7 @@ IF NOT EXISTS(select * from SYS.SYSCOLUMNS where tname = 'x_policy' and cname = 
 END IF;
 GO
 IF NOT EXISTS(select * from SYS.SYSCOLUMNS where tname = 'x_tag' and cname = 'policy_options') THEN
-		ALTER TABLE dbo.x_tag ADD policy_options varchar(4000) DEFAULT NULL NULL;
+		ALTER TABLE dbo.x_tag ADD policy_options TEXT DEFAULT NULL NULL;
 END IF;
 GO
 

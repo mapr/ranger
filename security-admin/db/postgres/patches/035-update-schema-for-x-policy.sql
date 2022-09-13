@@ -36,7 +36,7 @@ added_by_id BIGINT DEFAULT NULL NULL,
 upd_by_id BIGINT DEFAULT NULL NULL,
 policy_id BIGINT NOT NULL,
 resource_def_id BIGINT NOT NULL,
-resource_name varchar(4000) DEFAULT NULL,
+resource_name TEXT DEFAULT NULL,
 primary key(id),
 CONSTRAINT x_p_ref_res_UK_polId_resDefId UNIQUE (policy_id, resource_def_id),
 CONSTRAINT x_p_ref_res_FK_policy_id FOREIGN KEY(policy_id) REFERENCES x_policy(id),
@@ -56,7 +56,7 @@ added_by_id BIGINT DEFAULT NULL NULL,
 upd_by_id BIGINT DEFAULT NULL NULL,
 policy_id BIGINT NOT NULL,
 access_def_id BIGINT NOT NULL,
-access_type_name varchar(4000) DEFAULT NULL,
+access_type_name TEXT DEFAULT NULL,
 primary key(id),
 CONSTRAINT x_p_ref_acc_UK_polId_accDefId UNIQUE(policy_id, access_def_id),
 CONSTRAINT x_p_ref_acc_FK_policy_id FOREIGN KEY(policy_id) REFERENCES x_policy(id),
@@ -76,7 +76,7 @@ added_by_id BIGINT DEFAULT NULL NULL,
 upd_by_id BIGINT DEFAULT NULL NULL,
 policy_id BIGINT NOT NULL,
 condition_def_id BIGINT NOT NULL,
-condition_name varchar(4000) DEFAULT NULL,
+condition_name TEXT DEFAULT NULL,
 primary key(id),
 CONSTRAINT x_p_ref_cond_UK_polId_cDefId UNIQUE(policy_id, condition_def_id),
 CONSTRAINT x_p_ref_cond_FK_policy_id FOREIGN KEY(policy_id) REFERENCES x_policy(id),
@@ -96,7 +96,7 @@ added_by_id BIGINT DEFAULT NULL NULL,
 upd_by_id BIGINT DEFAULT NULL NULL,
 policy_id BIGINT NOT NULL,
 datamask_def_id BIGINT NOT NULL,
-datamask_type_name varchar(4000) DEFAULT NULL,
+datamask_type_name TEXT DEFAULT NULL,
 primary key(id),
 CONSTRAINT x_p_ref_dmk_UK_polId_dDefId UNIQUE(policy_id, datamask_def_id),
 CONSTRAINT x_p_ref_dmk_FK_policy_id FOREIGN KEY(policy_id) REFERENCES x_policy(id),
@@ -116,7 +116,7 @@ added_by_id BIGINT DEFAULT NULL NULL,
 upd_by_id BIGINT DEFAULT NULL NULL,
 policy_id BIGINT NOT NULL,
 user_id BIGINT NOT NULL,
-user_name varchar(4000) DEFAULT NULL,
+user_name TEXT DEFAULT NULL,
 primary key(id),
 CONSTRAINT x_p_ref_usr_UK_polId_userId UNIQUE(policy_id, user_id),
 CONSTRAINT x_p_ref_usr_FK_policy_id FOREIGN KEY(policy_id) REFERENCES x_policy(id),
@@ -136,7 +136,7 @@ added_by_id BIGINT DEFAULT NULL NULL,
 upd_by_id BIGINT DEFAULT NULL NULL,
 policy_id BIGINT NOT NULL,
 group_id BIGINT NOT NULL,
-group_name varchar(4000) DEFAULT NULL,
+group_name TEXT DEFAULT NULL,
 primary key(id),
 CONSTRAINT x_p_ref_grp_UK_polId_grpId UNIQUE(policy_id, group_id),
 CONSTRAINT x_p_ref_grp_FK_policy_id FOREIGN KEY(policy_id) REFERENCES x_policy(id),
@@ -163,12 +163,12 @@ select add_x_policy_json();
 select 'delimiter end';
 
 select 'delimiter start';
-CREATE OR REPLACE FUNCTION remove_foreign_key(objName varchar(4000))
+CREATE OR REPLACE FUNCTION remove_foreign_key(objName TEXT)
 RETURNS void AS $$
 declare
  tableName VARCHAR(256);
  constraintName VARCHAR(512);
- query varchar(4000);
+ query TEXT;
  curs CURSOR FOR SELECT table_name,constraint_name from information_schema.key_column_usage where constraint_catalog=current_catalog and table_name=objName and position_in_unique_constraint notnull;
 begin
   OPEN curs;

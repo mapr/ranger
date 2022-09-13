@@ -148,7 +148,7 @@ CREATE TABLE [dbo].[x_policy_ref_resource] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [resource_def_id] [bigint] NOT NULL,
-  [resource_name] [varchar](4000) DEFAULT NULL NULL,
+  [resource_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -174,7 +174,7 @@ CREATE TABLE [dbo].[x_policy_ref_access_type] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [access_def_id] [bigint] NOT NULL,
-  [access_type_name] [varchar](4000) DEFAULT NULL NULL,
+  [access_type_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -200,7 +200,7 @@ CREATE TABLE [dbo].[x_policy_ref_condition] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [condition_def_id] [bigint] NOT NULL,
-  [condition_name] [varchar](4000) DEFAULT NULL NULL,
+  [condition_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -226,7 +226,7 @@ CREATE TABLE [dbo].[x_policy_ref_datamask_type] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [datamask_def_id] [bigint] NOT NULL,
-  [datamask_type_name] [varchar](4000) DEFAULT NULL NULL,
+  [datamask_type_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -252,7 +252,7 @@ CREATE TABLE [dbo].[x_policy_ref_user] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [user_id] [bigint] NOT NULL,
-  [user_name] [varchar](4000) DEFAULT NULL NULL,
+  [user_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC
@@ -278,7 +278,7 @@ CREATE TABLE [dbo].[x_policy_ref_group] (
   [upd_by_id] [bigint] DEFAULT NULL NULL,
   [policy_id] [bigint] NOT NULL,
   [group_id] [bigint] NOT NULL,
-  [group_name] [varchar](4000) DEFAULT NULL NULL,
+  [group_name] [nvarchar](max) DEFAULT NULL NULL,
   PRIMARY KEY CLUSTERED
   (
   [id] ASC

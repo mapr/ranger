@@ -18,7 +18,7 @@ CREATE OR REPLACE FUNCTION alter_column_sort_order_to_int(tableName varchar(64))
 RETURNS void AS $$
 declare
  v_column_exists integer := 0;
- query varchar(4000);
+ query TEXT;
 begin
  select count(*) into v_column_exists from pg_attribute where attrelid in(select oid from pg_class where relname=tableName) and attname='sort_order' and attlen=2;
  IF v_column_exists = 1 THEN
