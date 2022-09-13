@@ -136,6 +136,7 @@ policymgr_https_keystore_file=$(get_prop 'policymgr_https_keystore_file' $PROPFI
 policymgr_https_keystore_keyalias=$(get_prop 'policymgr_https_keystore_keyalias' $PROPFILE)
 policymgr_https_keystore_password=$(get_prop 'policymgr_https_keystore_password' $PROPFILE)
 policymgr_supportedcomponents=$(get_prop 'policymgr_supportedcomponents' $PROPFILE)
+policymgr_resource_lookup_timeout_value_in_ms=$(get_prop 'policymgr_resource_lookup_timeout_value_in_ms' $PROPFILE)
 unix_user=$(get_prop 'unix_user' $PROPFILE)
 unix_user_pwd=$(get_prop 'unix_user_pwd' $PROPFILE)
 unix_group=$(get_prop 'unix_group' $PROPFILE)
@@ -904,6 +905,10 @@ update_properties() {
 
 	propertyName=ranger.supportedcomponents
 	newPropertyValue="${policymgr_supportedcomponents}"
+	updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+
+	propertyName=ranger.resource.lookup.timeout.value.in.ms
+	newPropertyValue="${policymgr_resource_lookup_timeout_value_in_ms}"
 	updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
 	propertyName=ranger.jpa.jdbc.user

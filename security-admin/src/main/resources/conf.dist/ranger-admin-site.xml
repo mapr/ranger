@@ -285,6 +285,10 @@
         <value></value>
     </property>
     <property>
+        <name>ranger.resource.lookup.timeout.value.in.ms</name>
+        <value></value>
+    </property>
+    <property>
         <name>ranger.downloadpolicy.session.log.enabled</name>
         <value>false</value>
     </property>
