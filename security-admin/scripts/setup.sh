@@ -108,7 +108,7 @@ javax_net_ssl_trustStorePassword=$(get_prop 'javax_net_ssl_trustStorePassword' $
 
 # if password_encryption_key is not set by user, generating random one
 if [ -z "$(grep password_encryption_key $PROPFILE | cut -f 2 -d "=")" ] ; then
-        sed -ie "s/^password_encryption_key=.*$/password_encryption_key=$(openssl rand -hex 30)/" $PROPFILE
+        sed -i --expression "s/^password_encryption_key=.*$/password_encryption_key=$(openssl rand -hex 30)/" $PROPFILE
 fi
 password_encryption_key=$(get_prop 'password_encryption_key' $PROPFILE)
 
