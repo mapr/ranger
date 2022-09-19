@@ -268,8 +268,6 @@ configure_cred_lib_for_admin
 configure_hbase_jars_for_admin
 logInfo "Ranger: Creating/refreshing symlinks in ranger-usersync library."
 link_mapr_core_lib_for_usersync
-logInfo "Ranger: Creating/refreshing symlinks in ranger-hive-plugin library."
-configure_symlinks_for_hive_plugin
 
 # security
 logInfo "Ranger: Configuring SSL."
