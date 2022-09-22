@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -251,7 +250,7 @@ def password_validation(password, userType):
 
 
 properties_to_be_skipped = ["ranger_base_dir", "rangerUsersync_password", "hadoop_conf",
-                            "USERSYNC_PID_DIR_PATH", "SYNC_GROUP_USER_MAP_SYNC_ENABLED"]
+                            "USERSYNC_PID_DIR_PATH", "SYNC_GROUP_USER_MAP_SYNC_ENABLED", "PYTHON_COMMAND_INVOKER"]
 def convertInstallPropsToXML(props):
     directKeyMap = getPropertiesConfigMap(join(installTemplateDirName, install2xmlMapFileName))
     ret = {}
@@ -628,7 +627,9 @@ def main():
         os.symlink(hadoop_conf_full_path, usersync_conf_full_path)
 
     rangerUsersync_name ='rangerusersync'
-    cmd = 'python updatepolicymgrpassword.py %s %s'  %(rangerUsersync_name, rangerUsersync_password)
+    python = globalDict['PYTHON_COMMAND_INVOKER']
+    pattern = python + ' updatepolicymgrpassword.py %s %s'
+    cmd = pattern  %(rangerUsersync_name, rangerUsersync_password)
 
     if rangerUsersync_password != "" :
         output = os.system(cmd)

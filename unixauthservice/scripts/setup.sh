@@ -26,6 +26,26 @@ RANGER_HOME="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"
 # to allow users to run the script from another location
 cd "$RANGER_HOME"/ranger-usersync || { echo "Error: Could not find $RANGER_HOME/ranger-usersync"; exit 1; }
 
+get_prop(){
+        validateProperty=$(sed '/^\#/d' $2 | grep "^$1\s*="  | tail -n 1) # for validation
+        if  test -z "$validateProperty" ; then log "[E] '$1' not found in $2 file while getting....!!"; exit 1; fi
+        value=$(echo $validateProperty | cut -d "=" -f2-)
+        if [[ $1 == *password* ]]
+                then
+                        echo $value
+                else
+                        echo $value | tr -d \'\"
+                fi
+}
+
+PROPFILE="${RANGER_HOME}"/ranger-usersync/install.properties
+if [ ! -f "${PROPFILE}" ]; then
+        echo "$PROPFILE file not found....!!"
+        exit 1;
+fi
+
+PYTHON_COMMAND_INVOKER=$(get_prop 'PYTHON_COMMAND_INVOKER' $PROPFILE)
+
 FIPS_ENABLED="false"
 if [[ "$(fips-mode-setup --check 2>/dev/null)" =~ "FIPS mode is enabled" ]] ; then
 	FIPS_ENABLED="true"
@@ -71,4 +91,4 @@ source "$RANGER_HOME"/bin/symlink_configuration_helper.sh
 
 link_mapr_core_lib_for_usersync
 
-./setup.py
+$PYTHON_COMMAND_INVOKER setup.py
