@@ -28,6 +28,7 @@ import javax.security.auth.Subject;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.security.SecureClientLogin;
+import org.apache.ranger.plugin.service.RangerBaseService;
 import org.apache.ranger.plugin.util.PasswordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,6 +47,7 @@ public abstract class BaseClient {
   	private String defaultConfigFile;
 	private Subject loginSubject;
 	private HadoopConfigHolder configHolder;
+	protected boolean serviceExists;
 
 	protected Map<String,String> connectionProperties;
 
@@ -69,6 +71,8 @@ public abstract class BaseClient {
 		else {
 			configHolder = HadoopConfigHolder.getInstance(serviceName,connectionProperties, defaultConfigFile);
 		}
+		this.serviceExists = Boolean.parseBoolean(configHolder.getRangerSection()
+						.getProperty(RangerBaseService.SERVICE_EXISTS));
 	}
 
 
@@ -106,7 +110,8 @@ public abstract class BaseClient {
 					 String password = null;
 					 if (encryptedPwd != null) {
 					     try {
-					         password = PasswordUtils.decryptPassword(encryptedPwd);
+							 if (serviceExists)
+								 password = PasswordUtils.decryptPassword(encryptedPwd);
 					     } catch(Exception ex) {
 					         LOG.info("Password decryption failed; trying connection with received password string");
 					         password = null;
