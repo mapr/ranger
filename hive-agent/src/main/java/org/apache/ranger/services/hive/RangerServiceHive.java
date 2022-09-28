@@ -101,7 +101,7 @@ public class RangerServiceHive extends RangerBaseService {
 		if(LOG.isDebugEnabled()) {
 			LOG.debug("==> RangerServiceHive.lookupResource Context: (" + context + ")");
 		}
-		if (context != null) {
+		if (context != null && context.getUserInput() != null && !context.getUserInput().isEmpty()) {
 			try {
 				ret  = HiveResourceMgr.getHiveResources(serviceName, serviceType, configs,context);
 			} catch (Exception e) {
