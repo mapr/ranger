@@ -77,4 +77,12 @@
 		<name>ranger.usersync.dest.ranger.session.cookie.name</name>
 		<value>RANGERADMINSESSIONID</value>
 	</property>
+	<property>
+		<name>ranger.usersync.deletes.enabled</name>
+		<value>false</value>
+	</property>
+	<property>
+		<name>ranger.usersync.deletes.frequency</name>
+		<value>10</value>
+	</property>
 </configuration>
