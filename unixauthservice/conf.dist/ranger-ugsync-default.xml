@@ -18,6 +18,10 @@
 
 <configuration>
 	<property>
+		<name>ranger.usersync.whitelist.users.role.assignment.rules</name>
+		<value>&amp;ROLE_SYS_ADMIN:u:admin,rangerusersync,rangertagsync,mapr&amp;ROLE_KEY_ADMIN:u:keyadmin</value>
+	</property>
+	<property>
 		<name>ranger.usersync.port</name>
                 <value>5151</value>
 	</property>
