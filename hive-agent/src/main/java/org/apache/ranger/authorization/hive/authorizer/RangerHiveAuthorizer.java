@@ -46,6 +46,7 @@ import org.apache.hadoop.hive.metastore.IMetaStoreClient;
 import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.HiveObjectRef;
 import org.apache.hadoop.hive.metastore.api.Table;
+import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.security.HiveAuthenticationProvider;
 import org.apache.hadoop.hive.ql.security.authorization.AuthorizationUtils;
@@ -3136,7 +3137,9 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			switch (hiveObj.getType()) {
 				case DATABASE:
 					try {
-						Database database = metaStoreClient != null ? metaStoreClient.getDatabase(hiveObj.getDbname()) : null;
+						Database database = null;
+						if (metaStoreClient != null && Hive.get().databaseExists(hiveObj.getDbname()))
+							database = metaStoreClient.getDatabase(hiveObj.getDbname());
 
 						if (database != null) {
 							resource.setOwnerUser(database.getOwnerName());
@@ -3149,7 +3152,9 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 				case TABLE_OR_VIEW:
 				case COLUMN:
 					try {
-						Table table = metaStoreClient != null ? metaStoreClient.getTable(hiveObj.getDbname(), hiveObj.getObjectName()) : null;
+						Table table = null;
+						if (metaStoreClient != null && metaStoreClient.tableExists(hiveObj.getDbname(), hiveObj.getObjectName()))
+							table = metaStoreClient.getTable(hiveObj.getDbname(), hiveObj.getObjectName());
 
 						if (table != null) {
 							resource.setOwnerUser(table.getOwner());
