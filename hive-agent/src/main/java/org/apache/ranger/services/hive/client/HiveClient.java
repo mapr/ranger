@@ -736,7 +736,7 @@ public class HiveClient extends BaseClient implements Closeable {
 				} else {
 					String decryptedPwd = null;
 					try {
-						if (serviceExists)
+						if (!useCleartextPassword)
 							decryptedPwd = PasswordUtils.decryptPassword(password);
 					} catch (Exception ex) {
 						LOG.info("Password decryption failed; trying Hive connection with received password string");

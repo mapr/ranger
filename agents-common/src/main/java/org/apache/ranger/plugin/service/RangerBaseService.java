@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
 public abstract class RangerBaseService {
 	private static final Logger LOG = LoggerFactory.getLogger(RangerBaseService.class);
 
-	public static final String SERVICE_EXISTS = "service.exists";
+	public static final String USE_CLEARTEXT_PASSWORD = "use.cleartext.password";
 	protected static final String ADMIN_USER_PRINCIPAL = "ranger.admin.kerberos.principal";
 	protected static final String ADMIN_USER_KEYTAB    = "ranger.admin.kerberos.keytab";
 	protected static final String LOOKUP_PRINCIPAL     = "ranger.lookup.kerberos.principal";

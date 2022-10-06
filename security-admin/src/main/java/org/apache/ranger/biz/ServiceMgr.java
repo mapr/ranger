@@ -36,7 +36,6 @@ import org.apache.hadoop.security.SecureClientLogin;
 import org.apache.ranger.common.PropertiesUtil;
 import org.apache.ranger.common.TimedExecutor;
 import org.apache.ranger.db.XXGroupUserDao;
-import org.apache.ranger.db.XXServiceDao;
 import org.apache.ranger.entity.XXGroupUser;
 import org.apache.ranger.plugin.client.HadoopConfigHolder;
 import org.apache.ranger.plugin.client.HadoopException;
@@ -93,8 +92,6 @@ public class ServiceMgr {
 
 	@Autowired
 	XXGroupUserDao groupUserDao;
-	@Autowired
-	XXServiceDao serviceDao;
 
 	public List<String> lookupResource(String serviceName, ResourceLookupContext context, ServiceStore svcStore) throws Exception {
 		List<String> 	  ret = null;
@@ -178,8 +175,6 @@ public class ServiceMgr {
 		RangerBaseService svc=null;
 		if(service!=null){
 			Map<String, String> newConfigs = rangerSvcService.getConfigsWithDecryptedPassword(service);
-			boolean serviceExists = serviceDao.findByName(service.getName()) != null;
-			newConfigs.put(RangerBaseService.SERVICE_EXISTS, Boolean.valueOf(serviceExists).toString());
 			service.setConfigs(newConfigs);
 			svc = getRangerServiceByService(service, svcStore);
 		}

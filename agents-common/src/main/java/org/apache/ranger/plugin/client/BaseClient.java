@@ -47,7 +47,7 @@ public abstract class BaseClient {
   	private String defaultConfigFile;
 	private Subject loginSubject;
 	private HadoopConfigHolder configHolder;
-	protected boolean serviceExists;
+	protected boolean useCleartextPassword;
 
 	protected Map<String,String> connectionProperties;
 
@@ -71,8 +71,8 @@ public abstract class BaseClient {
 		else {
 			configHolder = HadoopConfigHolder.getInstance(serviceName,connectionProperties, defaultConfigFile);
 		}
-		this.serviceExists = Boolean.parseBoolean(configHolder.getRangerSection()
-						.getProperty(RangerBaseService.SERVICE_EXISTS));
+		this.useCleartextPassword = Boolean.parseBoolean(configHolder.getRangerSection()
+						.getProperty(RangerBaseService.USE_CLEARTEXT_PASSWORD));
 	}
 
 
@@ -110,7 +110,7 @@ public abstract class BaseClient {
 					 String password = null;
 					 if (encryptedPwd != null) {
 					     try {
-							 if (serviceExists)
+							 if (!useCleartextPassword)
 								 password = PasswordUtils.decryptPassword(encryptedPwd);
 					     } catch(Exception ex) {
 					         LOG.info("Password decryption failed; trying connection with received password string");
