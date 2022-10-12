@@ -32,6 +32,8 @@ import javax.security.auth.Subject;
 import org.apache.ranger.plugin.client.BaseClient;
 import org.apache.ranger.plugin.client.HadoopException;
 import org.apache.ranger.services.yarn.client.json.model.YarnSchedulerResponse;
+import org.apache.ranger.util.MaprAuthenticationUtils;
+import org.apache.ranger.util.MaprSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -208,10 +210,17 @@ public class YarnClient extends BaseClient {
 							LOG.debug("getQueueResponse():calling " + url);
 						}
 
+						String authHeader = null;
+						if (MaprSecurity.MAPR_SASL) {
+							String challengeString = MaprAuthenticationUtils.generateChallengeString();
+							authHeader = String.format("MAPR-Negotiate %s", challengeString);
+						}
 						WebResource webResource = client.resource(url);
-
-						ClientResponse response = webResource.accept(EXPECTED_MIME_TYPE)
-								.get(ClientResponse.class);
+						WebResource.Builder builder = webResource.accept(EXPECTED_MIME_TYPE);
+						if (authHeader != null) {
+							builder = builder.header(MaprAuthenticationUtils.AUTH_HEADER, authHeader);
+						}
+						ClientResponse response = builder.get(ClientResponse.class);
 
 							if (response != null) {
 								if (LOG.isDebugEnabled()) {

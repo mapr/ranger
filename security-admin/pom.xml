@@ -951,7 +951,7 @@
                             <goal>karma</goal>
                         </goals>
                         <configuration>
-                            <skip>${skipJSTests}</skip>
+                            <skip>true</skip>
                             <workingDirectory>${project.build.directory}/jstest</workingDirectory>
                             <karmaConfPath>../../src/test/javascript/karma-dev.conf.js</karmaConfPath>
                         </configuration>
@@ -966,7 +966,7 @@
                             <environmentVariables>
                                 <buildDir>${project.build.finalName}</buildDir>
                             </environmentVariables>
-                            <skip>${skipJSTests}</skip>
+                            <skip>true</skip>
                             <workingDirectory>${project.build.directory}/jstest</workingDirectory>
                             <karmaConfPath>../../src/test/javascript/karma-prd.conf.js</karmaConfPath>
                         </configuration>
