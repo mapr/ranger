@@ -17,7 +17,7 @@
 
 # Global vars mapr specific
 MAPR_HOME="${BASEMAPR:-/opt/mapr}"
-RANGER_HIVE_PLUGIN_HOME=$(dirname "$0") #it is not so good to rely on script locaiton, but ranger in plugin's package we do not have version file
+RANGER_PLUGIN_HOME=$(dirname "$0") #it is not so good to rely on script location, but ranger in plugin's package we do not have version file
 HADOOP_VERSION_FILE="$MAPR_HOME"/hadoop/hadoopversion
 HADOOP_VERSION=$(cat "$HADOOP_VERSION_FILE")
 
@@ -72,19 +72,19 @@ function getInstallProperty() {
     echo ${propertyValue}
 }
 
-# if Hive exists and hive plugin is installed;
-# to be able to run enable plugin script, we need to link below jars;
+# Generic function to add symlinks to install library of any plugin (plugin will be distinguished by script location)
+# to be able to run enable plugin script, we need to link below jars for plugins;
 # hadoop-shaded-guava
 # bc-fips
 # bctls-fips
 # jackson-core
 # maprfs
 # protobuf
-configure_symlinks_for_hive_plugin() {
+configure_symlinks_for_plugins() {
   if [ -f "${MAPR_HOME}"/roles/hive ] && [ -f "${MAPR_HOME}"/roles/ranger-hive-plugin ]; then
     # libraries
     local MAPR_CORE_LIB="$MAPR_HOME"/lib
-    local RANGER_HIVE_INSTALL_LIB="$RANGER_HIVE_PLUGIN_HOME"/install/lib
+    local RANGER_PLUGIN_INSTALL_LIB="$RANGER_PLUGIN_HOME"/install/lib
     local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
 
     # needed jars
@@ -96,20 +96,20 @@ configure_symlinks_for_hive_plugin() {
     local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
 
     # if already exists, unlink first. In case applying patch, we need to remove old links
-    find $RANGER_HIVE_INSTALL_LIB -type l -name "bc-fips-*" -delete
-    find $RANGER_HIVE_INSTALL_LIB -type l -name "bctls-fips-*" -delete
-    find $RANGER_HIVE_INSTALL_LIB -type l -name "hadoop-shaded-guava-*" -delete
-    find $RANGER_HIVE_INSTALL_LIB -type l -name "jackson-core-2.*" -delete
-    find $RANGER_HIVE_INSTALL_LIB -type l -name "protobuf-java-*" -delete
-    find $RANGER_HIVE_INSTALL_LIB -type l -name "maprfs-*" -delete
+    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bc-fips-*" -delete
+    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bctls-fips-*" -delete
+    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "hadoop-shaded-guava-*" -delete
+    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "jackson-core-2.*" -delete
+    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "protobuf-java-*" -delete
+    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "maprfs-*" -delete
 
     # create the links again
-    ln -sf $BC_FIPS_JAR $RANGER_HIVE_INSTALL_LIB
-    ln -sf $BCTLS_FIPS_JAR $RANGER_HIVE_INSTALL_LIB
-    ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_HIVE_INSTALL_LIB
-    ln -sf $JACKSON_CORE_JAR $RANGER_HIVE_INSTALL_LIB
-    ln -sf $PROTOBUF_JARS $RANGER_HIVE_INSTALL_LIB
-    ln -sf $MAPRFS_JARS $RANGER_HIVE_INSTALL_LIB
+    ln -sf $BC_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
+    ln -sf $BCTLS_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
+    ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_PLUGIN_INSTALL_LIB
+    ln -sf $JACKSON_CORE_JAR $RANGER_PLUGIN_INSTALL_LIB
+    ln -sf $PROTOBUF_JARS $RANGER_PLUGIN_INSTALL_LIB
+    ln -sf $MAPRFS_JARS $RANGER_PLUGIN_INSTALL_LIB
   fi
 }
 
@@ -205,10 +205,7 @@ PROJ_LIB_PLUGIN_DIR=${PROJ_INSTALL_DIR}/${PLUGIN_DEPENDENT_LIB_DIR}
 HCOMPONENT_INSTALL_DIR_NAME=$(getInstallProperty 'COMPONENT_INSTALL_DIR_NAME')
 
 # symlinks for installation library
-PLUGIN_NAME=${PROJ_INSTALL_DIR##*/}
-if [ "${PLUGIN_NAME}" = "ranger-hive-plugin" ]; then
-  configure_symlinks_for_hive_plugin
-fi
+configure_symlinks_for_plugins
 
 # check component's installation dir is valid or not.
 # If not, attempt to find it
