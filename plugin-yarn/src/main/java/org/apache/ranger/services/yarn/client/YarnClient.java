@@ -31,6 +31,8 @@ import javax.security.auth.Subject;
 
 import org.apache.ranger.plugin.client.BaseClient;
 import org.apache.ranger.plugin.client.HadoopException;
+import org.apache.ranger.services.yarn.client.json.model.FairSchedulerResponse;
+import org.apache.ranger.services.yarn.client.json.model.SchedulerResponse;
 import org.apache.ranger.services.yarn.client.json.model.YarnSchedulerResponse;
 import org.apache.ranger.util.MaprAuthenticationUtils;
 import org.apache.ranger.util.MaprSecurity;
@@ -149,24 +151,33 @@ public class YarnClient extends BaseClient {
 							if (response != null && response.getStatus() == 200) {
 									String jsonString = response.getEntity(String.class);
 									Gson gson = new GsonBuilder().setPrettyPrinting().create();
-									YarnSchedulerResponse yarnQResponse = gson.fromJson(jsonString, YarnSchedulerResponse.class);
-									if (yarnQResponse != null) {
-										List<String>  yarnQueueList = yarnQResponse.getQueueNames();
-										if (yarnQueueList != null) {
-											for ( String yarnQueueName : yarnQueueList) {
-												if ( existingQueueList != null && existingQueueList.contains(yarnQueueName)) {
-													continue;
+									FairSchedulerResponse fairSResponse = gson.fromJson(jsonString, FairSchedulerResponse.class);
+
+									// Getting queue names by default from Fair scheduler.
+									List<String> yarnQueueList = getQueueNamesFromScheduler(fairSResponse);
+									if (yarnQueueList == null || yarnQueueList.isEmpty()) {
+										if (LOG.isDebugEnabled()) {
+											LOG.debug("Could not get any queue name from Fair Scheduler, trying Capacity scheduler");
+										}
+										// Getting queue names from Capacity scheduler as an alternative
+										YarnSchedulerResponse yarnQResponse = gson.fromJson(jsonString, YarnSchedulerResponse.class);
+										yarnQueueList = getQueueNamesFromScheduler(yarnQResponse);
+									}
+
+									if (yarnQueueList != null) {
+										for ( String yarnQueueName : yarnQueueList) {
+											if ( existingQueueList != null && existingQueueList.contains(yarnQueueName)) {
+												continue;
+											}
+											if (queueNameMatching == null || queueNameMatching.isEmpty()
+													|| yarnQueueName.startsWith(queueNameMatching)) {
+												if (LOG.isDebugEnabled()) {
+													LOG.debug("getQueueList():Adding yarnQueue " + yarnQueueName);
 												}
-												if (queueNameMatching == null || queueNameMatching.isEmpty()
-														|| yarnQueueName.startsWith(queueNameMatching)) {
-														if (LOG.isDebugEnabled()) {
-															LOG.debug("getQueueList():Adding yarnQueue " + yarnQueueName);
-														}
-														lret.add(yarnQueueName);
-													}
-												}
+												lret.add(yarnQueueName);
 											}
 										}
+									}
 							} else {
 								String msgDesc = "Unable to get a valid response for "
 										+ "expected mime type : [" + EXPECTED_MIME_TYPE
@@ -202,6 +213,10 @@ public class YarnClient extends BaseClient {
 							}
 						}
 						return lret;
+					}
+
+					private List<String> getQueueNamesFromScheduler (SchedulerResponse schedulerResponse) {
+						return schedulerResponse == null ? null : schedulerResponse.getQueueNames();
 					}
 
 					private ClientResponse getQueueResponse(String url, Client client) {

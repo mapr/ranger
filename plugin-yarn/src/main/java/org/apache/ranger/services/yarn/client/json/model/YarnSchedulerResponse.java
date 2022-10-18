@@ -36,13 +36,14 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
 @JsonIgnoreProperties(ignoreUnknown=true)
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
-public class YarnSchedulerResponse implements java.io.Serializable {
+public class YarnSchedulerResponse implements java.io.Serializable, SchedulerResponse {
     private static final long serialVersionUID = 1L;
 
     private YarnScheduler scheduler = null;
 
     public YarnScheduler getScheduler() { return scheduler; }
 
+    @Override
     public List<String> getQueueNames() {
     	List<String> ret = new ArrayList<String>();
 
