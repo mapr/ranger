@@ -19,6 +19,7 @@ env.ID=''
 env.MAKEFILE_ARGS=''
 env.PROJECT=''
 MEP_VER=''
+REPOSITORY_ID=''
 
 MAKEFILE_ARG_BRANCH_NAME = " RANGER_BRANCH_NAME"
 
@@ -44,6 +45,11 @@ pipeline {
           ARTIFACTORY_SERVER = Artifactory.server 'artifactory.devops.lab'
           //MAKEFILE_ARG_BRANCH_NAME will use for makefile only for release/EBF branches
           initVariables(params.BUILD_TYPE, MAKEFILE_ARG_BRANCH_NAME)
+          if(params.BUILD_TYPE=="Dev") {
+            REPOSITORY_ID='mapr-snapshots'
+          }else {
+            REPOSITORY_ID='mapr-releases'
+          }
         }
       }
     }
@@ -134,6 +140,7 @@ pipeline {
                   -e BUILD_NUMBER=${ID}.${BUILD_NUMBER} \
                   -e MAPR_RELEASES_REPO=${MAPR_RELEASES_REPO} \
                   -e MAPR_SNAPSHOTS_REPO=${MAPR_SNAPSHOTS_REPO} \
+                  -e REPOSITORY_ID=${REPOSITORY_ID} \
                   -v /root/yum-proxy.conf:/etc/yum.conf:ro \
                   -v /etc/hosts:/etc/hosts:ro \
                   -v /root/apt-proxy.conf:/etc/apt/apt.conf.d/proxy.conf:ro \
