@@ -81,36 +81,34 @@ function getInstallProperty() {
 # maprfs
 # protobuf
 configure_symlinks_for_plugins() {
-  if [ -f "${MAPR_HOME}"/roles/hive ] && [ -f "${MAPR_HOME}"/roles/ranger-hive-plugin ]; then
-    # libraries
-    local MAPR_CORE_LIB="$MAPR_HOME"/lib
-    local RANGER_PLUGIN_INSTALL_LIB="$RANGER_PLUGIN_HOME"/install/lib
-    local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
+  # libraries
+  local MAPR_CORE_LIB="$MAPR_HOME"/lib
+  local RANGER_PLUGIN_INSTALL_LIB="$RANGER_PLUGIN_HOME"/install/lib
+  local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
 
-    # needed jars
-    local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
-    local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
-    local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
-    local JACKSON_CORE_JAR="$HADOOP_COMMON_LIB"/jackson-core-2.*
-    local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
-    local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
+  # needed jars
+  local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
+  local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
+  local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
+  local JACKSON_CORE_JAR="$HADOOP_COMMON_LIB"/jackson-core-2.*
+  local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
+  local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
 
-    # if already exists, unlink first. In case applying patch, we need to remove old links
-    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bc-fips-*" -delete
-    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bctls-fips-*" -delete
-    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "hadoop-shaded-guava-*" -delete
-    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "jackson-core-2.*" -delete
-    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "protobuf-java-*" -delete
-    find $RANGER_PLUGIN_INSTALL_LIB -type l -name "maprfs-*" -delete
+  # if already exists, unlink first. In case applying patch, we need to remove old links
+  find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bc-fips-*" -delete
+  find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bctls-fips-*" -delete
+  find $RANGER_PLUGIN_INSTALL_LIB -type l -name "hadoop-shaded-guava-*" -delete
+  find $RANGER_PLUGIN_INSTALL_LIB -type l -name "jackson-core-2.*" -delete
+  find $RANGER_PLUGIN_INSTALL_LIB -type l -name "protobuf-java-*" -delete
+  find $RANGER_PLUGIN_INSTALL_LIB -type l -name "maprfs-*" -delete
 
-    # create the links again
-    ln -sf $BC_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
-    ln -sf $BCTLS_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
-    ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_PLUGIN_INSTALL_LIB
-    ln -sf $JACKSON_CORE_JAR $RANGER_PLUGIN_INSTALL_LIB
-    ln -sf $PROTOBUF_JARS $RANGER_PLUGIN_INSTALL_LIB
-    ln -sf $MAPRFS_JARS $RANGER_PLUGIN_INSTALL_LIB
-  fi
+  # create the links again
+  ln -sf $BC_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
+  ln -sf $BCTLS_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
+  ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_PLUGIN_INSTALL_LIB
+  ln -sf $JACKSON_CORE_JAR $RANGER_PLUGIN_INSTALL_LIB
+  ln -sf $PROTOBUF_JARS $RANGER_PLUGIN_INSTALL_LIB
+  ln -sf $MAPRFS_JARS $RANGER_PLUGIN_INSTALL_LIB
 }
 
 #
