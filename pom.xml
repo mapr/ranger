@@ -209,8 +209,8 @@
         <velocity.version>2.3</velocity.version>
         <zookeeper.version>3.5.6.0-mapr-SNAPSHOT</zookeeper.version>
         <mapr.core.version>7.4.0.0-mapr-SNAPSHOT</mapr.core.version>
-        <codehaus.woodstox.stax2api.version>3.1.4</codehaus.woodstox.stax2api.version>
-        <fasterxml.woodstox.version>5.0.3</fasterxml.woodstox.version>
+        <codehaus.woodstox.stax2api.version>4.2.1</codehaus.woodstox.stax2api.version>
+        <fasterxml.woodstox.version>5.3.0</fasterxml.woodstox.version>
         <fasterxml.jackson.version>2.13.3</fasterxml.jackson.version>
         <fasterxml.jackson.databind.version>2.13.3</fasterxml.jackson.databind.version>
         <kstruct.gethostname4j.version>1.0.0</kstruct.gethostname4j.version>
@@ -1406,6 +1406,16 @@
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
                 <version>${curator.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.woodstox</groupId>
+                <artifactId>woodstox-core</artifactId>
+                <version>${fasterxml.woodstox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.codehaus.woodstox</groupId>
+                <artifactId>stax2-api</artifactId>
+                <version>${codehaus.woodstox.stax2api.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

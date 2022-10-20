@@ -34,24 +34,19 @@ log() {
 # 2. protobuf
 # 3. jackson
 # 4. bc fips jars
-# 5. stax2-api
-# 6. woodstox-core
-# 7. hadoop-shaded-guava
+# 5. hadoop-shaded-guava
 # if already linked, then refresh them
 link_mapr_core_lib_for_usersync() {
   local MAPR_CORE_LIB="$MAPR_HOME"/lib
   local RANGER_USERSYNC_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-usersync/lib
-  local RANGER_ADMIN_WEBAPP_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/webapp/WEB-INF/lib
   local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
 
   # if needed add more jars
   local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
-  local JACKSON_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/jackson-core-2.*
-  local BC_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bc-fips-*
-  local BCTLS_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bctls-fips-*
-  local STAX2_API_JAR="$RANGER_ADMIN_WEBAPP_LIB"/stax2-api-*
-  local WOODSTOX_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/woodstox-core-*
+  local JACKSON_CORE_JAR="$MAPR_CORE_LIB"/jackson-core-2.*
+  local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
+  local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
   local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
   local JETTY_UTIL_JAR="$MAPR_CORE_LIB"/jetty-util-*
@@ -62,8 +57,6 @@ link_mapr_core_lib_for_usersync() {
   find $RANGER_USERSYNC_LIB -type l -name "jackson-core-2.*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "bc-fips-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "bctls-fips-*" -delete
-  find $RANGER_USERSYNC_LIB -type l -name "stax2-api-*" -delete
-  find $RANGER_USERSYNC_LIB -type l -name "woodstox-core-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "hadoop-shaded-guava-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "mapr-security-web-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "jetty-util-*" -delete
@@ -74,8 +67,6 @@ link_mapr_core_lib_for_usersync() {
   ln -sf $JACKSON_CORE_JAR $RANGER_USERSYNC_LIB
   ln -sf $BC_FIPS_JAR $RANGER_USERSYNC_LIB
   ln -sf $BCTLS_FIPS_JAR $RANGER_USERSYNC_LIB
-  ln -sf $STAX2_API_JAR $RANGER_USERSYNC_LIB
-  ln -sf $WOODSTOX_CORE_JAR $RANGER_USERSYNC_LIB
   ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_USERSYNC_LIB
   ln -sf $MAPR_WEB_SECURITY_JAR $RANGER_USERSYNC_LIB
   ln -sf $JETTY_UTIL_JAR $RANGER_USERSYNC_LIB
