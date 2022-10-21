@@ -1917,25 +1917,28 @@ else
 fi
 
 echo "Installation of Ranger PolicyManager Web Application is completed."
-echo
-echo " --------- Running Ranger User Synchronization Install Script --------- "
-echo
 
-# Get properties from admin to usersync
-log "[I] Transferring properties from Admin to Usersync"
-RANGER_USER_SYNC_PASSWORD_PROP="rangerUsersync_password"
-RANGER_USER_SYNC_PASSWORD=$(get_prop "$RANGER_USER_SYNC_PASSWORD_PROP" "$PROPFILE")
-RANGER_ADMIN_BASE_URL_PROP="policymgr_external_url"
-RANGER_ADMIN_BASE_URL=$(get_prop "$RANGER_ADMIN_BASE_URL_PROP" "$PROPFILE")
-RANGER_USER_SYNC_PROP_FILE="$RANGER_HOME"/ranger-usersync/install.properties
+if [ -f "${MAPR_HOME}"/roles/ranger-usersync ]; then
+  echo
+  echo " --------- Running Ranger User Synchronization Install Script --------- "
+  echo
 
-# getting password
-sed -i --expression "s@${RANGER_USER_SYNC_PASSWORD_PROP}.*=.*@${RANGER_USER_SYNC_PASSWORD_PROP}=${RANGER_USER_SYNC_PASSWORD}@" "${RANGER_USER_SYNC_PROP_FILE}"
-# getting base admin url
-sed -i --expression "s@POLICY_MGR_URL.*=.*@POLICY_MGR_URL = ${RANGER_ADMIN_BASE_URL}@" "${RANGER_USER_SYNC_PROP_FILE}"
+  # Get properties from admin to usersync
+  log "[I] Transferring properties from Admin to Usersync"
+  RANGER_USER_SYNC_PASSWORD_PROP="rangerUsersync_password"
+  RANGER_USER_SYNC_PASSWORD=$(get_prop "$RANGER_USER_SYNC_PASSWORD_PROP" "$PROPFILE")
+  RANGER_ADMIN_BASE_URL_PROP="policymgr_external_url"
+  RANGER_ADMIN_BASE_URL=$(get_prop "$RANGER_ADMIN_BASE_URL_PROP" "$PROPFILE")
+  RANGER_USER_SYNC_PROP_FILE="$RANGER_HOME"/ranger-usersync/install.properties
 
-log "[I] Changing properties file permission"
-chmod 700 "${RANGER_USER_SYNC_PROP_FILE}"
+  # getting password
+  sed -i --expression "s@${RANGER_USER_SYNC_PASSWORD_PROP}.*=.*@${RANGER_USER_SYNC_PASSWORD_PROP}=${RANGER_USER_SYNC_PASSWORD}@" "${RANGER_USER_SYNC_PROP_FILE}"
+  # getting base admin url
+  sed -i --expression "s@POLICY_MGR_URL.*=.*@POLICY_MGR_URL = ${RANGER_ADMIN_BASE_URL}@" "${RANGER_USER_SYNC_PROP_FILE}"
 
-log "[I] Running main script"
-source "$RANGER_HOME"/ranger-usersync/setup.sh
+  log "[I] Changing properties file permission"
+  chmod 700 "${RANGER_USER_SYNC_PROP_FILE}"
+
+  log "[I] Running main script"
+  source "$RANGER_HOME"/ranger-usersync/setup.sh
+fi
