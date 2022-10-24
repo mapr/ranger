@@ -241,4 +241,8 @@
 		<name>ranger.usersync.metrics.filename</name>
 		<value></value>
     </property>
+	<property>
+		<name>ranger.usersync.service.retryinmillis</name>
+		<value></value>
+	</property>
 </configuration>

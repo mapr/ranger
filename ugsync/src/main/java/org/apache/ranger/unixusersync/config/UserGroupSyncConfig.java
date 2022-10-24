@@ -103,6 +103,12 @@ public class UserGroupSyncConfig  {
 
 	private static final long UGSYNC_SLEEP_TIME_IN_MILLIS_BETWEEN_CYCLE_LDAP_DEFAULT_VALUE = 3600000L;
 
+	private static final String UGSYNC_SERVICE_RETRY_IN_MILLIS_PARAM = "ranger.usersync.service.retryinmillis";
+
+	private static final long UGSYNC_SERVICE_RETRY_IN_MILLIS_MIN_VAL = 10000L;
+
+	private static final long UGSYNC_SERVICE_RETRY_IN_MILLIS_DEFAULT_VAL = 15000L;
+
 	private static final String UGSYNC_SOURCE_CLASS_PARAM = "ranger.usersync.source.impl.class";
 
 	private static final String UGSYNC_SINK_CLASS_PARAM = "ranger.usersync.sink.impl.class";
@@ -542,6 +548,29 @@ public class UserGroupSyncConfig  {
 		}
 
 		return className;
+	}
+
+	public long getServiceRetryInMillis() {
+		String val = prop.getProperty(UGSYNC_SERVICE_RETRY_IN_MILLIS_PARAM);
+		if(val == null || val.trim().isEmpty()) {
+			LOG.info("Service start retry duration is not specified. Defaulting the value as "
+					+ UGSYNC_SERVICE_RETRY_IN_MILLIS_DEFAULT_VAL + " milliseconds.");
+			return UGSYNC_SERVICE_RETRY_IN_MILLIS_DEFAULT_VAL;
+		} else {
+			try {
+				long res = Long.parseLong(val);
+				if (res < UGSYNC_SERVICE_RETRY_IN_MILLIS_MIN_VAL) {
+					LOG.warn("Service start retry duration cannot be less than min value "
+							+ UGSYNC_SERVICE_RETRY_IN_MILLIS_MIN_VAL + " milliseconds. Resetting to min value.");
+					res = UGSYNC_SERVICE_RETRY_IN_MILLIS_MIN_VAL;
+				}
+				return res;
+			} catch (NumberFormatException nfe) {
+				LOG.warn("Service start retry duration is not valid long. Defaulting the value as "
+						+ UGSYNC_SERVICE_RETRY_IN_MILLIS_DEFAULT_VAL + " milliseconds.");
+				return UGSYNC_SERVICE_RETRY_IN_MILLIS_DEFAULT_VAL;
+			}
+		}
 	}
 
 	public UserGroupSource getUserGroupSource() throws Throwable {

@@ -85,4 +85,8 @@
 		<name>ranger.usersync.deletes.frequency</name>
 		<value>10</value>
 	</property>
+	<property>
+		<name>ranger.usersync.service.retryinmillis</name>
+		<value>15000</value>
+	</property>
 </configuration>

@@ -38,7 +38,9 @@ public class UserGroupSync implements Runnable {
 	@Override
 	public void run() {
 		try {
-			long sleepTimeBetweenCycleInMillis = UserGroupSyncConfig.getInstance().getSleepTimeInMillisBetweenCycle();
+			UserGroupSyncConfig config = UserGroupSyncConfig.getInstance();
+			long sleepTimeBetweenCycleInMillis = config.getSleepTimeInMillisBetweenCycle();
+			long serviceRetryInMillis = config.getServiceRetryInMillis();
 
 			boolean initPending = true;
 
@@ -60,12 +62,12 @@ public class UserGroupSync implements Runnable {
 
 					LOG.info("Done initializing user/group source and sink");
 				} catch (Throwable t) {
-					LOG.error("Failed to initialize UserGroup source/sink. Will retry after " + sleepTimeBetweenCycleInMillis + " milliseconds. Error details: ", t);
+					LOG.error("Failed to initialize UserGroup source/sink. Will retry after " + serviceRetryInMillis + " milliseconds. Error details: ", t);
 					try {
-						LOG.debug("Sleeping for [" + sleepTimeBetweenCycleInMillis + "] milliSeconds");
-						Thread.sleep(sleepTimeBetweenCycleInMillis);
+						LOG.debug("Sleeping for [" + serviceRetryInMillis + "] milliseconds");
+						Thread.sleep(serviceRetryInMillis);
 					} catch (Exception e) {
-						LOG.error("Failed to wait for [" + sleepTimeBetweenCycleInMillis + "] milliseconds before attempting to initialize UserGroup source/sink", e);
+						LOG.error("Failed to wait for [" + serviceRetryInMillis + "] milliseconds before attempting to initialize UserGroup source/sink", e);
 					}
 				}
 			}
