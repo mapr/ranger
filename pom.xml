@@ -183,6 +183,7 @@
         <owasp-java-html-sanitizer.version>r239</owasp-java-html-sanitizer.version>
         <paranamer.version>2.3</paranamer.version>
         <presto.version>333</presto.version>
+        <prestodb.version>0.269</prestodb.version>
         <trino.version>377</trino.version>
         <poi.version>5.2.2</poi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -223,6 +224,14 @@
         <presto.guava.version>26.0-jre</presto.guava.version>
         <presto.validation-api.version>2.0.1.Final</presto.validation-api.version>
         <presto.re2j.version>1.1</presto.re2j.version>
+
+        <!-- prestodb plugin deps -->
+        <prestodb.airlift.version>0.201</prestodb.airlift.version>
+        <prestodb.bval-jsr.version>2.0.0</prestodb.bval-jsr.version>
+        <prestodb.guice.version>4.2.2</prestodb.guice.version>
+        <prestodb.guava.version>26.0-jre</prestodb.guava.version>
+        <prestodb.validation-api.version>2.0.1.Final</prestodb.validation-api.version>
+        <prestodb.re2j.version>1.1</prestodb.re2j.version>
 
         <!-- trino plugin deps -->
         <trino.airlift.version>0.192</trino.airlift.version>
@@ -291,6 +300,7 @@
                 <module>plugin-nifi</module>
                 <module>plugin-nifi-registry</module>
                 <module>plugin-presto</module>
+                <module>plugin-prestodb</module>
                 <module>plugin-kudu</module>
                 <module>ugsync-util</module>
                 <module>ugsync</module>
@@ -313,6 +323,7 @@
                 <module>ranger-atlas-plugin-shim</module>
                 <module>ranger-kms-plugin-shim</module>
                 <module>ranger-presto-plugin-shim</module>
+                <module>ranger-prestodb-plugin-shim</module>
                 <module>ranger-examples</module>
                 <module>ranger-tools</module>
                 <module>plugin-atlas</module>
@@ -360,6 +371,7 @@
                 <module>plugin-nifi</module>
                 <module>plugin-nifi-registry</module>
                 <module>plugin-presto</module>
+                <module>plugin-prestodb</module>
                 <module>plugin-trino</module>
                 <module>plugin-kudu</module>
                 <module>ugsync-util</module>
@@ -383,6 +395,7 @@
                 <module>ranger-atlas-plugin-shim</module>
                 <module>ranger-kms-plugin-shim</module>
                 <module>ranger-presto-plugin-shim</module>
+                <module>ranger-prestodb-plugin-shim</module>
                 <module>ranger-trino-plugin-shim</module>
                 <module>ranger-examples</module>
                 <module>ranger-tools</module>
@@ -630,6 +643,20 @@
             </modules>
         </profile>
         <profile>
+            <id>ranger-prestodb-plugin</id>
+            <modules>
+                <module>agents-audit</module>
+                <module>agents-common</module>
+                <module>agents-cred</module>
+                <module>agents-installer</module>
+                <module>credentialbuilder</module>
+                <module>ranger-plugin-classloader</module>
+                <module>ranger-util</module>
+                <module>plugin-prestodb</module>
+                <module>ranger-prestodb-plugin-shim</module>
+            </modules>
+        </profile>
+        <profile>
             <id>ranger-trino-plugin</id>
             <modules>
                 <module>agents-audit</module>
@@ -716,6 +743,8 @@
                 <module>ranger-kylin-plugin-shim</module>
                 <module>plugin-presto</module>
                 <module>ranger-presto-plugin-shim</module>
+                <module>plugin-prestodb</module>
+                <module>ranger-prestodb-plugin-shim</module>
                 <module>plugin-elasticsearch</module>
                 <module>ranger-elasticsearch-plugin-shim</module>
                 <!--
@@ -770,6 +799,7 @@
                 <module>plugin-nifi</module>
                 <module>plugin-nifi-registry</module>
                 <module>plugin-presto</module>
+                <module>plugin-prestodb</module>
                 <module>ugsync-util</module>
                 <module>ugsync</module>
                 <module>ugsync/ldapconfigchecktool/ldapconfigcheck</module>
@@ -791,6 +821,7 @@
                 <module>ranger-atlas-plugin-shim</module>
                 <module>ranger-kms-plugin-shim</module>
                 <module>ranger-presto-plugin-shim</module>
+                <module>ranger-prestodb-plugin-shim</module>
                 <module>ranger-examples</module>
                 <module>ranger-tools</module>
                 <module>plugin-atlas</module>
