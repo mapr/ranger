@@ -86,7 +86,7 @@ link_mapr_core_lib_for_admin() {
   # if needed add more jars
   local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
-  local SERVLET_JARS="$MAPR_CORE_LIB"/javax.servlet-api-*
+  local SERVLET_JARS="$RANGER_ADMIN_WEBAPP_LIB"/javax.servlet-api-*
   local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
 
   # if already exists, unlink first. In case applying patch, we need to remove old links
