@@ -202,8 +202,10 @@ PROJ_LIB_PLUGIN_DIR=${PROJ_INSTALL_DIR}/${PLUGIN_DEPENDENT_LIB_DIR}
 
 HCOMPONENT_INSTALL_DIR_NAME=$(getInstallProperty 'COMPONENT_INSTALL_DIR_NAME')
 
-# symlinks for installation library
-configure_symlinks_for_plugins
+# symlinks for installation library. PrestoDB is platform independent.
+if [ "${HCOMPONENT_NAME}" != "prestodb" ]; then
+  configure_symlinks_for_plugins
+fi
 
 # check component's installation dir is valid or not.
 # If not, attempt to find it
