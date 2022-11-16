@@ -199,6 +199,7 @@ admin_principal=$(get_prop 'admin_principal' $PROPFILE)
 admin_keytab=$(get_prop 'admin_keytab' $PROPFILE)
 lookup_principal=$(get_prop 'lookup_principal' $PROPFILE)
 lookup_keytab=$(get_prop 'lookup_keytab' $PROPFILE)
+security_type=$(get_prop 'security_type' $PROPFILE)
 hadoop_conf=$(get_prop 'hadoop_conf' $PROPFILE)
 audit_solr_collection_name=$(get_prop 'audit_solr_collection_name' $PROPFILE)
 audit_solr_config_name=$(get_prop 'audit_solr_config_name' $PROPFILE)
@@ -640,6 +641,10 @@ update_properties() {
                 newPropertyValue="${lookup_keytab}"
                 updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 	fi
+
+	propertyName=ranger.security.type
+	newPropertyValue="${security_type}"
+	updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
 	if [ "${db_ssl_enabled}" != "" ]
 	then

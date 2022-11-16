@@ -400,4 +400,8 @@
         <description>Provide the location of the Public CA issued keystore file.</description>
     </property>
     <!-- SSL configuration End -->
+    <property>
+        <name>ranger.security.type</name>
+        <value/>
+    </property>
 </configuration>

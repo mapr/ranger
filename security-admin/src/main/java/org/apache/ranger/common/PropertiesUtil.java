@@ -37,6 +37,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.ranger.biz.RangerBizUtil;
 import org.apache.ranger.credentialapi.CredentialReader;
 import org.apache.ranger.plugin.util.RangerCommonConstants;
+import org.apache.ranger.util.MaprSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -412,8 +413,13 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer {
 			logger.debug("PropertiesUtil:[" + keyStr + "][" + (keyStr.toLowerCase().contains("pass") ? "********]" : props.get(keyStr)) + "]");
 		}
 	}
+		// set native security.type if not specified in property
+		String securityType = propertiesMap == null ? null : propertiesMap.get(MaprSecurity.SECURITY_TYPE_PROPERTY);
+		if (securityType == null || securityType.isEmpty())
+			securityType = MaprSecurity.getNativeSecurityType();
+		propertiesMap.put(MaprSecurity.SECURITY_TYPE_PROPERTY, securityType);
 
-	super.processProperties(beanFactory, props);
+		super.processProperties(beanFactory, props);
     }
 
     public static String getProperty(String key, String defaultValue) {

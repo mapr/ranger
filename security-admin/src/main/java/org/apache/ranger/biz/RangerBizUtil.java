@@ -65,6 +65,7 @@ import org.apache.ranger.rest.ServiceREST;
 import org.apache.ranger.security.context.RangerAdminOpContext;
 import org.apache.ranger.security.context.RangerContextHolder;
 import org.apache.ranger.service.XUserService;
+import org.apache.ranger.util.MaprSecurity;
 import org.apache.ranger.view.VXPortalUser;
 import org.apache.ranger.view.VXResource;
 import org.apache.ranger.view.VXResponse;
@@ -122,6 +123,7 @@ public class RangerBizUtil {
 	private final boolean allowUnauthenticatedDownloadAccessInSecureEnvironment;
 
 	static String fileSeparator = PropertiesUtil.getProperty("ranger.file.separator", "/");
+	private String securityType;
 
 	public RangerBizUtil() {
 		RangerAdminConfig config = RangerAdminConfig.getInstance();
@@ -136,6 +138,8 @@ public class RangerBizUtil {
 		groupEditableClasses = new HashSet<Class<?>>(
 				Arrays.asList(groupEditableClassesList));
 		enableResourceAccessControl = PropertiesUtil.getBooleanProperty("ranger.resource.accessControl.enabled", true);
+
+		securityType = PropertiesUtil.getProperty(MaprSecurity.SECURITY_TYPE_PROPERTY);
 
 		auditDBType = PropertiesUtil.getProperty("ranger.audit.source.type",
 				auditDBType).toLowerCase();
@@ -461,7 +465,7 @@ public class RangerBizUtil {
 	}
 
 	public void failUnauthenticatedIfNotAllowed() throws Exception {
-		if (UserGroupInformation.isSecurityEnabled()) {
+		if (!MaprSecurity.NONE.equals(securityType)) {
 			UserSessionBase currentUserSession = ContextUtil.getCurrentUserSession();
 			if (currentUserSession == null) {
 				if (!allowUnauthenticatedAccessInSecureEnvironment) {

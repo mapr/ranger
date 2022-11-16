@@ -22,6 +22,7 @@ package org.apache.ranger.security.web.filter;
 import com.mapr.security.maprauth.MaprAuthenticationHandler;
 import org.apache.hadoop.security.authentication.client.AuthenticationException;
 import org.apache.hadoop.security.authentication.server.AuthenticationToken;
+import org.apache.ranger.common.PropertiesUtil;
 import org.apache.ranger.util.MaprSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,6 +62,8 @@ public class RangerMaprAuthenticationFilter implements Filter {
     private static final Logger LOG = LoggerFactory.getLogger(RangerMaprAuthenticationFilter.class);
     private final MaprAuthenticationHandler maprAuthHandler = new MaprAuthenticationHandler();
 
+    private String securityTYpe = PropertiesUtil.getProperty(MaprSecurity.SECURITY_TYPE_PROPERTY);
+
     public RangerMaprAuthenticationFilter() {
         try {
             // for some reason spring does not call Filter#init() on startup, so call it in constructor
@@ -91,7 +94,7 @@ public class RangerMaprAuthenticationFilter implements Filter {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        if (MaprSecurity.MAPR_SASL) {
+        if (MaprSecurity.MAPR_SASL.equals(securityTYpe)) {
             try {
                 AuthenticationToken token = maprAuthHandler.postauthenticate(
                         (HttpServletRequest) request, (HttpServletResponse) response);

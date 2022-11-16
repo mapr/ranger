@@ -24,20 +24,26 @@ import com.mapr.fs.ShimLoader;
 import com.mapr.security.JNISecurity;
 
 public class MaprSecurity {
-    public static final boolean MAPR_SASL;
-    public static final boolean KERBEROS;
-    public static final boolean NONE;
+    public static final String SECURITY_TYPE_PROPERTY = "ranger.security.type";
+    public static final String MAPR_SASL = "maprsasl";
+    public static final String KERBEROS = "kerberos";
+    public static final String NONE = "none";
     private static final String clusterName;
 
     static {
         ShimLoader.load();
 
         clusterName = CLDBRpcCommonUtils.getInstance().getCurrentClusterName();
-        KERBEROS = JNISecurity.IsKerberosEnabled(clusterName);
-        MAPR_SASL = JNISecurity.IsSecurityEnabled(clusterName) && !KERBEROS;
-        NONE = !MAPR_SASL && !KERBEROS;
     }
-
+    public static String getNativeSecurityType() {
+        if (!JNISecurity.IsSecurityEnabled(clusterName)) {
+            return NONE;
+        }
+        else if (JNISecurity.IsKerberosEnabled(clusterName)) {
+            return KERBEROS;
+        }
+       return MAPR_SASL;
+    }
     public static String getClusterName() {
         return clusterName;
     }

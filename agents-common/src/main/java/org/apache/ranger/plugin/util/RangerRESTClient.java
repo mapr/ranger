@@ -251,7 +251,7 @@ public class RangerRESTClient {
 	}
 
 	private void init(Configuration config) {
-		if (MaprSecurity.MAPR_SASL) {
+		if (MaprSecurity.MAPR_SASL.equals(MaprSecurity.getNativeSecurityType())) {
 			String challengeString = MaprAuthenticationUtils.generateChallengeString();
 			this.authHeader = RangerClientSecurity.NEGOTIATE + " " + challengeString;
 		}
@@ -775,7 +775,7 @@ public class RangerRESTClient {
 	}
 
 	private WebResource.Builder setMaprSaslHeaderIfNeeded(WebResource.Builder builder) {
-		if (MaprSecurity.MAPR_SASL && useMaprSasl) {
+		if (useMaprSasl && MaprSecurity.MAPR_SASL.equals(MaprSecurity.getNativeSecurityType())) {
 			builder = builder.header(MaprAuthenticationUtils.AUTH_HEADER, authHeader);
 		}
 		return builder;
