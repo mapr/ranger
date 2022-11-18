@@ -25,6 +25,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.UserGroupInformation;
 import org.apache.ranger.plugin.model.RangerRole;
 import org.apache.ranger.plugin.util.*;
+import org.apache.ranger.util.MaprSecurity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,6 +35,8 @@ public abstract class AbstractRangerAdminClient implements RangerAdminClient {
     private static final Logger LOG = LoggerFactory.getLogger(AbstractRangerAdminClient.class);
 
     protected Gson gson;
+
+    private String securityType;
 
     private boolean forceNonKerberos = false;
 
@@ -48,6 +51,10 @@ public abstract class AbstractRangerAdminClient implements RangerAdminClient {
         }
 
         this.gson = gson;
+        securityType = config.get(MaprSecurity.SECURITY_TYPE_PROPERTY);
+        if (securityType == null || securityType.isEmpty()) {
+            securityType = MaprSecurity.getNativeSecurityType();
+        }
         this.forceNonKerberos = config.getBoolean(configPropertyPrefix + ".forceNonKerberos", false);
     }
 
@@ -127,7 +134,7 @@ public abstract class AbstractRangerAdminClient implements RangerAdminClient {
         if (forceNonKerberos) {
             ret = false;
         } else {
-            ret = user != null && UserGroupInformation.isSecurityEnabled() && user.hasKerberosCredentials();
+            ret = user != null && !MaprSecurity.NONE.equals(this.securityType);
         }
 
         return ret;

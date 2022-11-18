@@ -114,6 +114,8 @@ public class RangerRESTClient {
 	private int    retryIntervalMs;
 	private int    lastKnownActiveUrlIndex;
 
+	private String securityType;
+
 	private final List<String> configuredURLs;
 
 	private volatile Client client;
@@ -251,7 +253,11 @@ public class RangerRESTClient {
 	}
 
 	private void init(Configuration config) {
-		if (MaprSecurity.MAPR_SASL.equals(MaprSecurity.getNativeSecurityType())) {
+		securityType = config.get(MaprSecurity.SECURITY_TYPE_PROPERTY);
+		if (securityType == null || securityType.isEmpty()) {
+			securityType = MaprSecurity.getNativeSecurityType();
+		}
+		if (MaprSecurity.MAPR_SASL.equals(securityType)) {
 			String challengeString = MaprAuthenticationUtils.generateChallengeString();
 			this.authHeader = RangerClientSecurity.NEGOTIATE + " " + challengeString;
 		}
@@ -775,7 +781,7 @@ public class RangerRESTClient {
 	}
 
 	private WebResource.Builder setMaprSaslHeaderIfNeeded(WebResource.Builder builder) {
-		if (useMaprSasl && MaprSecurity.MAPR_SASL.equals(MaprSecurity.getNativeSecurityType())) {
+		if (useMaprSasl && MaprSecurity.MAPR_SASL.equals(securityType)) {
 			builder = builder.header(MaprAuthenticationUtils.AUTH_HEADER, authHeader);
 		}
 		return builder;
