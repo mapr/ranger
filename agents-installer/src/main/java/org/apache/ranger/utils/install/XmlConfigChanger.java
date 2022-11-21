@@ -454,7 +454,7 @@ public class XmlConfigChanger {
 				if (isToken) {
 					String token = tokensb.toString();
 					String tokenValue = (token.length() == 0 ? "%" : prop.getProperty(token) );
-					if (tokenValue == null  || tokenValue.trim().isEmpty()) {
+					if (tokenValue == null) { // allow empty value for SECURITY_TYPE prop
 						throw new ValidationException("ERROR: configuration token [" + token + "] is not defined in the file: [" + (propFile != null ? propFile.getAbsolutePath() : "{no install.properties file specified using -p option}") + "]");
 					}
 					else {

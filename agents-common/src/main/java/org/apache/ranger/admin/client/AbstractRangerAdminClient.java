@@ -53,7 +53,7 @@ public abstract class AbstractRangerAdminClient implements RangerAdminClient {
         this.gson = gson;
         securityType = config.get(MaprSecurity.SECURITY_TYPE_PROPERTY);
         if (securityType == null || securityType.isEmpty()) {
-            securityType = MaprSecurity.getNativeSecurityType();
+            securityType = MaprSecurity.getSecurityTypeFromClustersFile();
         }
         this.forceNonKerberos = config.getBoolean(configPropertyPrefix + ".forceNonKerberos", false);
     }

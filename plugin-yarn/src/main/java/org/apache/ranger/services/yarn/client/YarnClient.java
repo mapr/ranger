@@ -226,7 +226,7 @@ public class YarnClient extends BaseClient {
 						}
 
 						String authHeader = null;
-						if (MaprSecurity.MAPR_SASL.equals(MaprSecurity.getNativeSecurityType())) {
+						if (MaprSecurity.MAPR_SASL.equals(MaprSecurity.getSecurityTypeFromClustersFile())) {
 							String challengeString = MaprAuthenticationUtils.generateChallengeString();
 							authHeader = String.format("MAPR-Negotiate %s", challengeString);
 						}

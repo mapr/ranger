@@ -416,7 +416,7 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer {
 		// set native security.type if not specified in property
 		String securityType = propertiesMap == null ? null : propertiesMap.get(MaprSecurity.SECURITY_TYPE_PROPERTY);
 		if (securityType == null || securityType.isEmpty())
-			securityType = MaprSecurity.getNativeSecurityType();
+			securityType = MaprSecurity.getSecurityTypeFromClustersFile();
 		propertiesMap.put(MaprSecurity.SECURITY_TYPE_PROPERTY, securityType);
 
 		super.processProperties(beanFactory, props);

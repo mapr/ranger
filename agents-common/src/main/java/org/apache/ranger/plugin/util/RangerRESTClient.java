@@ -255,7 +255,7 @@ public class RangerRESTClient {
 	private void init(Configuration config) {
 		securityType = config.get(MaprSecurity.SECURITY_TYPE_PROPERTY);
 		if (securityType == null || securityType.isEmpty()) {
-			securityType = MaprSecurity.getNativeSecurityType();
+			securityType = MaprSecurity.getSecurityTypeFromClustersFile();
 		}
 		if (MaprSecurity.MAPR_SASL.equals(securityType)) {
 			String challengeString = MaprAuthenticationUtils.generateChallengeString();
