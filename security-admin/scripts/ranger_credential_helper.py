@@ -59,9 +59,9 @@ def call_keystore(libpath, filepath, aliasKey, aliasValue='', getorcreate='get')
 	finalFilePath = ks_type+'://file/'+filepath.replace('\\','/').replace('//','/')
 	if getorcreate == 'create':
 		if RANGER_OPTS is None:
-			commandtorun = [JAVA_BIN, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
+			commandtorun = [JAVA_BIN, '-cp', finalLibPath, '--add-opens', 'java.base/java.lang=ALL-UNNAMED', 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
 		else:
-			commandtorun = [JAVA_BIN, RANGER_OPTS, '-cp', finalLibPath, 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
+			commandtorun = [JAVA_BIN, RANGER_OPTS, '-cp', finalLibPath, '--add-opens', 'java.base/java.lang=ALL-UNNAMED', 'org.apache.ranger.credentialapi.buildks' ,'create', aliasKey, '-value', aliasValue, '-provider',finalFilePath]
 		p = Popen(commandtorun,stdin=PIPE, stdout=PIPE, stderr=PIPE)
 		output, error = p.communicate()
 		statuscode = p.returncode

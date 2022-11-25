@@ -150,7 +150,7 @@ def main(argv):
 		ks_type = "jceks"
 		if os.getenv("FIPS_ENABLED") == "true":
 			ks_type = "bcfks"
-		pattern = "%s %s -cp lib/* org.apache.ranger.credentialapi.buildks create %s -value %s  -provider "+ks_type+"://file%s"
+		pattern = "%s %s -cp lib/* --add-opens java.base/java.lang=ALL-UNNAMED org.apache.ranger.credentialapi.buildks create %s -value %s  -provider "+ks_type+"://file%s"
 		cmd = pattern %(JAVA_BIN,RANGER_OPTS,SYNC_POLICY_MGR_ALIAS,SYNC_POLICY_MGR_PASSWORD,SYNC_LDAP_BIND_KEYSTOREPATH)
 		ret=subprocess.call(shlex.split(cmd))
 		if ret == 0:

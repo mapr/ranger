@@ -47,7 +47,8 @@ for custom_env_script in `find ${XAPOLICYMGR_DIR}/ews/webapp/WEB-INF/classes/con
         fi
 done
 
-JAVA_OPTS=" ${JAVA_OPTS} -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx${ranger_admin_max_heap_size} -Xms1g -Xloggc:${XAPOLICYMGR_EWS_DIR}/logs/gc-worker.log -verbose:gc -XX:+PrintGCDetails"
+JAVA_OPTS=" ${JAVA_OPTS} -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx${ranger_admin_max_heap_size} -Xms1g -Xloggc:${XAPOLICYMGR_EWS_DIR}/logs/gc-worker.log -verbose:gc -XX:+PrintGCDetails --add-opens java.base/java.lang=ALL-UNNAMED"
+
 if [[ ${JAVA_OPTS} != *"-Duser.timezone"* ]] ;then  export JAVA_OPTS=" ${JAVA_OPTS} -Duser.timezone=UTC" ;fi
 
 if [ "$JAVA_HOME" != "" ]; then

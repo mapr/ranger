@@ -227,7 +227,7 @@ def updatePropertyInJCKSFile(jcksFileName, propName, value):
     ks_type = "jceks"
     if os.getenv("FIPS_ENABLED") == "true":
         ks_type = "bcfks"
-    pattern = "java %s -cp './lib/*' %s create '%s' -value '%s' -provider "+ks_type+"://file%s 2>&1"
+    pattern = "java %s --add-opens java.base/java.lang=ALL-UNNAMED -cp './lib/*' %s create '%s' -value '%s' -provider "+ks_type+"://file%s 2>&1"
     cmd = pattern % (
     RANGER_OPTS, credUpdateClassName, propName, value, fn)
     ret = os.system(cmd)

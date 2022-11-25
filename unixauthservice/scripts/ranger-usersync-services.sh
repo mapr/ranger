@@ -103,7 +103,7 @@ status() {
   exit 1
 }
 
-JAVA_OPTS=" ${JAVA_OPTS} -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx${ranger_usersync_max_heap_size} -Xms1g "
+JAVA_OPTS=" ${JAVA_OPTS} -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx${ranger_usersync_max_heap_size} -Xms1g --add-opens java.base/java.lang=ALL-UNNAMED "
 
 if [ "${action}" == "START" ]; then
 
