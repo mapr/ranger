@@ -187,8 +187,8 @@
         <trino.version>377</trino.version>
         <poi.version>5.2.2</poi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <protobuf-java.version>3.11.1</protobuf-java.version>
-        <gcp.protobuf-java.version>3.11.1</gcp.protobuf-java.version>
+        <protobuf-java.version>3.21.9</protobuf-java.version>
+        <gcp.protobuf-java.version>3.21.9</gcp.protobuf-java.version>
         <scala.version>2.12.10</scala.version>
         <scala.binary.version>2.12</scala.binary.version>
         <scala.xml.version>1.0.4</scala.xml.version>
@@ -1447,6 +1447,11 @@
                 <groupId>org.codehaus.woodstox</groupId>
                 <artifactId>stax2-api</artifactId>
                 <version>${codehaus.woodstox.stax2api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java</artifactId>
+                <version>${protobuf-java.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
