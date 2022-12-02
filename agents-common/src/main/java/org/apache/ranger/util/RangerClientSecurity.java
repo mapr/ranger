@@ -747,7 +747,6 @@ public class RangerClientSecurity {
                     String[] nics = elements[i].split(";");
                     // only care about the first nic
                     cldbs[i - hostIdx] = nics[0];
-                    i++;
                 }
             }
             bufferedReader.close();
