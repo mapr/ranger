@@ -581,7 +581,7 @@ def main():
                 os.chown(dn, ownerId, groupId)
                 os.chmod(dn, 0o755)
             for obj in files:
-                if not os.path.islink("./lib/" + str(obj)):
+                if not os.path.islink("./lib/" + str(obj)) and not str(obj) == "install.properties":
                     fn = join(root, obj)
                     os.chown(fn, ownerId, groupId)
                     os.chmod(fn, 0o750)

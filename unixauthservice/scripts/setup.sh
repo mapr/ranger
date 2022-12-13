@@ -43,6 +43,8 @@ if [ ! -f "${PROPFILE}" ]; then
         echo "$PROPFILE file not found....!!"
         exit 1;
 fi
+# Only cluster admin should be able to read it
+chmod 700 "${PROPFILE}"
 
 PYTHON_COMMAND_INVOKER=$(get_prop 'PYTHON_COMMAND_INVOKER' $PROPFILE)
 
