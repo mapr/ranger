@@ -35,6 +35,8 @@ if [[ "$(fips-mode-setup --check 2>/dev/null)" =~ "FIPS mode is enabled" ]] ; th
 fi
 export FIPS_ENABLED
 
+# For Java-17
+export RANGER_OPTS="${RANGER_OPTS} --add-opens java.base/java.lang=ALL-UNNAMED"
 export RANGER_OPTS="${RANGER_OPTS} ${JAVA_FIPS_OPTS}"
 
 KS_TYPE="jceks"
