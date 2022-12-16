@@ -1437,11 +1437,6 @@ def main(argv):
 	dryMode=False
 	is_revoke=False
 
-	if 'javax_net_ssl_trustStore_type' in globalDict:
-		javax_net_ssl_trustStore_type=globalDict['javax_net_ssl_trustStore_type']
-	if 'javax_net_ssl_keyStore_type' in globalDict:
-		javax_net_ssl_keyStore_type=globalDict['javax_net_ssl_keyStore_type']
-
 	if len(argv) == 4 and argv[3] == 'password_validation':
 			password_validation(argv[1],argv[2]);
 			return;
@@ -1476,6 +1471,11 @@ def main(argv):
 					else:
 						log("[E] Invalid file Name! Unable to find file:"+dba_sql_file,"error")
 						sys.exit(1)
+
+	if 'javax_net_ssl_trustStore_type' in globalDict:
+		javax_net_ssl_trustStore_type=globalDict['javax_net_ssl_trustStore_type']
+	if 'javax_net_ssl_keyStore_type' in globalDict:
+		javax_net_ssl_keyStore_type=globalDict['javax_net_ssl_keyStore_type']
 
 	log("[I] Running DBA setup script. QuiteMode:" + str(quiteMode),"info")
 	if (quiteMode):
