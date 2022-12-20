@@ -47,6 +47,7 @@
                     <include>org.apache.bval:bval-jsr:jar:${prestodb.bval-jsr.version}</include>
                     <include>org.slf4j:slf4j-api:jar:${slf4j-api.version}</include>
                     <include>javax.annotation:javax.annotation-api:jar:${javax.annotation-api}</include>
+                    <include>org.apache.hadoop.thirdparty:hadoop-shaded-guava</include>
                 </includes>
             </binaries>
         </moduleSet>
