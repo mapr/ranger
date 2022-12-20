@@ -334,5 +334,41 @@
   ],
   "policyConditions":
   [
-  ]
+  ],
+  "rowFilterDef": {
+    "accessTypes": [
+      {
+        "name": "select"
+      }
+    ],
+    "resources": [
+      {
+        "name": "catalog",
+        "matcherOptions": {
+          "wildCard": "true"
+        },
+        "lookupSupported": true,
+        "mandatory": true,
+        "uiHint": "{ \"singleValue\":true }"
+      },
+      {
+        "name": "schema",
+        "matcherOptions": {
+          "wildCard": "true"
+        },
+        "lookupSupported": true,
+        "mandatory": true,
+        "uiHint": "{ \"singleValue\":true }"
+      },
+      {
+        "name": "table",
+        "matcherOptions": {
+          "wildCard": "true"
+        },
+        "lookupSupported": true,
+        "mandatory": true,
+        "uiHint": "{ \"singleValue\":true }"
+      }
+    ]
+  }
 }

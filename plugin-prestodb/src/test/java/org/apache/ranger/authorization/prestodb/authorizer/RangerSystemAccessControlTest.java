@@ -25,6 +25,7 @@ import com.facebook.presto.spi.security.AccessControlContext;
 import com.facebook.presto.spi.security.AccessDeniedException;
 import com.facebook.presto.spi.security.Identity;
 import com.facebook.presto.spi.security.PrestoPrincipal;
+import com.facebook.presto.spi.security.ViewExpression;
 import com.google.common.collect.ImmutableSet;
 
 import static com.facebook.presto.spi.security.PrincipalType.USER;
@@ -35,6 +36,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -131,5 +133,13 @@ public class RangerSystemAccessControlTest {
     } catch (AccessDeniedException expected) {
     }
   }
+
+    @Test
+    @SuppressWarnings("PMD")
+    public void testMisc()
+    {
+      List<ViewExpression> ret = accessControlManager.getRowFilters(alice, CONTEXT, aliceTable);
+      assertEquals(ret.size(), 0);
+    }
 
 }

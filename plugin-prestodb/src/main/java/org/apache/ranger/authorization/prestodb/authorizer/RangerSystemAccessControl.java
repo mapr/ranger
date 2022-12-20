@@ -27,6 +27,7 @@ import com.facebook.presto.spi.security.Identity;
 import com.facebook.presto.spi.security.PrestoPrincipal;
 import com.facebook.presto.spi.security.Privilege;
 import com.facebook.presto.spi.security.SystemAccessControl;
+import com.facebook.presto.spi.security.ViewExpression;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.UserGroupInformation;
@@ -115,6 +116,41 @@ public class RangerSystemAccessControl
 
 
   /** FILTERING AND DATA MASKING **/
+  private RangerAccessResult getRowFilterResult(RangerPrestoAccessRequest request) {
+    if(LOG.isDebugEnabled()) {
+      LOG.debug("==> getRowFilterResult(request=" + request + ")");
+    }
+
+    RangerAccessResult ret = rangerPlugin.evalRowFilterPolicies(request, null);
+    if(LOG.isDebugEnabled()) {
+      LOG.debug("<== getRowFilterResult(request=" + request + "): ret=" + ret);
+    }
+    return ret;
+  }
+
+  private boolean isRowFilterEnabled(RangerAccessResult result) {
+    return result != null && result.isRowFilterEnabled();
+  }
+
+
+  @Override
+  public List<ViewExpression> getRowFilters(Identity identity, AccessControlContext context, CatalogSchemaTableName tableName) {
+    RangerPrestoAccessRequest request = createAccessRequest(createResource(tableName), identity, PrestoAccessType.SELECT);
+    RangerAccessResult result = getRowFilterResult(request);
+
+    List<ViewExpression> viewExpressions = new ArrayList<>();
+    if (isRowFilterEnabled(result)) {
+      String filter = result.getFilterExpr();
+      viewExpressions.add(new ViewExpression(
+              identity.getUser(),
+              Optional.of(tableName.getCatalogName()),
+              Optional.of(tableName.getSchemaTableName().getSchemaName()),
+              filter
+      ));
+    }
+    return viewExpressions;
+  }
+
   @Override
   public Set<String> filterCatalogs(Identity identity, AccessControlContext context, Set<String> catalogs) {
     LOG.debug("==> RangerSystemAccessControl.filterCatalogs("+ catalogs + ")");
