@@ -39,7 +39,14 @@
         <dependency>
             <groupId>com.facebook.presto</groupId>
             <artifactId>presto-spi</artifactId>
-	    <version>${prestodb.version}</version>
+	        <version>${prestodb.version}</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../agents-downloads/target/presto-spi-${prestodb.version}.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.facebook.presto</groupId>
+            <artifactId>presto-common</artifactId>
+            <version>${prestodb.version}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.ranger</groupId>
