@@ -322,8 +322,8 @@ logInfo "Ranger: Creating/refreshing symlinks in ranger-admin libraries."
 if $isAdminInstalled; then
   link_mapr_core_lib_for_admin
   configure_cred_lib_for_admin
+  configure_hbase_jars_for_admin
 fi
-configure_hbase_jars_for_admin
 logInfo "Ranger: Creating/refreshing symlinks in ranger-usersync library."
 if $isUsersyncInstalled; then
   link_mapr_core_lib_for_usersync

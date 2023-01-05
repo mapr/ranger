@@ -109,11 +109,10 @@ configure_hbase_jars_for_admin() {
   local RANGER_ADMIN_WEBAPP_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/webapp/WEB-INF/lib
   find $RANGER_ADMIN_WEBAPP_LIB -type l -name "hbase-*" -delete
 
-  # checking role files
-  if [ -f "${MAPR_HOME}"/roles/hbase ] && [ -f "${MAPR_HOME}"/roles/ranger-hbase-plugin ]; then
+  # checking role file for hbase
+  if [ -f "${MAPR_HOME}"/roles/hbase ]; then
     # find the jars
     local HBASE_VERSION_FILE="$MAPR_HOME"/hbase/hbaseversion
-    # shellcheck disable=SC2155
     local HBASE_VERSION=$(cat "$HBASE_VERSION_FILE")
     local HBASE_LIB="$MAPR_HOME"/hbase/hbase-"$HBASE_VERSION"/lib
     local HBASE_JARS="$HBASE_LIB"/hbase-*
