@@ -435,7 +435,7 @@ check_java_version() {
 	JAVA_VERSION_REQUIRED=`echo $JAVA_VERSION_REQUIRED | awk '{gsub(/ /,"")}1'`
 	JAVA_VERSION_REQUIRED=`echo $JAVA_VERSION_REQUIRED | awk '{gsub(/'"'"'/,"")}1'`
 	num_required_java_version=`echo $JAVA_VERSION_REQUIRED|awk ' { printf("%3.2f\n", $0); } '`
-	if [ `echo "$num_current_java_version < $num_required_java_version" | bc` -eq 1 ];then
+	if awk "BEGIN { exit !( $num_current_java_version < $num_required_java_version ) }" ; then
 		log "[E] The java version must be greater than or equal to $JAVA_VERSION_REQUIRED, the current java version is $version"
 		exit 1;
 	fi
