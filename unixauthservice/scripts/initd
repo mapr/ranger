@@ -30,6 +30,7 @@ MOD_NAME=ranger-usersync
 if [ ! -d "/var/run/ranger" ]; then
   mkdir -p /var/run/ranger
   chmod -R 775 /var/run/ranger
+  chown -R ${LINUX_USER}:${LINUX_USER} /var/run/ranger
 fi
 
 #if [ -z "${USERSYNC_PID_DIR_PATH}" ]; then
