@@ -406,6 +406,15 @@ public class PropertiesUtil extends PropertyPlaceholderConfigurer {
 		props.put(RangerCommonConstants.PROP_COOKIE_NAME, cookieName);
 	}
 
+	if (propertiesMap != null && propertiesMap.containsKey("ranger.audit.solr.suppress.connection.error")) {
+		String shouldThrowSolrError = propertiesMap.get("ranger.audit.solr.suppress.connection.error");
+		if (StringUtils.isBlank(shouldThrowSolrError)) {
+			shouldThrowSolrError = "false";
+		}
+		propertiesMap.put("ranger.audit.solr.suppress.connection.error", shouldThrowSolrError);
+		props.put("ranger.audit.solr.suppress.connection.error", shouldThrowSolrError);
+	}
+
 	keySet = props.keySet();
 	for (Object key : keySet) {
 		String keyStr = key.toString();

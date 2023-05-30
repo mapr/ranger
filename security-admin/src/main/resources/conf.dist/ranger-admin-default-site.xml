@@ -528,6 +528,10 @@
 		<description>Maximum no. of retry to setup solr</description>
 	</property>
 	<property>
+		<name>ranger.audit.solr.suppress.connection.error</name>
+		<value>false</value>
+	</property>
+	<property>
 		<name>ranger.sha256Password.update.disable</name>
 		<value>false</value>
 		<description></description>

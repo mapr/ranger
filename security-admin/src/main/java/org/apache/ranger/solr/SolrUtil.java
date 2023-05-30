@@ -163,23 +163,27 @@ public class SolrUtil {
 		// query.setFields("myClassType", "id", "score", "globalId");
 		if (logger.isDebugEnabled()) {
                         logger.debug("SOLR QUERY = " + query);
-                }
-                QueryResponse response = null;
-                try {
-                        response = runQuery(solrClient, query);
-                } catch (Throwable e) {
-                        logger.error("Error running solr query. Query = " + query
-                                        + ", response = " + response);
-                        throw restErrorUtil.createRESTException(
-                                        "Error running solr query, please check solr configs. "
-                                                        + e.getMessage(), MessageEnums.ERROR_SYSTEM);
+		}
+		QueryResponse response = null;
+		String shouldThrowSolrError = PropertiesUtil.getProperty("ranger.audit.solr.suppress.connection.error");
+		try {
+				response = runQuery(solrClient, query);
+		} catch (Throwable e) {
+				logger.error("Error running solr query. Query = " + query
+								+ ", response = " + response);
+				if (!Boolean.parseBoolean(shouldThrowSolrError)) {
+					throw restErrorUtil.createRESTException(
+							"Error running solr query, please check solr configs. "
+									+ e.getMessage(), MessageEnums.ERROR_SYSTEM);
+				}
 		}
 		if (response == null || response.getStatus() != 0) {
-                        logger.error("Error running solr query. Query = " + query
-                                        + ", response = " + response);
-                        throw restErrorUtil.createRESTException(
-                                        "Unable to connect to Audit store !!",
-					MessageEnums.ERROR_SYSTEM);
+				logger.error("Error running solr query. Query = " + query
+								+ ", response = " + response);
+				if (!Boolean.parseBoolean(shouldThrowSolrError)) {
+					throw restErrorUtil.createRESTException("Unable to connect to Audit store !!",
+							MessageEnums.ERROR_SYSTEM);
+				}
 		}
 		return response;
 	}

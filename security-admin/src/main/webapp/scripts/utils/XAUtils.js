@@ -850,7 +850,7 @@ define(function(require) {
                                         if(response && response.responseJSON && response.responseJSON.msgDesc){
                                                 that.notifyError('Error', response.responseJSON.msgDesc);
                                         }else{
-                                                that.notifyError('Error', localization.tt('msg.errorLoadingAuditLogs'));
+                                                console.log('Error', localization.tt('msg.errorLoadingAuditLogs'));
 					}
 
 				}
