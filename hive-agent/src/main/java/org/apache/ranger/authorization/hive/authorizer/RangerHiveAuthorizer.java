@@ -42,11 +42,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.fs.permission.FsAction;
 import org.apache.hadoop.hive.common.FileUtils;
 import org.apache.hadoop.hive.conf.HiveConf;
-import org.apache.hadoop.hive.metastore.IMetaStoreClient;
-import org.apache.hadoop.hive.metastore.api.Database;
 import org.apache.hadoop.hive.metastore.api.HiveObjectRef;
-import org.apache.hadoop.hive.metastore.api.Table;
-import org.apache.hadoop.hive.ql.metadata.Hive;
 import org.apache.hadoop.hive.ql.parse.SemanticException;
 import org.apache.hadoop.hive.ql.security.HiveAuthenticationProvider;
 import org.apache.hadoop.hive.ql.security.authorization.AuthorizationUtils;
@@ -1228,8 +1224,6 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		}
 
 		if(CollectionUtils.isNotEmpty(hiveObjs)) {
-			IMetaStoreClient metaStoreClient = getMetaStoreClient();
-
 			for (HivePrivilegeObject hiveObj : hiveObjs) {
 				HivePrivilegeObjectType hiveObjType = hiveObj.getType();
 
@@ -1247,7 +1241,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 					String database = hiveObj.getDbname();
 					String table    = hiveObj.getObjectName();
 
-					String rowFilterExpr = getRowFilterExpression(queryContext, hiveObj, metaStoreClient);
+					String rowFilterExpr = getRowFilterExpression(queryContext, hiveObj);
 
 					if (StringUtils.isNotBlank(rowFilterExpr)) {
 						if(LOG.isDebugEnabled()) {
@@ -1262,7 +1256,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 						List<String> columnTransformers = new ArrayList<String>();
 
 						for (String column : hiveObj.getColumns()) {
-							boolean isColumnTransformed = addCellValueTransformerAndCheckIfTransformed(queryContext, hiveObj, column, columnTransformers, metaStoreClient);
+							boolean isColumnTransformed = addCellValueTransformerAndCheckIfTransformed(queryContext, hiveObj, column, columnTransformers);
 
 							if(LOG.isDebugEnabled()) {
 								LOG.debug("addCellValueTransformerAndCheckIfTransformed(database=" + database + ", table=" + table + ", column=" + column + "): " + isColumnTransformed);
@@ -1331,7 +1325,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		return result != null && result.isRowFilterEnabled() && StringUtils.isNotEmpty(result.getFilterExpr());
 	}
 
-	private String getRowFilterExpression(HiveAuthzContext context, HivePrivilegeObject tableOrView, IMetaStoreClient metaStoreClient) throws SemanticException {
+	private String getRowFilterExpression(HiveAuthzContext context, HivePrivilegeObject tableOrView) throws SemanticException {
 		UserGroupInformation ugi = getCurrentUserGroupInfo();
 
 		if(ugi == null) {
@@ -1357,7 +1351,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			HiveObjectType          objectType     = HiveObjectType.TABLE;
 			RangerHiveResource      resource       = new RangerHiveResource(objectType, databaseName, tableOrViewName);
 
-			setOwnerUser(resource, tableOrView, metaStoreClient);
+			setOwnerUser(resource, tableOrView);
 
 			RangerHiveAccessRequest request = new RangerHiveAccessRequest(resource, user, groups, roles, objectType.name(), HiveAccessType.SELECT, context, sessionContext);
 			RangerAccessResult      result  = hivePlugin.evalRowFilterPolicies(request, auditHandler);
@@ -1376,7 +1370,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		return ret;
 	}
 
-	private boolean addCellValueTransformerAndCheckIfTransformed(HiveAuthzContext context, HivePrivilegeObject tableOrView, String columnName, List<String> columnTransformers, IMetaStoreClient metaStoreClient) throws SemanticException {
+	private boolean addCellValueTransformerAndCheckIfTransformed(HiveAuthzContext context, HivePrivilegeObject tableOrView, String columnName, List<String> columnTransformers) throws SemanticException {
 		UserGroupInformation ugi = getCurrentUserGroupInfo();
 
 		if(ugi == null) {
@@ -1404,7 +1398,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			HiveObjectType          objectType     = HiveObjectType.COLUMN;
 			RangerHiveResource      resource       = new RangerHiveResource(objectType, databaseName, tableOrViewName, columnName);
 
-			setOwnerUser(resource, tableOrView, metaStoreClient);
+			setOwnerUser(resource, tableOrView);
 
 			RangerHiveAccessRequest request = new RangerHiveAccessRequest(resource, user, groups, roles, objectType.name(), HiveAccessType.SELECT, context, sessionContext);
 			RangerAccessResult      result  = hivePlugin.evalDataMaskPolicies(request, auditHandler);
@@ -1499,7 +1493,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		}
 
 		if (resource != null) {
-			setOwnerUser(resource, privilegeObject, getMetaStoreClient());
+			setOwnerUser(resource, privilegeObject);
 
 			resource.setServiceDef(hivePlugin == null ? null : hivePlugin.getServiceDef());
 		}
@@ -1520,7 +1514,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			case DATABASE:
 				ret = new RangerHiveResource(objectType, hiveObj.getDbname());
 				if (!isCreateOperation(hiveOpType)) {
-					setOwnerUser(ret, hiveObj, getMetaStoreClient());
+					setOwnerUser(ret, hiveObj);
 				}
 			break;
 	
@@ -1534,12 +1528,12 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 							", Size of outputs = [" + (CollectionUtils.isNotEmpty(outputs) ? outputs.size() : 0) + "]");
 				}
 
-				setOwnerUser(ret, hiveObj, getMetaStoreClient());
+				setOwnerUser(ret, hiveObj);
 
 				if (isCreateOperation(hiveOpType)) {
 					HivePrivilegeObject dbObject = getDatabaseObject(hiveObj.getDbname(), inputs, outputs);
 					if (dbObject != null) {
-						setOwnerUser(ret, dbObject, getMetaStoreClient());
+						setOwnerUser(ret, dbObject);
 					}
 				}
 
@@ -1552,7 +1546,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 	
 			case COLUMN:
 				ret = new RangerHiveResource(objectType, hiveObj.getDbname(), hiveObj.getObjectName(), StringUtils.join(hiveObj.getColumns(), COLUMN_SEP));
-				setOwnerUser(ret, hiveObj, getMetaStoreClient());
+				setOwnerUser(ret, hiveObj);
 			break;
 
             case URI:
@@ -3131,56 +3125,14 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		return request;
 	}
 
-	static void setOwnerUser(RangerHiveResource resource, HivePrivilegeObject hiveObj, IMetaStoreClient metaStoreClient) {
+	static void setOwnerUser(RangerHiveResource resource, HivePrivilegeObject hiveObj) {
 		if (hiveObj != null) {
-			// resource.setOwnerUser(hiveObj.getOwnerName());
-			switch (hiveObj.getType()) {
-				case DATABASE:
-					try {
-						Database database = null;
-						if (metaStoreClient != null && Hive.get().databaseExists(hiveObj.getDbname()))
-							database = metaStoreClient.getDatabase(hiveObj.getDbname());
-
-						if (database != null) {
-							resource.setOwnerUser(database.getOwnerName());
-						}
-					} catch (Exception excp) {
-						LOG.error("failed to get database object from Hive metastore. dbName=" + hiveObj.getDbname(), excp);
-					}
-					break;
-
-				case TABLE_OR_VIEW:
-				case COLUMN:
-					try {
-						Table table = null;
-						if (metaStoreClient != null && metaStoreClient.tableExists(hiveObj.getDbname(), hiveObj.getObjectName()))
-							table = metaStoreClient.getTable(hiveObj.getDbname(), hiveObj.getObjectName());
-
-						if (table != null) {
-							resource.setOwnerUser(table.getOwner());
-						}
-					} catch (Exception excp) {
-						LOG.error("failed to get table object from Hive metastore. dbName=" + hiveObj.getDbname() + ", tblName=" + hiveObj.getObjectName(), excp);
-					}
-					break;
-			}
+			resource.setOwnerUser(hiveObj.getOwnerName());
 		}
 
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("setOwnerUser(" + hiveObj + "): ownerName=" + resource.getOwnerUser());
 		}
-	}
-
-	private IMetaStoreClient getMetaStoreClient() {
-		IMetaStoreClient ret = null;
-
-		try {
-			ret = getMetastoreClientFactory().getHiveMetastoreClient();
-		} catch (HiveAuthzPluginException excp) {
-			LOG.warn("failed to get meta-store client", excp);
-		}
-
-		return ret;
 	}
 }
 
