@@ -39,7 +39,7 @@ function getInstallProperty() {
 
 if [[ -z $1 ]]; then
         echo "Invalid argument [$1];"
-        echo "Usage: Only start | stop | restart | version, are supported."
+        echo "Usage: Only start | stop | restart | version | status, are supported."
         exit;
 fi
 action=$1
@@ -81,6 +81,19 @@ fi
 
 INSTALL_ARGS="${cdir}/install.properties"
 RANGER_BASE_DIR=$(getInstallProperty 'ranger_base_dir')
+
+status() {
+  if [ -f $pidf ]; then
+    if kill -0 $(cat $pidf) > /dev/null 2>&1; then
+      echo ranger-usersync running as process $(cat $pidf).
+      exit 0
+    fi
+    echo $pidf exists with pid $(cat $pidf) but no ranger-usersync.
+    exit 1
+  fi
+  echo ranger-usersync not running.
+  exit 1
+}
 
 JAVA_OPTS=" ${JAVA_OPTS} -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx${ranger_usersync_max_heap_size} -Xms1g "
 
@@ -187,8 +200,10 @@ elif [ "${action}" == "VERSION" ]; then
 	cd ${cdir}/lib
 	java -cp ranger-util-*.jar org.apache.ranger.common.RangerVersionInfo
 	exit
+elif [ "${action}" == "STATUS" ]; then
+  status
 else 
 	echo "Invalid argument [$1];"
-	echo "Usage: Only start | stop | restart | version, are supported."
+	echo "Usage: Only start | stop | restart | version | status, are supported."
 	exit;
 fi

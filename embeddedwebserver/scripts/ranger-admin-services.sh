@@ -20,7 +20,7 @@ MAPR_HOME="${BASEMAPR:-/opt/mapr}"
 
 if [[ -z $1 ]]; then
 	echo "Invalid argument [$1];"
-	echo "Usage: Only start | stop | restart | metric | version , are supported."
+	echo "Usage: Only start | stop | restart | metric | version | status, are supported."
 	echo "For Metric Usage: metric -type policies | audits | usergroup | services | database | contextenrichers | denyconditions"
 	exit;
 fi
@@ -176,6 +176,19 @@ metric(){
  java ${JAVA_OPTS} -Dlogdir=${RANGER_ADMIN_LOG_DIR} -cp "${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/conf:${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/:${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/lib/*:${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/classes/META-INF:${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/lib/*:${XAPOLICYMGR_EWS_DIR}/webapp/META-INF:${XAPOLICYMGR_EWS_DIR}/lib/*:${RANGER_JAAS_LIB_DIR}/*:${RANGER_JAAS_CONF_DIR}:${JAVA_HOME}/lib/*:${RANGER_HADOOP_CONF_DIR}/*:$CLASSPATH" org.apache.ranger.patch.cliutil.MetricUtil ${arg2} ${arg3} 2>/dev/null
 }
 
+status() {
+  if [ -f $pidf ]; then
+    if kill -0 $(cat $pidf) > /dev/null 2>&1; then
+      echo ranger-admin running as process $(cat $pidf).
+      exit 0
+    fi
+    echo $pidf exists with pid $(cat $pidf) but no ranger-admin.
+    exit 1
+  fi
+  echo ranger-admin not running.
+  exit 1
+}
+
 if [ "${action}" == "START" ]; then
 	if [ -f "$pidf" ] ; then
 		pid=`cat $pidf`
@@ -203,9 +216,11 @@ elif [ "${action}" == "VERSION" ]; then
 	cd ${XAPOLICYMGR_EWS_DIR}/webapp/WEB-INF/lib
 	java -cp ranger-util-*.jar org.apache.ranger.common.RangerVersionInfo
 	exit;
+elif [ "${action}" == "STATUS" ]; then
+  status
 else
     echo "Invalid argument [$1];"
-    echo "Usage: Only start | stop | restart | metric | version, are supported."
+    echo "Usage: Only start | stop | restart | metric | version | status, are supported."
     echo "For metric Usage: metric -type policies | audits | usergroup | services | database | contextenrichers | denyconditions"
     exit;
 fi

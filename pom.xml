@@ -1249,6 +1249,8 @@
                         <exclude>**/ranger_es_schema.json</exclude>
                         <exclude>**/venv/**</exclude>
                         <exclude>**/devops/**</exclude>
+                        <exclude>**/warden.ranger-usersync.conf/**</exclude>
+                        <exclude>**/warden.ranger-admin.conf/**</exclude>
                         <exclude>**/requirements.txt</exclude>
                         <exclude>**/__init__.py</exclude>
                         <exclude>**/default_primary_config.json</exclude>
