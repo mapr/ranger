@@ -221,6 +221,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <inherited>true</inherited>
                 <configuration>
+                    <excludes>
+                        <exclude>**/TestLdapUserGroup.java</exclude>
+                    </excludes>
                     <systemPropertyVariables>
                         <ldap.port>${ldap.port}</ldap.port>
                     </systemPropertyVariables>

@@ -1714,6 +1714,7 @@ log "[I] hostname=`hostname`"
 init_variables
 configure_hadoop_conf
 link_mapr_core_lib_for_admin
+configure_cred_lib_for_admin
 configure_hbase_jars_for_admin
 get_distro
 check_java_version

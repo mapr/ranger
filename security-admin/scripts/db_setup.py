@@ -647,9 +647,9 @@ class BaseDB(object):
 							log("[E] Ranger "+ userName +" default password change request failed", "error")
 							sys.exit(1)
 						if is_unix:
-							path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR)
+							path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s", ":%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
 						elif os_name == "WINDOWS":
-							path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF;%s" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR)
+							path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF;%s", ";%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
 						get_java_cmd = "%s -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.cliutil.%s %s %s %s -default"%(self.JAVA_BIN,ranger_log_dir,logback_conf_file,os_user,client_host,path,className,'"'+userName+'"','"'+oldPassword+'"','"'+newPassword+'"')
 						if is_unix:
 							status = subprocess.call(shlex.split(get_java_cmd))
@@ -745,9 +745,9 @@ class BaseDB(object):
 							log("[E] Ranger "+ userName +" default password change request failed", "error")
 							sys.exit(1)
 						if is_unix:
-							path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR)
+							path = os.path.join("%s","WEB-INF","classes","conf:%s","WEB-INF","classes","lib","*:%s","WEB-INF",":%s","META-INF",":%s","WEB-INF","lib","*:%s","WEB-INF","classes",":%s","WEB-INF","classes","META-INF:%s", ":%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
 						elif os_name == "WINDOWS":
-							path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF;%s" )%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR)
+							path = os.path.join("%s","WEB-INF","classes","conf;%s","WEB-INF","classes","lib","*;%s","WEB-INF",";%s","META-INF",";%s","WEB-INF","lib","*;%s","WEB-INF","classes",";%s","WEB-INF","classes","META-INF;%s", ";%s", "ews", "lib", "*")%(app_home ,app_home ,app_home, app_home, app_home, app_home ,app_home ,self.SQL_CONNECTOR_JAR, RANGER_ADMIN_HOME)
 						get_java_cmd = "%s -Dlogdir=%s -Dlogback.configurationFile=%s -Duser=%s -Dhostname=%s -cp %s org.apache.ranger.patch.cliutil.%s %s -default"%(self.JAVA_BIN,ranger_log_dir,logback_conf_file,os_user,client_host,path,className, userPwdString)
 						if is_unix:
 							status = subprocess.call(shlex.split(get_java_cmd))

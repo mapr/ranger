@@ -248,6 +248,7 @@ enable_periodic_user_sync
 # symlinks
 logInfo "Ranger: Creating/refreshing symlinks in ranger-admin libraries."
 link_mapr_core_lib_for_admin
+configure_cred_lib_for_admin
 configure_hbase_jars_for_admin
 logInfo "Ranger: Creating/refreshing symlinks in ranger-usersync library."
 link_mapr_core_lib_for_usersync
