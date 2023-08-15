@@ -1581,9 +1581,12 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 		boolean ret = false;
 		switch (hiveOpType) {
 			case CREATETABLE:
+			case CREATETABLE_WITH_LOCATION:
 			case CREATEVIEW:
 			case CREATETABLE_AS_SELECT:
+			case CREATETABLE_AS_SELECT_WITH_LOCATION:
 			case CREATE_MATERIALIZED_VIEW:
+			case CREATE_MATERIALIZED_VIEW_WITH_LOCATION:
 			case CREATEFUNCTION:
 				ret = true;
 			break;
@@ -1715,9 +1718,12 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 				break;
 
 				case CREATETABLE:
+				case CREATETABLE_WITH_LOCATION:
 				case CREATEVIEW:
 				case CREATETABLE_AS_SELECT:
+				case CREATETABLE_AS_SELECT_WITH_LOCATION:
 				case CREATE_MATERIALIZED_VIEW:
+				case CREATE_MATERIALIZED_VIEW_WITH_LOCATION:
 					if(hiveObj.getType() == HivePrivilegeObjectType.TABLE_OR_VIEW) {
 						accessType = isInput ? HiveAccessType.SELECT : HiveAccessType.CREATE;
 					}
@@ -1938,7 +1944,9 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 
 			case CREATEDATABASE:
 			case CREATETABLE:
+			case CREATETABLE_WITH_LOCATION:
 			case CREATETABLE_AS_SELECT:
+			case CREATETABLE_AS_SELECT_WITH_LOCATION:
 			case CREATEFUNCTION:
 			case DROPFUNCTION:
 			case RELOADFUNCTION:
@@ -2018,6 +2026,7 @@ public class RangerHiveAuthorizer extends RangerHiveAuthorizerBase {
 			case CREATEVIEW:
 			case DROPVIEW:
 			case CREATE_MATERIALIZED_VIEW:
+			case CREATE_MATERIALIZED_VIEW_WITH_LOCATION:
 			case CREATEINDEX:
 			case DROPINDEX:
 			case ALTERINDEX_REBUILD:
