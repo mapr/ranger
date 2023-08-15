@@ -45,6 +45,7 @@ public class RangerUgSyncRESTClient extends RangerRESTClient {
 			String authenticationType, String principal, String keytab, String polMgrUsername, String polMgrPassword) {
 
 		super(policyMgrBaseUrls, "", UserGroupSyncConfig.getInstance().getConfig());
+		this.useMaprSasl = false;
 		if (!(authenticationType != null && AUTH_KERBEROS.equalsIgnoreCase(authenticationType)
 				&& SecureClientLogin.isKerberosCredentialExists(principal, keytab))) {
 			setBasicAuthInfo(polMgrUsername, polMgrPassword);

@@ -50,6 +50,8 @@ import org.apache.commons.lang.Validate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.ranger.authorization.hadoop.utils.RangerCredentialProvider;
 import org.apache.ranger.authorization.utils.StringUtil;
+import org.apache.ranger.util.MaprAuthenticationUtils;
+import org.apache.ranger.util.MaprSecurity;
 import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +104,7 @@ public class RangerRESTClient {
 	private String mTrustStoreAlias;
 	private String mTrustStoreFile;
 	private String mTrustStoreType;
+	private String authHeader;
 	private Gson   gsonBuilder;
 	private int    mRestClientConnTimeOutMs;
 	private int    mRestClientReadTimeOutMs;
@@ -112,6 +115,8 @@ public class RangerRESTClient {
 	private final List<String> configuredURLs;
 
 	private volatile Client client;
+
+	protected boolean useMaprSasl = true;
 
 
 	public RangerRESTClient(String url, String sslConfigFileName, Configuration config) {
@@ -244,6 +249,11 @@ public class RangerRESTClient {
 	}
 
 	private void init(Configuration config) {
+		if (MaprSecurity.MAPR_SASL) {
+			String challengeString = MaprAuthenticationUtils.generateChallengeString();
+			this.authHeader = String.format("MAPR-Negotiate %s", challengeString);
+		}
+
 		try {
 			gsonBuilder = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
 		} catch(Throwable excp) {
@@ -502,9 +512,11 @@ public class RangerRESTClient {
 
 				WebResource webResource = createWebResourceForCookieAuth(currentIndex, relativeUrl);
 				webResource = setQueryParams(webResource, params);
-				WebResource.Builder br = webResource.getRequestBuilder().cookie(sessionId);
-				finalResponse = br.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).type(RangerRESTUtils.REST_MIME_TYPE_JSON).get(ClientResponse.class);
-
+				WebResource.Builder builder = webResource.getRequestBuilder()
+						.cookie(sessionId)
+						.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE);
+				builder = setMaprSaslHeaderIfNeeded(builder);
+				finalResponse = builder.type(RangerRESTUtils.REST_MIME_TYPE_JSON).get(ClientResponse.class);
 				if (finalResponse != null) {
 					setLastKnownActiveUrlIndex(currentIndex);
 					break;
@@ -532,7 +544,9 @@ public class RangerRESTClient {
 
 				WebResource webResource = getClient().resource(configuredURLs.get(currentIndex) + relativeUrl);
 				webResource = setQueryParams(webResource, params);
-				finalResponse = webResource.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE).type(RangerRESTUtils.REST_MIME_TYPE_JSON).post(ClientResponse.class, toJson(obj));
+				WebResource.Builder builder = webResource.accept(RangerRESTUtils.REST_EXPECTED_MIME_TYPE);
+				builder = setMaprSaslHeaderIfNeeded(builder);
+				finalResponse = builder.type(RangerRESTUtils.REST_MIME_TYPE_JSON).post(ClientResponse.class, toJson(obj));
 				if (finalResponse != null) {
 					setLastKnownActiveUrlIndex(currentIndex);
 					break;
@@ -738,6 +752,13 @@ public class RangerRESTClient {
 		}
 
 		return ret;
+	}
+
+	private WebResource.Builder setMaprSaslHeaderIfNeeded(WebResource.Builder builder) {
+		if (MaprSecurity.MAPR_SASL && useMaprSasl) {
+			builder = builder.header(MaprAuthenticationUtils.AUTH_HEADER, authHeader);
+		}
+		return builder;
 	}
 
 	public int getLastKnownActiveUrlIndex() {
