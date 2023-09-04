@@ -49,7 +49,7 @@ link_mapr_core_lib_for_usersync() {
   local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
   local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
-  local JETTY_UTIL_JAR="$MAPR_CORE_LIB"/jetty-util-*
+  local JETTY_UTIL_JAR="$HADOOP_COMMON_LIB"/jetty-util-*
 
   # if already exists, unlink first. In case applying patch, we need to remove old links
   find $RANGER_USERSYNC_LIB -type l -name "maprfs-*" -delete

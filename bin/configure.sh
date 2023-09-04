@@ -183,7 +183,7 @@ add_refresh_warden_files(){
   local MAPR_WARDEN_LOCATION="$MAPR_HOME"/conf/conf.d
 
   if [ ! -e "$MAPR_WARDEN_LOCATION" ]; then
-    mkdir -p "$MAPR_WARDEN_LOCATION" /dev/null 2>&1
+    mkdir -p "$MAPR_WARDEN_LOCATION" >/dev/null 2>&1
   fi
 
   if [ -f "$MAPR_WARDEN_LOCATION"/"$RANGER_ADMIN_WARDEN_NAME" ]; then
