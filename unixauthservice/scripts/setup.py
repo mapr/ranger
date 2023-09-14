@@ -365,7 +365,7 @@ def initializeInitD(ownerName):
 def createJavaKeystoreForSSL(fn, passwd):
     pattern = "keytool -genkeypair -keyalg RSA -alias selfsigned -keystore '%s' -keypass '%s' -storepass '%s' -validity 3600 -keysize 2048 -dname '%s'"
     if os.getenv("FIPS_ENABLED") == "true":
-        pattern = "keytool -genkeypair -sigalg SHA512withRSA -keyalg RSA -alias selfsigned -keystore '%s' -keypass '%s' -storepass '%s' -validity 3600 -keysize 2048 -dname '%s' -storetype BCFKS  -provider org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider -providerpath /opt/mapr/lib/bc-fips-1.0.2.1.jar -providername BCFIPS"
+        pattern = "keytool -genkeypair -sigalg SHA512withRSA -keyalg RSA -alias selfsigned -keystore '%s' -keypass '%s' -storepass '%s' -validity 3600 -keysize 2048 -dname '%s' -storetype BCFKS  -provider org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider -providerpath /opt/mapr/lib/bc-fips-*.jar -providername BCFIPS"
     cmd = pattern % (
     fn, passwd, passwd, defaultDNAME)
     ret = os.system(cmd)
