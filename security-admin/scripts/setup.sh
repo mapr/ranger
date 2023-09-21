@@ -89,6 +89,8 @@ db_host=$(get_prop 'db_host' $PROPFILE)
 db_name=$(get_prop 'db_name' $PROPFILE)
 db_user=$(get_prop 'db_user' $PROPFILE)
 db_password=$(get_prop 'db_password' $PROPFILE)
+is_override_db_connection_string=$(get_prop 'is_override_db_connection_string' $PROPFILE)
+db_override_jdbc_connection_string=$(get_prop 'db_override_jdbc_connection_string' $PROPFILE)
 db_ssl_enabled=$(get_prop 'db_ssl_enabled' $PROPFILE)
 db_ssl_required=$(get_prop 'db_ssl_required' $PROPFILE)
 db_ssl_verifyServerCertificate=$(get_prop 'db_ssl_verifyServerCertificate' $PROPFILE)
@@ -687,7 +689,11 @@ update_properties() {
 	if [ "${DB_FLAVOR}" == "MYSQL" ]
 	then
 		propertyName=ranger.jpa.jdbc.url
-		newPropertyValue="jdbc:log4jdbc:mysql://${DB_HOST}/${db_name}"
+		if [ "$is_override_db_connection_string" = "true" ] ; then
+			newPropertyValue="$db_override_jdbc_connection_string"
+		else
+			newPropertyValue="jdbc:log4jdbc:mysql://${DB_HOST}/${db_name}"
+		fi
 		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
 		propertyName=ranger.jpa.jdbc.dialect
@@ -713,14 +719,18 @@ update_properties() {
 	if [ "${DB_FLAVOR}" == "ORACLE" ]
 	then
 		propertyName=ranger.jpa.jdbc.url
-		count=$(grep -o ":" <<< "$DB_HOST" | wc -l)
-		#if [[ ${count} -eq 2 ]] ; then
-		if [ ${count} -eq 2 ] || [ ${count} -eq 0 ]; then
-			#jdbc:oracle:thin:@[HOST][:PORT]:SID or #jdbc:oracle:thin:@GL
-			newPropertyValue="jdbc:oracle:thin:@${DB_HOST}"
+		if [ "$is_override_db_connection_string" = "true" ] ; then
+			newPropertyValue="$db_override_jdbc_connection_string"
 		else
-			#jdbc:oracle:thin:@//[HOST][:PORT]/SERVICE
-			newPropertyValue="jdbc:oracle:thin:@//${DB_HOST}"
+			count=$(grep -o ":" <<< "$DB_HOST" | wc -l)
+			#if [[ ${count} -eq 2 ]] ; then
+			if [ ${count} -eq 2 ] || [ ${count} -eq 0 ]; then
+				#jdbc:oracle:thin:@[HOST][:PORT]:SID or #jdbc:oracle:thin:@GL
+				newPropertyValue="jdbc:oracle:thin:@${DB_HOST}"
+			else
+				#jdbc:oracle:thin:@//[HOST][:PORT]/SERVICE
+				newPropertyValue="jdbc:oracle:thin:@//${DB_HOST}"
+			fi
 		fi
 		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
@@ -747,22 +757,22 @@ update_properties() {
 	if [ "${DB_FLAVOR}" == "POSTGRES" ]
 	then
 
-		if [ "${db_ssl_enabled}" == "true" ]
-		then
-			if test -f $db_ssl_certificate_file; then
-				propertyName=ranger.jpa.jdbc.url
-				newPropertyValue="jdbc:postgresql://${DB_HOST}/${db_name}?ssl=true&sslmode=verify-full&sslrootcert=${db_ssl_certificate_file}"
-				updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
-			else
-				propertyName=ranger.jpa.jdbc.url
-				newPropertyValue="jdbc:postgresql://${DB_HOST}/${db_name}?ssl=true&sslmode=verify-full&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory"
-				updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
-			fi
+		propertyName=ranger.jpa.jdbc.url
+		if [ "$is_override_db_connection_string" = "true" ] ; then
+			newPropertyValue="$db_override_jdbc_connection_string"
 		else
-			propertyName=ranger.jpa.jdbc.url
-			newPropertyValue="jdbc:postgresql://${DB_HOST}/${db_name}"
-			updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
+			if [ "${db_ssl_enabled}" == "true" ]
+			then
+				if test -f $db_ssl_certificate_file; then
+					newPropertyValue="jdbc:postgresql://${DB_HOST}/${db_name}?ssl=true&sslmode=verify-full&sslrootcert=${db_ssl_certificate_file}"
+				else
+					newPropertyValue="jdbc:postgresql://${DB_HOST}/${db_name}?ssl=true&sslmode=verify-full&sslfactory=org.postgresql.ssl.DefaultJavaSSLFactory"
+				fi
+			else
+				newPropertyValue="jdbc:postgresql://${DB_HOST}/${db_name}"
+			fi
 		fi
+		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
 		propertyName=ranger.jpa.jdbc.dialect
 		newPropertyValue="org.eclipse.persistence.platform.database.PostgreSQLPlatform"
@@ -788,7 +798,11 @@ update_properties() {
 	if [ "${DB_FLAVOR}" == "MSSQL" ]
 	then
 		propertyName=ranger.jpa.jdbc.url
-		newPropertyValue="jdbc:sqlserver://${DB_HOST};databaseName=${db_name}"
+		if [ "$is_override_db_connection_string" = "true" ] ; then
+			newPropertyValue="$db_override_jdbc_connection_string"
+		else
+			newPropertyValue="jdbc:sqlserver://${DB_HOST};databaseName=${db_name}"
+		fi
 		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
 		propertyName=ranger.jpa.jdbc.dialect
@@ -815,7 +829,11 @@ update_properties() {
 	if [ "${DB_FLAVOR}" == "SQLA" ]
 	then
 		propertyName=ranger.jpa.jdbc.url
-		newPropertyValue="jdbc:sqlanywhere:database=${db_name};host=${DB_HOST}"
+		if [ "$is_override_db_connection_string" = "true" ] ; then
+			newPropertyValue="$db_override_jdbc_connection_string"
+		else
+			newPropertyValue="jdbc:sqlanywhere:database=${db_name};host=${DB_HOST}"
+		fi
 		updatePropertyToFilePy $propertyName $newPropertyValue $to_file_ranger
 
 		propertyName=ranger.jpa.jdbc.dialect
