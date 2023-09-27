@@ -41,11 +41,13 @@ if [ -f ${XAPOLICYMGR_DIR}/ews/webapp/WEB-INF/classes/conf/java_home.sh ]; then
         . ${XAPOLICYMGR_DIR}/ews/webapp/WEB-INF/classes/conf/java_home.sh
 fi
 
-for custom_env_script in `find ${XAPOLICYMGR_DIR}/ews/webapp/WEB-INF/classes/conf/ -name "ranger-admin-env*"`; do
-        if [ -f $custom_env_script ]; then
-                . $custom_env_script
-        fi
-done
+if [ -d "${XAPOLICYMGR_DIR}/ews/webapp/WEB-INF/classes/conf/" ] ; then
+	for custom_env_script in `find ${XAPOLICYMGR_DIR}/ews/webapp/WEB-INF/classes/conf/ -name "ranger-admin-env*"`; do
+		if [ -f $custom_env_script ]; then
+			. $custom_env_script
+		fi
+	done
+fi
 
 JAVA_OPTS=" ${JAVA_OPTS} -XX:MetaspaceSize=100m -XX:MaxMetaspaceSize=200m -Xmx${ranger_admin_max_heap_size} -Xms1g -Xloggc:${XAPOLICYMGR_EWS_DIR}/logs/gc-worker.log -verbose:gc -XX:+PrintGCDetails --add-opens java.base/java.lang=ALL-UNNAMED"
 

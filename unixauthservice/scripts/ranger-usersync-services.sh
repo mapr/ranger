@@ -50,11 +50,13 @@ cd $realScriptDir
 cdir=`pwd`
 ranger_usersync_max_heap_size=1g
 
-for custom_env_script in `find ${cdir}/conf/ -name "ranger-usersync-env*"`; do
-        if [ -f $custom_env_script ]; then
-                . $custom_env_script
-        fi
-done
+if [ -d "${cdir}/conf/" ] ; then
+	for custom_env_script in `find ${cdir}/conf/ -name "ranger-usersync-env*"`; do
+		if [ -f $custom_env_script ]; then
+			. $custom_env_script
+		fi
+	done
+fi
 if [ -z "${USERSYNC_PID_DIR_PATH}" ]; then
         USERSYNC_PID_DIR_PATH=/var/run/ranger
 fi
@@ -173,7 +175,7 @@ elif [ "${action}" == "STOP" ]; then
 
   if [ -z "$pid" ];then
     echo "Apache Ranger Usersync Service is not running"
-    return
+    exit
   fi
 
 	echo "Found Apache Ranger Usersync Service with pid $pid, Stopping it..."
