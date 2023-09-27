@@ -195,9 +195,11 @@ add_refresh_warden_files(){
 
   if $isAdminInstalled; then
     cp "$RANGER_CONF_DIR"/"$RANGER_ADMIN_WARDEN_NAME" "$MAPR_WARDEN_LOCATION"
+    chown "${MAPR_USER}":"${MAPR_GROUP}" "$MAPR_WARDEN_LOCATION"/"$RANGER_ADMIN_WARDEN_NAME"
   fi
   if $isUsersyncInstalled; then
     cp "$RANGER_CONF_DIR"/"$RANGER_USERSYNC_WARDEN_NAME" "$MAPR_WARDEN_LOCATION"
+    chown "${MAPR_USER}":"${MAPR_GROUP}" "$MAPR_WARDEN_LOCATION"/"$RANGER_USERSYNC_WARDEN_NAME"
   fi
 }
 
