@@ -24,9 +24,9 @@ import org.apache.ranger.plugin.model.RangerPolicy;
 import org.apache.ranger.plugin.model.RangerPolicy.RangerPolicyItemDataMaskInfo;
 import org.apache.ranger.plugin.model.RangerPolicy.RangerPolicyItemRowFilterInfo;
 
-import org.codehaus.jackson.annotate.JsonAutoDetect;
-import org.codehaus.jackson.annotate.JsonIgnoreProperties;
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -244,7 +244,7 @@ public class RangerResourceACLs {
 	}
 
 	@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY)
-	@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	@JsonIgnoreProperties(ignoreUnknown=true)
 	@XmlRootElement
 	@XmlAccessorType(XmlAccessType.FIELD)
@@ -315,7 +315,7 @@ public class RangerResourceACLs {
 	}
 
 	@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY)
-	@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	@JsonIgnoreProperties(ignoreUnknown=true)
 	@XmlRootElement
 	@XmlAccessorType(XmlAccessType.FIELD)
@@ -432,7 +432,7 @@ public class RangerResourceACLs {
 	}
 
 	@JsonAutoDetect(fieldVisibility=JsonAutoDetect.Visibility.ANY)
-	@JsonSerialize(include=JsonSerialize.Inclusion.NON_EMPTY)
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
 	@JsonIgnoreProperties(ignoreUnknown=true)
 	@XmlRootElement
 	@XmlAccessorType(XmlAccessType.FIELD)

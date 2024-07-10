@@ -198,7 +198,6 @@ import org.apache.ranger.view.VXPortalUser;
 import org.apache.ranger.view.VXString;
 import org.apache.ranger.view.VXUser;
 import org.apache.ranger.view.VXUserList;
-import org.codehaus.jettison.json.JSONException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -267,19 +266,19 @@ public class ServiceDBStore extends AbstractServiceStore {
 
 	@Autowired
 	RESTErrorUtil restErrorUtil;
-	
+
 	@Autowired
 	RangerServiceService svcService;
-	
+
 	@Autowired
 	StringUtil stringUtil;
-	
+
 	@Autowired
 	RangerAuditFields<?> rangerAuditFields;
-	
+
 	@Autowired
 	RangerPolicyService policyService;
-	
+
 	@Autowired
         RangerPolicyLabelsService<XXPolicyLabel, ?> policyLabelsService;
 
@@ -2462,7 +2461,7 @@ public class ServiceDBStore extends AbstractServiceStore {
 			}
 		}
 	}
-	
+
 	public void getPoliciesInJson(List<RangerPolicy> policies,
 			HttpServletResponse response) throws Exception {
 		if (LOG.isDebugEnabled()) {
@@ -4454,22 +4453,22 @@ public class ServiceDBStore extends AbstractServiceStore {
                 csvBuffer.append(COMMA_DELIMITER);
                 csvBuffer.append(LINE_SEPARATOR);
         }
-	
+
 	public void putMetaDataInfo(RangerExportPolicyList rangerExportPolicyList){
 		Map<String, Object> metaDataInfo = new LinkedHashMap<String, Object>();
 		UserSessionBase usb = ContextUtil.getCurrentUserSession();
 		String userId = usb!=null ? usb.getLoginId() : null;
-		
+
 		metaDataInfo.put(HOSTNAME, LOCAL_HOSTNAME);
 		metaDataInfo.put(USER_NAME, userId);
 		metaDataInfo.put(TIMESTAMP, MiscUtil.getUTCDateForLocalDate(new Date()));
 		metaDataInfo.put(RANGER_VERSION, RangerVersionInfo.getVersion());
-		
+
 		rangerExportPolicyList.setMetaDataInfo(metaDataInfo);
 	}
-	
+
 	private void writeJson(List<RangerPolicy> policies, String jsonFileName,
-			HttpServletResponse response) throws JSONException, IOException {
+			HttpServletResponse response) throws IOException {
 		response.setContentType("text/json");
 		response.setHeader("Content-Disposition", "attachment; filename="+ jsonFileName);
 		ServletOutputStream out = null;

@@ -45,6 +45,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.ws.rs.core.Cookie;
 
+import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.Validate;
 import org.apache.hadoop.conf.Configuration;
@@ -54,7 +55,6 @@ import org.apache.ranger.util.MapRSslConfigReader;
 import org.apache.ranger.util.MaprAuthenticationUtils;
 import org.apache.ranger.util.MaprSecurity;
 import org.apache.ranger.util.RangerClientSecurity;
-import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -180,12 +180,12 @@ public class RangerRESTClient {
 
 	public WebResource getResource(String relativeUrl) {
 		WebResource ret = getClient().resource(getUrl() + relativeUrl);
-		
+
 		return ret;
 	}
 
 	public String toJson(Object obj) {
-		return gsonBuilder.toJson(obj);		
+		return gsonBuilder.toJson(obj);
 	}
 	
 	public <T> T fromJson(String json, Class<T> cls) {

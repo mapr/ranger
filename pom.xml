@@ -91,7 +91,6 @@
         <cglib.version>2.2.0-b23</cglib.version>
         <checkstyle.plugin.version>3.1.0</checkstyle.plugin.version>
         <checkstyle.version>8.29</checkstyle.version>
-        <codehaus.jackson.version>1.9.13</codehaus.jackson.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
         <commons.cli.version>1.5.0</commons.cli.version>
         <commons.codec.version>1.12</commons.codec.version>
@@ -144,6 +143,7 @@
         <javax-inject.version>1</javax-inject.version>
         <javax.annotation-api>1.3.2</javax.annotation-api>
         <javax.el-glassfish.version>3.0.0</javax.el-glassfish.version>
+        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <jaxb.api.version>2.3.1</jaxb.api.version>
         <jaxb-impl.version>2.3.3</jaxb-impl.version>
         <jaxb-core.version>2.3.0.1</jaxb-core.version>
@@ -214,8 +214,8 @@
         <mapr.core.version>7.4.0.0-mapr-SNAPSHOT</mapr.core.version>
         <codehaus.woodstox.stax2api.version>4.2.1</codehaus.woodstox.stax2api.version>
         <fasterxml.woodstox.version>5.4.0</fasterxml.woodstox.version>
-        <fasterxml.jackson.version>2.13.4</fasterxml.jackson.version>
-        <fasterxml.jackson.databind.version>2.13.4.1</fasterxml.jackson.databind.version>
+        <fasterxml.jackson.version>2.17.0</fasterxml.jackson.version>
+        <fasterxml.jackson.databind.version>2.17.0</fasterxml.jackson.databind.version>
         <kstruct.gethostname4j.version>1.0.0</kstruct.gethostname4j.version>
         <jna.version>5.7.0</jna.version>
         <jna-platform.version>5.7.0</jna-platform.version>
@@ -1030,6 +1030,17 @@
                 <version>${javax.el-glassfish.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.hadoop</groupId>
+                <artifactId>hadoop-yarn-common</artifactId>
+                <version>${hadoop.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.codehaus.jackson</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
                 <artifactId>jersey-client</artifactId>
                 <version>${jersey-client.version}</version>
@@ -1263,6 +1274,10 @@
                         <groupId>io.netty</groupId>
                         <artifactId>netty-transport-native-epoll</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>org.codehaus.jackson</groupId>
+                        <artifactId>*</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -1273,6 +1288,10 @@
                     <exclusion>
                         <groupId>io.netty</groupId>
                         <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.codehaus.jackson</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -1309,6 +1328,10 @@
                     <exclusion>
                         <groupId>io.netty</groupId>
                         <artifactId>netty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.codehaus.jackson</groupId>
+                        <artifactId>*</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

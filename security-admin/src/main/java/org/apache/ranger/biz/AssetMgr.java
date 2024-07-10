@@ -64,8 +64,8 @@ import org.apache.ranger.service.*;
 import org.apache.ranger.solr.SolrAccessAuditsService;
 import org.apache.ranger.util.RestUtil;
 import org.apache.ranger.view.*;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.map.JsonMappingException;
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.slf4j.Logger;
@@ -1149,17 +1149,17 @@ public class AssetMgr extends AssetMgrBase {
 				.findByTransactionId(transactionId);
 		VXTrxLogList vXTrxLogList = new VXTrxLogList();
 		List<VXTrxLog> trxLogList = new ArrayList<VXTrxLog>();
-		
+
 		for(XXTrxLog xTrxLog : xTrxLogList) {
 		        trxLogList.add(xTrxLogService.populateViewBean(xTrxLog));
 		}
-		
+
 		List<VXTrxLog> vXTrxLogs = validateXXTrxLogList(trxLogList);
 		vXTrxLogList.setVXTrxLogs(vXTrxLogs);
 		return vXTrxLogList;
 	}
 	public List<VXTrxLog> validateXXTrxLogList(List<VXTrxLog> xTrxLogList) {
-		
+
 		List<VXTrxLog> vXTrxLogs = new ArrayList<VXTrxLog>();
 		for (VXTrxLog xTrxLog : xTrxLogList) {
 			VXTrxLog vXTrxLog = new VXTrxLog();
@@ -1213,7 +1213,7 @@ public class AssetMgr extends AssetMgrBase {
 						}
 					}	
 				}
-			}			
+			}
                         vXTrxLogs.add(vXTrxLog);
 		}
 		return vXTrxLogs;

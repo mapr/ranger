@@ -22,6 +22,7 @@ import com.sun.jersey.api.client.ClientResponse;
 import org.apache.ranger.plugin.model.RangerSecurityZoneHeaderInfo;
 import org.apache.ranger.plugin.model.RangerService;
 import org.apache.ranger.plugin.model.RangerServiceHeaderInfo;
+import org.apache.ranger.plugin.util.JsonUtilsV2;
 import org.apache.ranger.plugin.util.RangerRESTClient;
 import org.junit.Assert;
 import org.junit.Test;
@@ -58,7 +59,7 @@ public class TestRangerClient {
 
             when(restClient.get(anyString(), any())).thenReturn(response);
             when(response.getStatus()).thenReturn(GET_TEST_API.getExpectedStatus().getStatusCode());
-            when(response.getEntity(RangerService.class)).thenReturn(service);
+            when(response.getEntity(String.class)).thenReturn(JsonUtilsV2.objToJson(service));
 
             RangerService ret = client.getService(service.getName());
 
@@ -81,9 +82,9 @@ public class TestRangerClient {
 
             RangerService ret = client.getService(1L);
 
-            Assert.assertNull(ret);
+            Assert.fail("Expected to fail with SERVICE_UNAVAILABLE");
         } catch(RangerServiceException excp){
-            Assert.fail("Not expected to fail! Found exception: " + excp);
+            Assert.assertEquals("Expected to fail with status SERVICE_UNAVAILABLE", ClientResponse.Status.SERVICE_UNAVAILABLE,  excp.getStatus());
         }
     }
 
@@ -151,26 +152,52 @@ public class TestRangerClient {
     }
 
     @Test
-    public void testGetSecurityZoneHeaders() throws RangerServiceException {
-        RangerClient        client = Mockito.mock(RangerClient.class);
-        Map<String, String> filter = Collections.emptyMap();
+    public void testGetSecurityZoneHeaders() throws Exception {
+        RangerRESTClient    restClient = mock(RangerRESTClient.class);
+        ClientResponse      response   = mock(ClientResponse.class);
+        RangerClient        client     = new RangerClient(restClient);
 
-        when(client.getSecurityZoneHeaders(filter)).thenReturn(Collections.emptyList());
+        List<RangerSecurityZoneHeaderInfo> expected = new ArrayList<>();
 
-        List<RangerSecurityZoneHeaderInfo> zoneHeaders = client.getSecurityZoneHeaders(filter);
+        expected.add(new RangerSecurityZoneHeaderInfo(1L, "zone-1"));
+        expected.add(new RangerSecurityZoneHeaderInfo(2L, "zone-2"));
 
-        Assert.assertEquals(Collections.emptyList(), zoneHeaders);
+        when(restClient.get(anyString(), any())).thenReturn(response);
+        when(response.getStatus()).thenReturn(GET_TEST_API.getExpectedStatus().getStatusCode());
+        when(response.getEntity(String.class)).thenReturn(JsonUtilsV2.listToJson(expected));
+
+        List<RangerSecurityZoneHeaderInfo> actual = client.getSecurityZoneHeaders(Collections.emptyMap());
+
+        Assert.assertEquals("incorrect count", expected.size(), actual.size());
+
+        for (int i = 0; i < expected.size(); i++) {
+            Assert.assertEquals("mismatched 'id' at index " + i, expected.get(i).getId(), actual.get(i).getId());
+            Assert.assertEquals("mismatched 'name' at index " + i, expected.get(i).getName(), actual.get(i).getName());
+        }
     }
 
     @Test
-    public void testGetSecurityZoneServiceHeaders() throws RangerServiceException {
-        RangerClient        client = Mockito.mock(RangerClient.class);
-        Map<String, String> filter = Collections.emptyMap();
+    public void testGetSecurityZoneServiceHeaders() throws Exception {
+        RangerRESTClient    restClient = mock(RangerRESTClient.class);
+        ClientResponse      response   = mock(ClientResponse.class);
+        RangerClient        client     = new RangerClient(restClient);
 
-        when(client.getSecurityZoneServiceHeaders(filter)).thenReturn(Collections.emptyList());
+        List<RangerServiceHeaderInfo> expected = new ArrayList<>();
 
-        List<RangerServiceHeaderInfo> serviceHeaders = client.getSecurityZoneServiceHeaders(filter);
+        expected.add(new RangerServiceHeaderInfo(1L, "dev_hdfs", false));
+        expected.add(new RangerServiceHeaderInfo(2L, "dev_hive", false));
 
-        Assert.assertEquals(Collections.emptyList(), serviceHeaders);
+        when(restClient.get(anyString(), any())).thenReturn(response);
+        when(response.getStatus()).thenReturn(GET_TEST_API.getExpectedStatus().getStatusCode());
+        when(response.getEntity(String.class)).thenReturn(JsonUtilsV2.listToJson(expected));
+
+      List<RangerServiceHeaderInfo> actual = client.getSecurityZoneServiceHeaders(Collections.emptyMap());
+
+      Assert.assertEquals("incorrect count", expected.size(), actual.size());
+
+      for (int i = 0; i < expected.size(); i++) {
+        Assert.assertEquals("mismatched 'id' at index " + i, expected.get(i).getId(), actual.get(i).getId());
+        Assert.assertEquals("mismatched 'name' at index " + i, expected.get(i).getName(), actual.get(i).getName());
+      }
     }
 }

@@ -42,7 +42,7 @@ import org.apache.ranger.entity.XXAsset;
 import org.apache.ranger.entity.XXTrxLog;
 import org.apache.ranger.util.RangerEnumUtil;
 import org.apache.ranger.view.VXAsset;
-import org.codehaus.jackson.type.TypeReference;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -53,10 +53,10 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 
 	@Autowired
 	JSONUtil jsonUtil;
-	
+
 	@Autowired
 	StringUtil stringUtil;
-	
+
 	static HashMap<String, VTrxLogAttr> trxLogAttrs = new HashMap<String, VTrxLogAttr>();
 	static {
 		trxLogAttrs.put("name", new VTrxLogAttr("name", "Repository Name", false));
@@ -66,10 +66,10 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 	}
 
 	private String hiddenPasswordString;
-	
+
 	@Autowired
 	RangerEnumUtil xaEnumUtil;
-	
+
 	public XAssetService(){
 		super();
 		hiddenPasswordString = PropertiesUtil.getProperty("ranger.password.hidden", "*****");
@@ -232,27 +232,27 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 		if(vObj == null ||action == null || ("update".equalsIgnoreCase(action) && mObj == null)){
 			return null;
 		}
-		
+
 		List<XXTrxLog> trxLogList = new ArrayList<XXTrxLog>();
 		Field[] fields = vObj.getClass().getDeclaredFields();
-		
+
 		try {
 			Field nameField = vObj.getClass().getDeclaredField("name");
 			nameField.setAccessible(true);
 			String objectName = ""+nameField.get(vObj);
-	
+
 			for(Field field : fields){
 				field.setAccessible(true);
 				String fieldName = field.getName();
 				if(!trxLogAttrs.containsKey(fieldName)){
 					continue;
 				}
-				
+
 				VTrxLogAttr vTrxLogAttr = trxLogAttrs.get(fieldName);
-				
+
 				XXTrxLog xTrxLog = new XXTrxLog();
 				xTrxLog.setAttributeName(vTrxLogAttr.getAttribUserFriendlyName());
-			
+
 				String value = null;
 				boolean isEnum = vTrxLogAttr.isEnum();
 				if(isEnum){
@@ -262,7 +262,7 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 				} else {
 					value = ""+field.get(vObj);
 				}
-				
+
 				if("create".equalsIgnoreCase(action)){
 					if(stringUtil.isEmpty(value)){
 						continue;
@@ -290,10 +290,10 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 					if("config".equalsIgnoreCase(fieldName)){
 						Map<String, String> vConfig = jsonUtil.jsonToMap(value);
 						Map<String, String> xConfig = jsonUtil.jsonToMap(oldValue);
-						
+
 						Map<String, String> newConfig = new HashMap<String, String>();
 						Map<String, String> oldConfig = new HashMap<String, String>();
-						
+
 						for (Entry<String, String> entry: vConfig.entrySet()) {
 							String key = entry.getKey();
 						    if (!xConfig.containsKey(key)) {
@@ -307,7 +307,7 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 						    	oldConfig.put(key, xConfig.get(key));
 						    }
 						}
-						
+
 						oldValue = jsonUtil.readMapToString(oldConfig);
 						value = jsonUtil.readMapToString(newConfig);
 					}
@@ -317,13 +317,13 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 					xTrxLog.setPreviousValue(oldValue);
 					xTrxLog.setNewValue(value);
 				}
-				
+
 				xTrxLog.setAction(action);
 				xTrxLog.setObjectClassType(AppConstants.CLASS_TYPE_XA_ASSET);
 				xTrxLog.setObjectId(vObj.getId());
 				xTrxLog.setObjectName(objectName);
 				trxLogList.add(xTrxLog);
-				
+
 			}
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -334,10 +334,10 @@ public class XAssetService extends XAssetServiceBase<XXAsset, VXAsset> {
 		} catch (SecurityException e) {
 			e.printStackTrace();
 		}
-		
+
 		return trxLogList;
 	}
-	
+
 	public String getConfigWithEncryptedPassword(String config,boolean isForced){
 		try {
 			if (config != null && !config.isEmpty()) {
