@@ -144,7 +144,6 @@
         <javax-inject.version>1</javax-inject.version>
         <javax.annotation-api>1.3.2</javax.annotation-api>
         <javax.el-glassfish.version>3.0.0</javax.el-glassfish.version>
-        <javax.ws.rs-api.version>2.1.1</javax.ws.rs-api.version>
         <jaxb.api.version>2.3.1</jaxb.api.version>
         <jaxb-impl.version>2.3.3</jaxb-impl.version>
         <jaxb-core.version>2.3.0.1</jaxb-core.version>

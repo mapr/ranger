@@ -158,11 +158,6 @@
             <version>${apacheds.version}</version>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>${javax.ws.rs-api.version}</version>
-        </dependency>
 	<dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>

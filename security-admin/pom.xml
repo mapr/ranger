@@ -253,11 +253,23 @@
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-bundle</artifactId>
             <version>${jersey-bundle.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.sun.jersey</groupId>
             <artifactId>jersey-core</artifactId>
             <version>${jersey-core.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.ws.rs</groupId>
+                    <artifactId>jsr311-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.codehaus.jettison</groupId>
@@ -329,11 +341,6 @@
                     <artifactId>javax.ws.rs-api</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
-            <version>${javax.ws.rs-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
