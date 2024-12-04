@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+Profiles for main security chain (with "/**" pattern) to be imported in security-applicationContext.xml.
+Only one profile can be active at a time.
+Which profile to activate is currently chosen by SpringProfileActivatorListener
+based on hadoop.http.authentication.jwt.enabled property in core-site.xml:
+false (default) - classic-login
+true - oidc-login
+When adding any changes to classic-login variant, consider adding them to oidc-login variant too.
+
+NOTE: the only reason for splitting into 2 profiles is that we want to programmatically
+enable/disable oauth2-login feature, which seems to only be possible through profiles
+when using XML-based configuration. If we were using Java-based configuration, we could easily go with:
+if (condition) {
+	http.outh2Login(...);
+}
+without going into profiles. Consider this, if you will ever move to Java-based configuration.
+-->
+
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+			 xmlns:beans="http://www.springframework.org/schema/beans"
+			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			 xmlns:security="http://www.springframework.org/schema/security"
+			 xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+http://www.springframework.org/schema/security
+http://www.springframework.org/schema/security/spring-security-5.7.xsd">
+
+	<!-- Classic login with Ranger login page -->
+	<beans:beans profile="classic-login">
+		<security:http disable-url-rewriting="true" use-expressions="true" create-session="always" entry-point-ref="authenticationProcessingFilterEntryPoint">
+			<csrf disabled="true"/>
+			<security:headers>
+				<security:frame-options/>
+				<security:cache-control/>
+				<security:content-type-options/>
+				<security:xss-protection/>
+				<security:hsts/>
+				<security:content-security-policy policy-directives="default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';font-src 'self'"/>
+			</security:headers>
+			<security:session-management session-fixation-protection="newSession" />
+			<intercept-url pattern="/**" access="isAuthenticated()"/>
+			<custom-filter ref="ssoAuthenticationFilter" after="BASIC_AUTH_FILTER" />
+			<security:custom-filter ref="krbAuthenticationFilter" after="SERVLET_API_SUPPORT_FILTER" />
+			<security:custom-filter ref="maprAuthenticationFilter" after="ANONYMOUS_FILTER"/>
+			<security:custom-filter ref="CSRFPreventionFilter" after="REMEMBER_ME_FILTER" />
+			<security:custom-filter position="FORM_LOGIN_FILTER" ref="customUsernamePasswordAuthenticationFilter"/>
+			<security:custom-filter position="LAST" ref="userContextFormationFilter"/>
+
+			<security:access-denied-handler error-page="/login.jsp"/>
+			<security:logout delete-cookies="${ranger.admin.cookie.name}" logout-url="/logout" success-handler-ref="customLogoutSuccessHandler" />
+			<http-basic entry-point-ref="authenticationProcessingFilterEntryPoint"/>
+		</security:http>
+	</beans:beans>
+
+	<!--
+		SSO login:
+		- unauthenticated users are redirected to configured IdP (such as Keycloak) to log in
+		- after successful authentication an id token (JWT) is generated and set in cluster-wide cookie
+		- users can authenticate with that JWT either in Bearer header or in cookie
+	-->
+	<beans:beans profile="oidc-login">
+		<security:http disable-url-rewriting="true" use-expressions="true" create-session="always" entry-point-ref="oauth2LoginEntryPoint">
+			<csrf disabled="true"/>
+			<security:headers>
+				<security:frame-options/>
+				<security:cache-control/>
+				<security:content-type-options/>
+				<security:xss-protection/>
+				<security:hsts/>
+				<security:content-security-policy policy-directives="default-src 'none'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self'; img-src 'self'; style-src 'self' 'unsafe-inline';font-src 'self'"/>
+			</security:headers>
+			<security:session-management session-fixation-protection="newSession" />
+			<intercept-url pattern="/**" access="isAuthenticated()"/>
+			<security:custom-filter ref="krbAuthenticationFilter" after="SERVLET_API_SUPPORT_FILTER" />
+			<security:custom-filter ref="maprAuthenticationFilter" after="ANONYMOUS_FILTER"/>
+			<security:custom-filter ref="CSRFPreventionFilter" after="REMEMBER_ME_FILTER" />
+			<security:custom-filter position="FORM_LOGIN_FILTER" ref="customUsernamePasswordAuthenticationFilter"/>
+			<security:custom-filter position="LAST" ref="userContextFormationFilter"/>
+
+			<security:access-denied-handler error-page="/login.jsp"/>
+			<security:logout delete-cookies="${ranger.admin.cookie.name}" logout-url="/logout" success-handler-ref="customLogoutSuccessHandler" />
+
+			<http-basic/>
+			<oauth2-login client-registration-repository-ref="clientRegistrationRepository" authentication-success-handler-ref="jwtCookieHandler"/>
+			<oauth2-resource-server bearer-token-resolver-ref="jwtCookieHandler">
+				<jwt decoder-ref="jwtDecoder" jwt-authentication-converter-ref="jwtAuthenticationConverter"/>
+			</oauth2-resource-server>
+		</security:http>
+
+		<beans:bean id="oauth2LoginEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+			<beans:constructor-arg value="/oauth2/authorization/login"/>
+		</beans:bean>
+
+		<beans:bean id="clientRegistrationRepository" class="org.apache.ranger.security.oidc.ClientRegistrationRepositoryFactory" factory-method="createClientRegistrationRepository"/>
+
+		<beans:bean id="jwtDecoder" class="org.springframework.security.oauth2.jwt.JwtDecoders" factory-method="fromOidcIssuerLocation">
+			<beans:constructor-arg value="#{ T(org.apache.hadoop.security.authentication.util.SsoConfigurationUtil).getInstance().getClientIssuer() }"/>
+		</beans:bean>
+
+		<beans:bean id="jwtAuthenticationConverter" class="org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter">
+			<beans:property name="principalClaimName" value="#{ T(org.apache.hadoop.security.authentication.util.SsoConfigurationUtil).getInstance().getUserAttrName() }"/>
+		</beans:bean>
+
+		<beans:bean id="defaultBearerTokenResolver" class="org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver"/>
+		<beans:bean id="defaultAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"/>
+		<beans:bean id="jwtCookieHandler" class="org.apache.ranger.security.oidc.JwtCookieHandler">
+			<beans:constructor-arg name="delegateBearerTokenResolver" ref="defaultBearerTokenResolver"/>
+			<beans:constructor-arg name="delegateAuthenticationSuccessHandler" ref="defaultAuthenticationSuccessHandler"/>
+		</beans:bean>
+	</beans:beans>
+</beans:beans>
