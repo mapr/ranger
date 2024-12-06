@@ -24,7 +24,7 @@
     </parent>
     <groupId>org.apache.ranger</groupId>
     <artifactId>ranger</artifactId>
-    <version>2.4.0.0-eep-920-SNAPSHOT</version>
+    <version>2.4.0.100-eep-940-SNAPSHOT</version>
     <description>Security for Enforcing Enterprise Policies</description>
     <packaging>pom</packaging>
     <name>ranger</name>
@@ -93,7 +93,7 @@
         <checkstyle.version>8.29</checkstyle.version>
         <codehaus.jackson.version>1.9.13-atlassian-6</codehaus.jackson.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
-        <commons.cli.version>1.2</commons.cli.version>
+        <commons.cli.version>1.5.0</commons.cli.version>
         <commons.codec.version>1.12</commons.codec.version>
         <commons.collections.version>3.2.2</commons.collections.version>
         <commons.compress.version>1.21</commons.compress.version>
@@ -122,7 +122,7 @@
         <graalvm.version>22.3.0</graalvm.version>
         <gson.version>2.9.1</gson.version>
         <guice.version>4.0</guice.version>
-        <hadoop.version>3.3.5.100-eep-920-SNAPSHOT</hadoop.version>
+        <hadoop.version>3.4.1.0-eep-940-SNAPSHOT</hadoop.version>
         <ozone.version>1.0.0</ozone.version>
         <hamcrest.version>2.2</hamcrest.version>
         <hbase.version>2.4.6</hbase.version>
