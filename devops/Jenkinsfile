@@ -155,7 +155,7 @@ pipeline {
                       cd ${PROJECT}; \
                       git checkout MEP-9.4.0 ; \
                       make ${PROJECT} TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
-                      make ${PROJECT}-deploy ; \
+                      make ${PROJECT}-deploy ${MAKEFILE_ARGS} ; \
                       """
                     }
                 }
