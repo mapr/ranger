@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 import org.apache.ranger.common.AppConstants;
 import org.apache.ranger.common.DateUtil;
+import org.apache.ranger.common.RangerConstants;
 
 
 @MappedSuperclass @EntityListeners( org.apache.ranger.common.db.JPABeanCallbacks.class)
@@ -97,6 +98,10 @@ public abstract class XXDBBase implements java.io.Serializable {
 	 * Default constructor. This will set all the attributes to default value.
 	 */
 	public XXDBBase ( ) {
+	}
+
+	public boolean isInMemory() {
+		return RangerConstants.IN_MEMORY_OBJECT_ID.equals(getId());
 	}
 
 	public int getMyClassType( ) {

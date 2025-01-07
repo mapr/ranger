@@ -19,13 +19,14 @@
 
  package org.apache.ranger.biz;
 
-import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -59,6 +60,7 @@ import org.apache.ranger.view.VXAuthSessionList;
 import org.apache.ranger.view.VXLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
@@ -67,7 +69,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.apache.ranger.security.oidc.OidcUtil.IS_OIDC_ENABLED;
+import static org.apache.ranger.security.oidc.OidcUtil.isOidcOrJwtAuthenticatedUser;
 
 @Component
 @Transactional
@@ -125,7 +127,8 @@ public class SessionMgr {
 
 			getSSOSpnegoAuthCheckForAPI(currentLoginId, httpRequest);
 			// Need to build the UserSession
-			XXPortalUser gjUser = daoManager.getXXPortalUser().findByLoginId(currentLoginId);
+			XXPortalUser gjUser = getUserForNewSession(currentLoginId);
+
 			if (gjUser == null) {
 				logger.error(
 						"Error getting user for loginId=" + currentLoginId,
@@ -135,7 +138,9 @@ public class SessionMgr {
 
 			XXAuthSession gjAuthSession = new XXAuthSession();
 			gjAuthSession.setLoginId(currentLoginId);
-			gjAuthSession.setUserId(gjUser.getId());
+			if (!gjUser.isInMemory()) {
+				gjAuthSession.setUserId(gjUser.getId());
+			}
 			gjAuthSession.setAuthTime(DateUtil.getUTCDate());
 			gjAuthSession.setAuthStatus(XXAuthSession.AUTH_STATUS_SUCCESS);
 			gjAuthSession.setAuthType(authType);
@@ -216,6 +221,11 @@ public class SessionMgr {
 		return userSession;
 	}
 
+	public XXPortalUser getUserForNewSession(String loginId) {
+		return isOidcOrJwtAuthenticatedUser(loginId) ? XXPortalUser.createInMemoryUser(loginId)
+						: daoManager.getXXPortalUser().findByLoginId(loginId);
+	}
+
 	private void getSSOSpnegoAuthCheckForAPI(String currentLoginId, HttpServletRequest request) {
 
 		RangerSecurityContext context = RangerContextHolder.getSecurityContext();
@@ -223,8 +233,7 @@ public class SessionMgr {
 		boolean ssoEnabled = session != null ? session.isSSOEnabled() : PropertiesUtil.getBooleanProperty("ranger.sso.enabled", false);
 
 		XXPortalUser gjUser = daoManager.getXXPortalUser().findByLoginId(currentLoginId);
-		if (gjUser == null && ((request.getAttribute("spnegoEnabled") != null && (boolean)request.getAttribute("spnegoEnabled")) || (ssoEnabled)
-						|| IS_OIDC_ENABLED)) {
+		if (gjUser == null && ((request.getAttribute("spnegoEnabled") != null && (boolean)request.getAttribute("spnegoEnabled")) || (ssoEnabled))) {
 			if(logger.isDebugEnabled()){
 				logger.debug("User : "+currentLoginId+" doesn't exist in Ranger DB So creating user as it's SSO or Spnego authenticated");
 			}
@@ -233,26 +242,32 @@ public class SessionMgr {
 	}
 
 	public void resetUserModulePermission(UserSessionBase userSession) {
-
-		XXUser xUser = daoManager.getXXUser().findByUserName(userSession.getLoginId());
-		if (xUser != null) {
-			List<String> permissionList = daoManager.getXXModuleDef().findAccessibleModulesByUserId(userSession.getUserId(), xUser.getId());
-			CopyOnWriteArraySet<String> userPermissions = new CopyOnWriteArraySet<String>(permissionList);
-
-			UserSessionBase.RangerUserPermission rangerUserPermission = userSession.getRangerUserPermission();
-
-			if (rangerUserPermission == null) {
-				rangerUserPermission = new UserSessionBase.RangerUserPermission();
-			}
-
-			rangerUserPermission.setUserPermissions(userPermissions);
-			rangerUserPermission.setLastUpdatedTime(Calendar.getInstance().getTimeInMillis());
-			userSession.setRangerUserPermission(rangerUserPermission);
-			if (logger.isDebugEnabled()) {
-				logger.debug("UserSession Updated to set new Permissions to User: " + userSession.getLoginId());
-			}
+		Collection<String> permissions;
+		if (isOidcOrJwtAuthenticatedUser(userSession.getLoginId())) {
+			permissions = XUserMgr.flatmapRolesToPermissions(userSession.getUserRoleList());
+			logger.info("Derived permissions from roles");
 		} else {
-			logger.error("No XUser found with username: " + userSession.getLoginId() + "So Permission is not set for the user");
+			XXUser xUser = daoManager.getXXUser().findByUserName(userSession.getLoginId());
+			if (xUser == null) {
+				logger.error("No XUser found with username: " + userSession.getLoginId() + "So Permission is not set for the user");
+				return;
+			}
+			permissions = daoManager.getXXModuleDef().findAccessibleModulesByUserId(userSession.getUserId(), xUser.getId());
+		}
+
+		CopyOnWriteArraySet<String> userPermissions = new CopyOnWriteArraySet<>(permissions);
+
+		UserSessionBase.RangerUserPermission rangerUserPermission = userSession.getRangerUserPermission();
+
+		if (rangerUserPermission == null) {
+			rangerUserPermission = new UserSessionBase.RangerUserPermission();
+		}
+
+		rangerUserPermission.setUserPermissions(userPermissions);
+		rangerUserPermission.setLastUpdatedTime(Calendar.getInstance().getTimeInMillis());
+		userSession.setRangerUserPermission(rangerUserPermission);
+		if (logger.isDebugEnabled()) {
+			logger.debug("UserSession Updated to set new Permissions to User: " + userSession.getLoginId());
 		}
 	}
 
@@ -265,7 +280,7 @@ public class SessionMgr {
 		// Let's get the Current User Again
 		String currentLoginId = userSession.getLoginId();
 
-		XXPortalUser gjUser = daoManager.getXXPortalUser().findByLoginId(currentLoginId);
+		XXPortalUser gjUser = getUserForNewSession(currentLoginId);
 		userSession.setXXPortalUser(gjUser);
 
 		setUserRoles(userSession);
@@ -274,13 +289,14 @@ public class SessionMgr {
 
 	private void setUserRoles(UserSessionBase userSession) {
 
-		List<String> strRoleList = new ArrayList<String>();
-		List<XXPortalUserRole> roleList = daoManager.getXXPortalUserRole().findByUserId(
-				userSession.getUserId());
-		for (XXPortalUserRole gjUserRole : roleList) {
-			String userRole = gjUserRole.getUserRole();
-			strRoleList.add(userRole);
-		}
+		List<String> strRoleList = isOidcOrJwtAuthenticatedUser(userSession.getLoginId()) ?
+						SecurityContextHolder.getContext().getAuthentication()
+										.getAuthorities().stream()
+										.map(GrantedAuthority::getAuthority)
+										.collect(Collectors.toList())
+						: daoManager.getXXPortalUserRole().findByParentId(userSession.getUserId()).stream()
+						.map(XXPortalUserRole::getUserRole)
+						.collect(Collectors.toList());
 
 		if (strRoleList.contains(RangerConstants.ROLE_SYS_ADMIN)) {
 			userSession.setUserAdmin(true);

@@ -21,11 +21,24 @@ package org.apache.ranger.security.oidc;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.security.authentication.util.SsoConfigurationUtil;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 public class OidcUtil {
+
   public static final boolean IS_OIDC_ENABLED;
 
   static {
     IS_OIDC_ENABLED = new Configuration().getBoolean(SsoConfigurationUtil.HADOOP_JWT_ENABLED, false);
   }
+
+  public static boolean isOidcOrJwtAuthenticatedUser(String expectedLoginId) {
+    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    return (authentication instanceof OAuth2AuthenticationToken
+            || authentication instanceof JwtAuthenticationToken)
+            && expectedLoginId != null && expectedLoginId.equals(authentication.getName());
+  }
+
 }

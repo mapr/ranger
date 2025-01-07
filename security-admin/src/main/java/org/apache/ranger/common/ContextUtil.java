@@ -19,9 +19,14 @@
 
  package org.apache.ranger.common;
 
+import org.apache.ranger.entity.XXPortalUser;
 import org.apache.ranger.security.context.RangerAdminOpContext;
 import org.apache.ranger.security.context.RangerContextHolder;
 import org.apache.ranger.security.context.RangerSecurityContext;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public class ContextUtil {
 
@@ -80,6 +85,26 @@ public class ContextUtil {
 			}
 		}
 		return null;
+	}
+
+	public static Optional<UserSessionBase> getCurrentUserSession(String expectedLoginId) {
+		return Optional.ofNullable(getCurrentUserSession())
+						.filter(s -> s.getLoginId() != null && s.getLoginId().equals(expectedLoginId));
+	}
+
+	public static Optional<XXPortalUser> getCurrentPortalUser(String expectedLoginId) {
+		return getCurrentUserSession(expectedLoginId).map(UserSessionBase::getXXPortalUser);
+	}
+
+	public static Optional<List<String>> getCurrentUserRoles(String expectedLoginId) {
+		return getCurrentUserSession(expectedLoginId).map(UserSessionBase::getUserRoleList);
+	}
+
+	public static Optional<List<String>> getCurrentUserPermissions(String expectedLoginId) {
+		return getCurrentUserSession(expectedLoginId)
+						.map(UserSessionBase::getRangerUserPermission)
+						.map(UserSessionBase.RangerUserPermission::getUserPermissions)
+						.map(ArrayList::new);
 	}
 
 	public static boolean isBulkModeContext() {

@@ -132,6 +132,13 @@ public class XXUser extends XXDBBase implements java.io.Serializable {
 		isVisible = RangerCommonEnums.IS_VISIBLE;
 	}
 
+	public static XXUser createInMemoryUser(String userName) {
+		XXUser xxUser = new XXUser();
+		xxUser.setId(RangerConstants.IN_MEMORY_OBJECT_ID);
+		xxUser.setName(userName);
+		return xxUser;
+	}
+
 	@Override
 	public int getMyClassType( ) {
 	    return AppConstants.CLASS_TYPE_XA_USER;
