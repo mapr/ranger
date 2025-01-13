@@ -63,7 +63,7 @@ http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 			<security:custom-filter position="LAST" ref="userContextFormationFilter"/>
 
 			<security:access-denied-handler error-page="/login.jsp"/>
-			<security:logout delete-cookies="${ranger.admin.cookie.name}" logout-url="/logout" success-handler-ref="customLogoutSuccessHandler" />
+			<security:logout delete-cookies="${ranger.admin.cookie.name}" logout-url="/logout" success-handler-ref="customLogoutSuccessHandler"/>
 			<http-basic entry-point-ref="authenticationProcessingFilterEntryPoint"/>
 		</security:http>
 	</beans:beans>
@@ -75,7 +75,7 @@ http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 		- users can authenticate with that JWT either in Bearer header or in cookie
 	-->
 	<beans:beans profile="oidc-login">
-		<security:http disable-url-rewriting="true" use-expressions="true" create-session="always" entry-point-ref="oauth2LoginEntryPoint">
+		<security:http disable-url-rewriting="true" use-expressions="true" create-session="always" entry-point-ref="delegatingAuthenticationEntryPoint">
 			<csrf disabled="true"/>
 			<security:headers>
 				<security:frame-options/>
@@ -94,17 +94,39 @@ http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 			<security:custom-filter position="LAST" ref="userContextFormationFilter"/>
 
 			<security:access-denied-handler error-page="/login.jsp"/>
-			<security:logout delete-cookies="${ranger.admin.cookie.name}" logout-url="/logout" success-handler-ref="customLogoutSuccessHandler" />
+			<security:logout delete-cookies="${ranger.admin.cookie.name}" logout-url="/logout" success-handler-ref="customOidcLogoutSuccessHandler" />
+			<http-basic entry-point-ref="authenticationProcessingFilterEntryPoint"/>
 
-			<http-basic/>
-			<oauth2-login client-registration-repository-ref="clientRegistrationRepository" authentication-success-handler-ref="jwtCookieHandler"/>
-			<oauth2-resource-server bearer-token-resolver-ref="jwtCookieHandler">
+			<oauth2-login client-registration-repository-ref="clientRegistrationRepository" authentication-success-handler-ref="homeAuthenticationSuccessHandler"/>
+			<oauth2-resource-server>
 				<jwt decoder-ref="jwtDecoder" jwt-authentication-converter-ref="jwtAuthenticationConverter"/>
 			</oauth2-resource-server>
 		</security:http>
 
 		<beans:bean id="oauth2LoginEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
 			<beans:constructor-arg value="/oauth2/authorization/login"/>
+		</beans:bean>
+
+		<beans:bean id="homeAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler">
+			<beans:property name="defaultTargetUrl" value="/" />
+			<beans:property name="alwaysUseDefaultTargetUrl" value="true" />
+		</beans:bean>
+
+		<beans:bean id="oidcAuthenticationRequestMatcher" class="org.springframework.security.web.util.matcher.AntPathRequestMatcher">
+			<beans:constructor-arg value="/ssologin" />
+		</beans:bean>
+
+		<beans:bean id="delegatingAuthenticationEntryPoint" class="org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint">
+			<beans:constructor-arg>
+				<beans:map>
+					<beans:entry key-ref="oidcAuthenticationRequestMatcher" value-ref="oauth2LoginEntryPoint" />
+				</beans:map>
+			</beans:constructor-arg>
+			<beans:property name="defaultEntryPoint" ref="authenticationProcessingFilterEntryPoint"/>
+		</beans:bean>
+
+		<beans:bean id="customOidcLogoutSuccessHandler" class="org.apache.ranger.security.oidc.CustomOidcLogoutSuccessHandler">
+			<beans:constructor-arg ref="customLogoutSuccessHandler"/>
 		</beans:bean>
 
 		<beans:bean id="clientRegistrationRepository" class="org.apache.ranger.security.oidc.ClientRegistrationRepositoryFactory" factory-method="createClientRegistrationRepository"/>
@@ -115,13 +137,6 @@ http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 
 		<beans:bean id="jwtAuthenticationConverter" class="org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter">
 			<beans:property name="principalClaimName" value="#{ T(org.apache.hadoop.security.authentication.util.SsoConfigurationUtil).getInstance().getUserAttrName() }"/>
-		</beans:bean>
-
-		<beans:bean id="defaultBearerTokenResolver" class="org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver"/>
-		<beans:bean id="defaultAuthenticationSuccessHandler" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"/>
-		<beans:bean id="jwtCookieHandler" class="org.apache.ranger.security.oidc.JwtCookieHandler">
-			<beans:constructor-arg name="delegateBearerTokenResolver" ref="defaultBearerTokenResolver"/>
-			<beans:constructor-arg name="delegateAuthenticationSuccessHandler" ref="defaultAuthenticationSuccessHandler"/>
 		</beans:bean>
 	</beans:beans>
 </beans:beans>

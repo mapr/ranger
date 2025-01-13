@@ -69,6 +69,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.apache.ranger.security.oidc.OidcUtil.IS_OIDC_ENABLED;
+
 @Component
 @Transactional
 public class SessionMgr {
@@ -224,7 +226,7 @@ public class SessionMgr {
 
 		XXPortalUser gjUser = daoManager.getXXPortalUser().findByLoginId(currentLoginId);
 		if (gjUser == null && ((request.getAttribute("spnegoEnabled") != null && (boolean)request.getAttribute("spnegoEnabled")) || (ssoEnabled)
-						|| new Configuration().getBoolean(SsoConfigurationUtil.HADOOP_JWT_ENABLED, false))) {
+						|| IS_OIDC_ENABLED)) {
 			if(logger.isDebugEnabled()){
 				logger.debug("User : "+currentLoginId+" doesn't exist in Ranger DB So creating user as it's SSO or Spnego authenticated");
 			}

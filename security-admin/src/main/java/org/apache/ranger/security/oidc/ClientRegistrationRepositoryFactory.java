@@ -26,11 +26,14 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 
 public class ClientRegistrationRepositoryFactory {
+
+  public static final String REGISTRATION_ID = "login";
+
   public static ClientRegistrationRepository createClientRegistrationRepository() {
     SsoConfigurationUtil ssoConfigurationUtil = SsoConfigurationUtil.getInstance();
     ClientRegistration clientRegistration = ClientRegistrations
             .fromOidcIssuerLocation(ssoConfigurationUtil.getClientIssuer())
-            .registrationId("login")
+            .registrationId(REGISTRATION_ID)
             .scope("openid")
             .clientId(ssoConfigurationUtil.getClientId())
             .clientSecret(ssoConfigurationUtil.getClientSecret())

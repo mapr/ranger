@@ -26,12 +26,13 @@ import org.springframework.core.env.AbstractEnvironment;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 
+import static org.apache.ranger.security.oidc.OidcUtil.IS_OIDC_ENABLED;
+
 public class SpringProfileActivatorListener implements ServletContextListener {
   @Override
   public void contextInitialized(ServletContextEvent sce) {
     System.setProperty(AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME,
-            new Configuration().getBoolean(SsoConfigurationUtil.HADOOP_JWT_ENABLED, false)
-                    ? "oidc-login" : "classic-login");
+            IS_OIDC_ENABLED ? "oidc-login" : "classic-login");
   }
 
   @Override

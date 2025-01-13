@@ -88,6 +88,19 @@
                     </button>
                 </fieldset>
             </form>
+            <div style="display: flex; align-items: center; justify-content: center; margin: 10px 0;">
+                    <hr style="flex-grow: 1; border: none; height: 1px; background-color: #DDD; margin: 0 10px;">
+                    <span style="color: white; font-size: inherit; white-space: nowrap;">or</span>
+                    <hr style="flex-grow: 1; border: none; height: 1px; background-color: #DDD; margin: 0 10px;">
+            </div>
+            <form action="/ssologin" method="get" accept-charset="utf-8">
+                <fieldset>
+                    <button type="submit" class="btn btn-primary btn-block" id="signInSSO" tabindex="5" style="margin: 0px 0;"
+                    <% if (!org.apache.ranger.security.oidc.OidcUtil.IS_OIDC_ENABLED) { %>disabled<% } %>>
+                        Sign In with SSO
+                    </button>
+                </fieldset>
+            </form>
         </section>
     </body>
 </html>
