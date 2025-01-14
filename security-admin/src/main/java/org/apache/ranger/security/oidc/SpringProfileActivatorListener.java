@@ -19,8 +19,6 @@
 
 package org.apache.ranger.security.oidc;
 
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.security.authentication.util.SsoConfigurationUtil;
 import org.springframework.core.env.AbstractEnvironment;
 
 import javax.servlet.ServletContextEvent;
