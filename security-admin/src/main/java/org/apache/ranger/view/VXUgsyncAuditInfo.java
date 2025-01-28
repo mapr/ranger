@@ -54,6 +54,8 @@ public class VXUgsyncAuditInfo extends VXDataObject implements java.io.Serializa
 	private String syncSource;
 	private String sessionId;
 	private Map<String, String> syncSourceInfo;
+
+	private VXKeycloakSyncSourceInfo keycloakSyncSourceInfo;
 	private VXLdapSyncSourceInfo ldapSyncSourceInfo;
 	private VXFileSyncSourceInfo fileSyncSourceInfo;
 	private VXUnixSyncSourceInfo unixSyncSourceInfo;
@@ -115,6 +117,14 @@ public class VXUgsyncAuditInfo extends VXDataObject implements java.io.Serializa
 
 	public void setSyncSource(String syncSource) {
 		this.syncSource = syncSource;
+	}
+
+	public VXKeycloakSyncSourceInfo getKeycloakSyncSourceInfo() {
+		return keycloakSyncSourceInfo;
+	}
+
+	public void setKeycloakSyncSourceInfo(VXKeycloakSyncSourceInfo keycloakSyncSourceInfo) {
+		this.keycloakSyncSourceInfo = keycloakSyncSourceInfo;
 	}
 
 	public VXLdapSyncSourceInfo getLdapSyncSourceInfo() {

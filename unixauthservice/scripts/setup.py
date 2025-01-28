@@ -66,6 +66,7 @@ templateFileName = 'ranger-ugsync-template.xml'
 initdProgramName = 'ranger-usersync'
 PROP2ALIASMAP = {'ranger.usersync.ldap.ldapbindpassword': 'ranger.usersync.ldap.bindalias',
                  'ranger.usersync.keystore.password': 'usersync.ssl.key.password',
+                 'ranger.usersync.keycloak.password': 'usersync.keycloak.password',
                  'ranger.usersync.truststore.password': 'usersync.ssl.truststore.password'}
 
 RANGER_USERSYNC_HOME = os.getenv("RANGER_USERSYNC_HOME")
@@ -95,7 +96,9 @@ SYNC_SOURCE_KEY = 'SYNC_SOURCE'
 SYNC_INTERVAL_NEW_KEY = 'ranger.usersync.sleeptimeinmillisbetweensynccycle'
 SYNC_SOURCE_UNIX = 'unix'
 SYNC_SOURCE_LDAP = 'ldap'
-SYNC_SOURCE_LIST = [SYNC_SOURCE_UNIX, SYNC_SOURCE_LDAP]
+SYNC_SOURCE_KEYCLOAK = 'keycloak'
+SYNC_SOURCE_LIST = [SYNC_SOURCE_UNIX, SYNC_SOURCE_LDAP, SYNC_SOURCE_KEYCLOAK]
+SYNC_KEYCLOAK_PASSWORD_KEY = 'ranger.usersync.keycloak.password'
 SYNC_LDAP_BIND_PASSWORD_KEY = 'ranger.usersync.ldap.ldapbindpassword'
 credUpdateClassName = 'org.apache.ranger.credentialapi.buildks'
 ENV_LOGDIR_FILE = 'ranger-usersync-env-logdir.sh'
@@ -204,7 +207,7 @@ def getPropertiesKeyList(configFileName):
 def writeXMLUsingProperties(xmlTemplateFileName, prop, xmlOutputFileName):
     tree = ET.parse(xmlTemplateFileName)
     root = tree.getroot()
-    prop_arr = ["ranger.usersync.ldap.ldapbindpassword", "ranger.usersync.keystore.password",
+    prop_arr = ["ranger.usersync.ldap.ldapbindpassword", "ranger.usersync.keystore.password", "ranger.usersync.keycloak.password",
                 "ranger.usersync.truststore.password", "ranger.usersync.policymgr"]
     for config in root.findall('property'):
         name = config.find('name').text
@@ -279,6 +282,14 @@ def convertInstallPropsToXML(props):
             ldapPass = ret[SYNC_LDAP_BIND_PASSWORD_KEY]
             password_validation(ldapPass, SYNC_LDAP_BIND_PASSWORD_KEY)
             ret['ranger.usersync.source.impl.class'] = 'org.apache.ranger.ldapusersync.process.LdapUserGroupBuilder'
+            if (SYNC_INTERVAL_NEW_KEY not in ret or len(str(ret[SYNC_INTERVAL_NEW_KEY])) == 0):
+                ret[SYNC_INTERVAL_NEW_KEY] = "3600000"
+            else:
+                ret[SYNC_INTERVAL_NEW_KEY] = int(ret[SYNC_INTERVAL_NEW_KEY]) * 60000
+        elif (syncSource == SYNC_SOURCE_KEYCLOAK):
+            keycloakPass = ret[SYNC_KEYCLOAK_PASSWORD_KEY]
+            password_validation(keycloakPass, SYNC_KEYCLOAK_PASSWORD_KEY)
+            ret['ranger.usersync.source.impl.class'] = 'org.apache.ranger.keycloakusersync.KeycloakUserGroupSource'
             if (SYNC_INTERVAL_NEW_KEY not in ret or len(str(ret[SYNC_INTERVAL_NEW_KEY])) == 0):
                 ret[SYNC_INTERVAL_NEW_KEY] = "3600000"
             else:

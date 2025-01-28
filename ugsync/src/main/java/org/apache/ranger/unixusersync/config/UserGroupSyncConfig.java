@@ -35,6 +35,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 //import org.apache.hadoop.security.alias.BouncyCastleFipsKeyStoreProvider;
 import org.apache.ranger.credentialapi.CredentialReader;
+import org.apache.ranger.keycloakusersync.KeycloakUserGroupSource;
 import org.apache.ranger.plugin.util.RangerCommonConstants;
 import org.apache.ranger.plugin.util.XMLUtils;
 import org.apache.ranger.usergroupsync.UserGroupSink;
@@ -128,6 +129,12 @@ public class UserGroupSyncConfig  {
 	private static final boolean DEFAULT_LGSYNC_LDAP_STARTTLS_ENABLED = false;
 
 	private static final String LGSYNC_LDAP_BIND_DN = "ranger.usersync.ldap.binddn";
+
+	private static final String UGSYNC_KEYCLOAK_USERNAME = "ranger.usersync.keycloak.username";
+
+	private static final String UGSYNC_KEYCLOAK_PASSWORD = "ranger.usersync.keycloak.password";
+
+	private static final String UGSYNC_KEYCLOAK_PASSWORD_ALIAS = "usersync.keycloak.password";
 
 	private static final String LGSYNC_LDAP_BIND_KEYSTORE = "ranger.usersync.credstore.filename";
 
@@ -641,6 +648,33 @@ public class UserGroupSyncConfig  {
 		return prop.getProperty(LGSYNC_LDAP_BIND_PASSWORD);
 	}
 
+	public String getKeycloakUsername() throws Throwable {
+		String val =  prop.getProperty(UGSYNC_KEYCLOAK_USERNAME);
+		if(val == null || val.trim().isEmpty()) {
+			throw new Exception(UGSYNC_KEYCLOAK_USERNAME + " for KeycloakUserGroupSync is not specified");
+		}
+		return val;
+	}
+
+
+	public String getKeycloakPassword() {
+		//update credential from keystore
+		if (prop == null) {
+			return null;
+		}
+		String ksPath;
+		if((ksPath = prop.getProperty(LGSYNC_LDAP_BIND_KEYSTORE)) != null && !ksPath.trim().isEmpty()){
+			if ("bcfks".equalsIgnoreCase(getSSLKeyStoreType())) {
+				String crendentialProviderPrefixBcfks= "bcfks" + "://file";
+				ksPath = crendentialProviderPrefixBcfks + ksPath;
+			}
+			String password=CredentialReader.getDecryptedString(ksPath.trim(), UGSYNC_KEYCLOAK_PASSWORD_ALIAS.trim(), getSSLKeyStoreType());
+			if(password!=null&& !password.trim().isEmpty() && !password.trim().equalsIgnoreCase("none")){
+				prop.setProperty(UGSYNC_KEYCLOAK_PASSWORD,password);
+			}
+		}
+		return prop.getProperty(UGSYNC_KEYCLOAK_PASSWORD);
+	}
 
 	public String getLdapAuthenticationMechanism() {
 		String val =  prop.getProperty(LGSYNC_LDAP_AUTHENTICATION_MECHANISM);
@@ -1323,7 +1357,7 @@ public class UserGroupSyncConfig  {
 	 * If the delete frequency interval value is less than sync interval and greater than 8hrs,
 	 * then deleted objects are computed at every sync cycle.
 	 */
-	public long getUserSyncDeletesFrequency() throws Throwable {
+	public long getUserSyncDeletesFrequency() {
 		long ret = 1;
 
 		String val = prop.getProperty(UGSYNC_DELETES_FREQUENCY);
@@ -1342,8 +1376,10 @@ public class UserGroupSyncConfig  {
 		String className = getUserGroupSource().getClass().getName();
 		if (LGSYNC_SOURCE_CLASS.equals(className)) {
 			currentSyncSource = "LDAP/AD";
-		} else if (UGSYNC_SOURCE_CLASS.equalsIgnoreCase(className)){
+		} else if (UGSYNC_SOURCE_CLASS.equalsIgnoreCase(className)) {
 			currentSyncSource = "Unix";
+		} else if (KeycloakUserGroupSource.class.getName().equalsIgnoreCase(className)) {
+			currentSyncSource = KeycloakUserGroupSource.SYNC_SOURCE;
 		} else {
 			currentSyncSource = "File";
 		}

@@ -28,6 +28,8 @@ public class UgsyncAuditInfo {
 	private Long noOfModifiedGroups;
 	private String 	syncSource;
 	private String sessionId;
+
+	private KeycloakSyncSourceInfo keycloakSyncSourceInfo;
 	private LdapSyncSourceInfo ldapSyncSourceInfo;
 	private UnixSyncSourceInfo unixSyncSourceInfo;
 	private FileSyncSourceInfo fileSyncSourceInfo;
@@ -80,6 +82,14 @@ public class UgsyncAuditInfo {
 		this.ldapSyncSourceInfo = ldapSyncSourceInfo;
 	}
 
+	public KeycloakSyncSourceInfo getKeycloakSyncSourceInfo() {
+		return keycloakSyncSourceInfo;
+	}
+
+	public void setKeycloakSyncSourceInfo(KeycloakSyncSourceInfo keycloakSyncSourceInfo) {
+		this.keycloakSyncSourceInfo = keycloakSyncSourceInfo;
+	}
+
 	public UnixSyncSourceInfo getUnixSyncSourceInfo() {
 		return unixSyncSourceInfo;
 	}
@@ -125,6 +135,7 @@ public class UgsyncAuditInfo {
 		sb.append(", No. of Modified users= ").append(noOfModifiedUsers);
 		sb.append(", No. of Modified groups= ").append(noOfModifiedGroups);
 		sb.append(", syncSource= ").append(syncSource);
+		sb.append(", keycloakSyncSourceInfo= ").append(keycloakSyncSourceInfo);
 		sb.append(", ldapSyncSourceInfo= ").append(ldapSyncSourceInfo);
 		sb.append(", unixSyncSourceInfo= ").append(unixSyncSourceInfo);
 		sb.append(", fileSyncSourceInfo= ").append(fileSyncSourceInfo);

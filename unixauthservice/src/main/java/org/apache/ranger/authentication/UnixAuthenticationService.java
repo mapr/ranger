@@ -43,11 +43,13 @@ import javax.net.ssl.SSLServerSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.ranger.credentialapi.CredentialReader;
 import org.apache.ranger.plugin.util.XMLUtils;
 import org.apache.ranger.unixusersync.config.UserGroupSyncConfig;
 import org.apache.ranger.usergroupsync.UserGroupSync;
 import org.apache.ranger.usergroupsync.UserSyncMetricsProducer;
+import org.apache.ranger.util.MapRSslConfigReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -197,8 +199,14 @@ public class UnixAuthenticationService {
 		}
 		keyStorePathPassword = CredentialReader.getDecryptedString(credStoreFileName, SSL_KEYSTORE_PATH_PASSWORD_ALIAS, keyStoreType);
 		trustStorePathPassword = CredentialReader.getDecryptedString(credStoreFileName,SSL_TRUSTSTORE_PATH_PASSWORD_ALIAS, trustStoreType);
+		if (StringUtils.isEmpty(trustStorePathPassword)) {
+			trustStorePathPassword = MapRSslConfigReader.getServerTruststorePassword();
+		}
 		
 		trustStorePath  = prop.getProperty(SSL_TRUSTSTORE_PATH_PARAM);
+		if (StringUtils.isEmpty(trustStorePath)) {
+			trustStorePath = MapRSslConfigReader.getServerTruststoreLocation();
+		}
 		portNum = Integer.parseInt(prop.getProperty(REMOTE_LOGIN_AUTH_SERVICE_PORT_PARAM));
 		String validatorProg = prop.getProperty(CRED_VALIDATOR_PROG);
 		if (validatorProg != null) {
@@ -243,6 +251,7 @@ public class UnixAuthenticationService {
 	public void startService() throws Throwable {
 		
 		SSLContext context =  SSLContext.getInstance(SSL_ALGORITHM);
+		SSLContext.setDefault(context);
 		
 		KeyManager[] km = null;
 

@@ -20,7 +20,9 @@
  package org.apache.ranger.usergroupsync;
 
 import org.apache.ranger.ugsyncutil.model.UgsyncAuditInfo;
+import org.apache.ranger.ugsyncutil.model.UsersGroupRoleAssignments;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -33,5 +35,9 @@ public interface UserGroupSink {
 								Map<String, Map<String, String>> sourceUsers,
 								Map<String, Set<String>> sourceGroupUsers,
 								boolean computeDeletes) throws Throwable;
+
+	default List<String> updateRoles(UsersGroupRoleAssignments usersGroupRoleAssignments) {
+		return null;
+	}
 
 }

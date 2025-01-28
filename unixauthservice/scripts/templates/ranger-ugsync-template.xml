@@ -58,6 +58,10 @@
 		<value></value>
 	</property>
 	<property>
+		<name>ranger.usersync.keycloak.username</name>
+		<value></value>
+	</property>
+	<property>
 		<name>ranger.usersync.ldap.groupname.caseconversion</name>
 		<value></value>
 	</property>

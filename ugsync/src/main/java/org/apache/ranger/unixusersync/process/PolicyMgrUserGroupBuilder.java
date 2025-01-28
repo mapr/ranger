@@ -264,6 +264,12 @@ public class PolicyMgrUserGroupBuilder extends AbstractUserGroupSource implement
 		int noOfCachedUsers = userCache.size();
 		int noOfCachedGroups = groupCache.size();
 		switch (ugsyncAuditInfo.getSyncSource()) {
+			case "Keycloak":
+				ugsyncAuditInfo.getKeycloakSyncSourceInfo().setTotalUsersSynced(noOfCachedUsers);
+				ugsyncAuditInfo.getKeycloakSyncSourceInfo().setTotalGroupsSynced(noOfCachedGroups);
+				ugsyncAuditInfo.getKeycloakSyncSourceInfo().setTotalUsersDeleted(noOfDeletedUsers);
+				ugsyncAuditInfo.getKeycloakSyncSourceInfo().setTotalGroupsDeleted(noOfDeletedGroups);
+				break;
 			case "LDAP/AD":
 				ugsyncAuditInfo.getLdapSyncSourceInfo().setTotalUsersSynced(noOfCachedUsers);
 				ugsyncAuditInfo.getLdapSyncSourceInfo().setTotalGroupsSynced(noOfCachedGroups);
@@ -1210,7 +1216,9 @@ public class PolicyMgrUserGroupBuilder extends AbstractUserGroupSource implement
 		}
 		return ret;
 	}
-	private List<String> updateRoles(UsersGroupRoleAssignments ugRoleAssignments) {
+
+	@Override
+	public List<String> updateRoles(UsersGroupRoleAssignments ugRoleAssignments) {
 		if (LOG.isDebugEnabled()) {
 			LOG.debug("==> PolicyMgrUserGroupBuilder.updateUserRole(" + ugRoleAssignments.getUsers() + ")");
 		}

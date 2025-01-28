@@ -158,6 +158,8 @@ public class XUgsyncAuditInfoService extends XUgsyncAuditInfoServiceBase<XXUgsyn
 			vxUgsyncAuditInfo.setSyncSourceInfo(jsonUtil.jsonToMap(vxUgsyncAuditInfo.getFileSyncSourceInfo().toString()));
 		} else if (vxUgsyncAuditInfo.getLdapSyncSourceInfo() != null) {
 			vxUgsyncAuditInfo.setSyncSourceInfo(jsonUtil.jsonToMap(vxUgsyncAuditInfo.getLdapSyncSourceInfo().toString()));
+		} else if (vxUgsyncAuditInfo.getKeycloakSyncSourceInfo() != null) {
+			vxUgsyncAuditInfo.setSyncSourceInfo(jsonUtil.jsonToMap(vxUgsyncAuditInfo.getKeycloakSyncSourceInfo().toString()));
 		}
 
 		return createResource(vxUgsyncAuditInfo);
