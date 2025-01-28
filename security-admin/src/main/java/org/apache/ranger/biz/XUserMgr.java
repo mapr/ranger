@@ -28,7 +28,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -171,56 +170,6 @@ public class XUserMgr extends XUserMgrBase {
 
 	static final Logger logger = LoggerFactory.getLogger(XUserMgr.class);
 
-	public static final Map<String, Set<String>> ROLE_PERMISSIONS;
-
-	static {
-		Map<String, Set<String>> roleToPermissionsMap = new HashMap<>();
-
-		Set<String> userPermissions = new HashSet<>();
-		roleToPermissionsMap.put(RangerConstants.ROLE_USER, userPermissions);
-		userPermissions.add(RangerConstants.MODULE_RESOURCE_BASED_POLICIES);
-		userPermissions.add(RangerConstants.MODULE_REPORTS);
-		userPermissions.add(RangerConstants.MODULE_SECURITY_ZONE);
-
-		Set<String> sysAdminPermissions = new HashSet<>();
-		roleToPermissionsMap.put(RangerConstants.ROLE_SYS_ADMIN, sysAdminPermissions);
-		sysAdminPermissions.add(RangerConstants.MODULE_REPORTS);
-		sysAdminPermissions.add(RangerConstants.MODULE_RESOURCE_BASED_POLICIES);
-		sysAdminPermissions.add(RangerConstants.MODULE_AUDIT);
-		sysAdminPermissions.add(RangerConstants.MODULE_USER_GROUPS);
-		sysAdminPermissions.add(RangerConstants.MODULE_TAG_BASED_POLICIES);
-		sysAdminPermissions.add(RangerConstants.MODULE_SECURITY_ZONE);
-
-		Set<String> keyAdminPermissions = new HashSet<>();
-		roleToPermissionsMap.put(RangerConstants.ROLE_KEY_ADMIN, keyAdminPermissions);
-		roleToPermissionsMap.put(RangerConstants.ROLE_KEY_ADMIN_AUDITOR, keyAdminPermissions);
-		keyAdminPermissions.add(RangerConstants.MODULE_AUDIT);
-		keyAdminPermissions.add(RangerConstants.MODULE_USER_GROUPS);
-		keyAdminPermissions.add(RangerConstants.MODULE_KEY_MANAGER);
-		keyAdminPermissions.add(RangerConstants.MODULE_REPORTS);
-		keyAdminPermissions.add(RangerConstants.MODULE_RESOURCE_BASED_POLICIES);
-
-		Set<String> adminAuditorPermissions = new HashSet<>();
-		roleToPermissionsMap.put(RangerConstants.ROLE_KEY_ADMIN, adminAuditorPermissions);
-		adminAuditorPermissions.add(RangerConstants.MODULE_REPORTS);
-		adminAuditorPermissions.add(RangerConstants.MODULE_RESOURCE_BASED_POLICIES);
-		adminAuditorPermissions.add(RangerConstants.MODULE_AUDIT);
-		adminAuditorPermissions.add(RangerConstants.MODULE_USER_GROUPS);
-		adminAuditorPermissions.add(RangerConstants.MODULE_TAG_BASED_POLICIES);
-		adminAuditorPermissions.add(RangerAPIMapping.TAB_PERMISSIONS);
-		adminAuditorPermissions.add(RangerConstants.MODULE_SECURITY_ZONE);
-
-		ROLE_PERMISSIONS = Collections.unmodifiableMap(roleToPermissionsMap);
-	}
-
-	public static Collection<String> flatmapRolesToPermissions(Collection<String> roles) {
-		Collection<String> permissions = new ArrayList<>();
-		for (String role: roles) {
-			permissions.addAll(ROLE_PERMISSIONS.get(role));
-		}
-		return permissions;
-	}
-
 	public VXUser getXUserByUserName(String userName) {
 		VXUser vXUser=null;
 		vXUser=xUserService.getXUserByUserName(userName);
@@ -339,8 +288,42 @@ public class XUserMgr extends XUserMgrBase {
 		HashMap<String, Long> moduleNameId = getAllModuleNameAndIdMap();
 		if(moduleNameId!=null && vXPortalUser!=null){
 			if(CollectionUtils.isNotEmpty(vXPortalUser.getUserRoleList())){
-				for (String permission: flatmapRolesToPermissions(vXPortalUser.getUserRoleList())) {
-					createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(permission), isCreate);
+				for (String role : vXPortalUser.getUserRoleList()) {
+
+					if (role.equals(RangerConstants.ROLE_USER)) {
+
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_RESOURCE_BASED_POLICIES), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_REPORTS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_SECURITY_ZONE), isCreate);
+					} else if (role.equals(RangerConstants.ROLE_SYS_ADMIN)) {
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_REPORTS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_RESOURCE_BASED_POLICIES), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_AUDIT), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_USER_GROUPS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_TAG_BASED_POLICIES), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_SECURITY_ZONE), isCreate);
+					} else if (role.equals(RangerConstants.ROLE_KEY_ADMIN)) {
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_AUDIT), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_USER_GROUPS),isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_KEY_MANAGER), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_REPORTS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_RESOURCE_BASED_POLICIES), isCreate);
+					} else if (role.equals(RangerConstants.ROLE_KEY_ADMIN_AUDITOR)) {
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_AUDIT), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_USER_GROUPS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_KEY_MANAGER), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_REPORTS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_RESOURCE_BASED_POLICIES), isCreate);
+					} else if (role.equals(RangerConstants.ROLE_ADMIN_AUDITOR)) {
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_REPORTS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_RESOURCE_BASED_POLICIES), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_AUDIT), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_USER_GROUPS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_TAG_BASED_POLICIES), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerAPIMapping.TAB_PERMISSIONS), isCreate);
+						createOrUpdateUserPermisson(vXPortalUser, moduleNameId.get(RangerConstants.MODULE_SECURITY_ZONE), isCreate);
+					}
+
 				}
 			}
 		}
@@ -2051,8 +2034,7 @@ public class XUserMgr extends XUserMgrBase {
 		if (userSession != null && userSession.getLoginId()!=null){
 			VXUser vxUser = xUserService.getXUserByUserName(userSession.getLoginId());
 			if(vxUser!=null){
-				List<String> permissionList = ContextUtil.getCurrentUserPermissions(userSession.getLoginId()).orElseGet(() ->
-								daoManager.getXXModuleDef().findAccessibleModulesByUserId(userSession.getUserId(), vxUser.getId()));
+				List<String> permissionList = daoManager.getXXModuleDef().findAccessibleModulesByUserId(userSession.getUserId(), vxUser.getId());
 				if(permissionList!=null && permissionList.contains(moduleName)){
 					return true;
 				}

@@ -26,11 +26,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.apache.ranger.biz.RangerBizUtil;
 import org.apache.ranger.common.AppConstants;
-import org.apache.ranger.common.ContextUtil;
 import org.apache.ranger.common.MessageEnums;
 import org.apache.ranger.common.PropertiesUtil;
 import org.apache.ranger.common.RangerCommonEnums;
@@ -53,8 +50,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-
-import static org.apache.ranger.security.oidc.OidcUtil.isOidcOrJwtAuthenticatedUser;
 
 @Service
 @Scope("singleton")
@@ -156,8 +151,7 @@ public class XUserService extends XUserServiceBase<XXUser, VXUser> {
 	}
 
 	public VXUser getXUserByUserName(String userName) {
-		XXUser xxUser = isOidcOrJwtAuthenticatedUser(userName) ? XXUser.createInMemoryUser(userName)
-						: daoManager.getXXUser().findByUserName(userName);
+		XXUser xxUser = daoManager.getXXUser().findByUserName(userName);
 		if (xxUser == null) {
 			throw restErrorUtil.createRESTException(userName + " is Not Found",
 					MessageEnums.DATA_NOT_FOUND);
@@ -244,8 +238,7 @@ public class XUserService extends XUserServiceBase<XXUser, VXUser> {
 	private void populateUserAttributes(String userName, VXUser vObj) {
 		if (userName != null && !userName.isEmpty()) {
 			List<String> userRoleList =new ArrayList<String>();
-			XXPortalUser xXPortalUser = ContextUtil.getCurrentPortalUser(userName).orElseGet(() ->
-							daoManager.getXXPortalUser().findByLoginId(userName));
+			XXPortalUser xXPortalUser = daoManager.getXXPortalUser().findByLoginId(userName);
 			if (xXPortalUser != null) {
 				vObj.setFirstName(xXPortalUser.getFirstName());
 				vObj.setLastName(xXPortalUser.getLastName());
@@ -257,10 +250,12 @@ public class XUserService extends XUserServiceBase<XXUser, VXUser> {
 				}
 				vObj.setStatus(xXPortalUser.getStatus());
 				vObj.setUserSource(xXPortalUser.getUserSource());
-				userRoleList.addAll(ContextUtil.getCurrentUserRoles(userName).orElseGet(() ->
-								daoManager.getXXPortalUserRole().findByParentId(xXPortalUser.getId())
-												.stream().map(XXPortalUserRole::getUserRole)
-												.collect(Collectors.toList())));
+				List<XXPortalUserRole> gjUserRoleList = daoManager.getXXPortalUserRole().findByParentId(
+						xXPortalUser.getId());
+				
+				for (XXPortalUserRole gjUserRole : gjUserRoleList) {
+					userRoleList.add(gjUserRole.getUserRole());
+				}
 			}
 			if(userRoleList==null || userRoleList.isEmpty()){
 				userRoleList.add(RangerConstants.ROLE_USER);

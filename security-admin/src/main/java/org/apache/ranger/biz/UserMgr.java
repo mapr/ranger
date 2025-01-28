@@ -27,8 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.stream.Collectors;
 
 import javax.persistence.Query;
 import javax.servlet.http.HttpServletResponse;
@@ -595,8 +593,7 @@ public class UserMgr {
 	}
 
 	public VXPortalUser getUserProfileByLoginId(String loginId) {
-		XXPortalUser user = ContextUtil.getCurrentPortalUser(loginId).orElseGet(() ->
-						daoManager.getXXPortalUser().findByLoginId(loginId));
+		XXPortalUser user = daoManager.getXXPortalUser().findByLoginId(loginId);
 		if (user != null) {
 			return mapXXPortalUserVXPortalUser(user);
 		} else {
@@ -661,18 +658,21 @@ public class UserMgr {
 		VXPortalUser userProfile = new VXPortalUser();
 		gjUserToUserProfile(user, userProfile);
 		if (sess.isUserAdmin() || sess.isKeyAdmin()
-						|| sess.getXXPortalUser().getId().equals(user.getId())) {
-			userProfile.setUserRoleList(userRoleList != null ? userRoleList : getUserRoleList(user));
+				|| sess.getXXPortalUser().getId().equals(user.getId())) {
+			if (userRoleList == null) {
+				userRoleList = new ArrayList<String>();
+				List<XXPortalUserRole> gjUserRoleList = daoManager
+						.getXXPortalUserRole().findByParentId(user.getId());
+
+				for (XXPortalUserRole userRole : gjUserRoleList) {
+					userRoleList.add(userRole.getUserRole());
+				}
+			}
+
+			userProfile.setUserRoleList(userRoleList);
 		}
 		userProfile.setUserSource(user.getUserSource());
 		return userProfile;
-	}
-
-	private List<String> getUserRoleList(XXPortalUser user) {
-		return ContextUtil.getCurrentUserRoles(user.getLoginId()).orElseGet(() ->
-						daoManager.getXXPortalUserRole().findByParentId(user.getId())
-										.stream().map(XXPortalUserRole::getUserRole)
-										.collect(Collectors.toList()));
 	}
 
 	protected void gjUserToUserProfile(XXPortalUser user, VXPortalUser userProfile) {
@@ -683,7 +683,7 @@ public class UserMgr {
 
 		// Admin
 		if (sess.isUserAdmin() || sess.isKeyAdmin()
-						|| sess.getXXPortalUser().getId().equals(user.getId())) {
+				|| sess.getXXPortalUser().getId().equals(user.getId())) {
 			userProfile.setLoginId(user.getLoginId());
 			userProfile.setStatus(user.getStatus());
 			userProfile.setUserRoleList(new ArrayList<String>());
@@ -696,61 +696,46 @@ public class UserMgr {
 
 			userProfile.setUserSource(sess.getAuthProvider());
 
+			List<XXPortalUserRole> gjUserRoleList = daoManager
+					.getXXPortalUserRole().findByParentId(user.getId());
 
-			userProfile.getUserRoleList().addAll(getUserRoleList(user));
+			for (XXPortalUserRole gjUserRole : gjUserRoleList) {
+				userProfile.getUserRoleList().add(gjUserRole.getUserRole());
+			}
 
 			userProfile.setId(user.getId());
-			if (!setSessionPermissionsIfExist(userProfile, sess)) {
-				List<XXUserPermission> xUserPermissions = daoManager
-								.getXXUserPermission().findByUserPermissionIdAndIsAllowed(
-												userProfile.getId());
-				List<XXGroupPermission> xxGroupPermissions = daoManager
-								.getXXGroupPermission().findbyVXPortalUserId(
-												userProfile.getId());
+			List<XXUserPermission> xUserPermissions = daoManager
+					.getXXUserPermission().findByUserPermissionIdAndIsAllowed(
+							userProfile.getId());
+			List<XXGroupPermission> xxGroupPermissions = daoManager
+					.getXXGroupPermission().findbyVXPortalUserId(
+							userProfile.getId());
 
-				List<VXGroupPermission> groupPermissions = new ArrayList<VXGroupPermission>();
-				List<VXUserPermission> vxUserPermissions = new ArrayList<VXUserPermission>();
-				for (XXGroupPermission xxGroupPermission : xxGroupPermissions) {
-					VXGroupPermission groupPermission = xGroupPermissionService
-									.populateViewBean(xxGroupPermission);
-					groupPermission.setModuleName(daoManager.getXXModuleDef()
-									.findByModuleId(groupPermission.getModuleId())
-									.getModule());
-					groupPermissions.add(groupPermission);
-				}
-				for (XXUserPermission xUserPermission : xUserPermissions) {
-					VXUserPermission vXUserPermission = xUserPermissionService
-									.populateViewBean(xUserPermission);
-					vXUserPermission.setModuleName(daoManager.getXXModuleDef()
-									.findByModuleId(vXUserPermission.getModuleId())
-									.getModule());
-					vxUserPermissions.add(vXUserPermission);
-				}
-				userProfile.setGroupPermissions(groupPermissions);
-				userProfile.setUserPermList(vxUserPermissions);
+			List<VXGroupPermission> groupPermissions = new ArrayList<VXGroupPermission>();
+			List<VXUserPermission> vxUserPermissions = new ArrayList<VXUserPermission>();
+			for (XXGroupPermission xxGroupPermission : xxGroupPermissions) {
+				VXGroupPermission groupPermission = xGroupPermissionService
+						.populateViewBean(xxGroupPermission);
+				groupPermission.setModuleName(daoManager.getXXModuleDef()
+						.findByModuleId(groupPermission.getModuleId())
+						.getModule());
+				groupPermissions.add(groupPermission);
 			}
+			for (XXUserPermission xUserPermission : xUserPermissions) {
+				VXUserPermission vXUserPermission = xUserPermissionService
+						.populateViewBean(xUserPermission);
+				vXUserPermission.setModuleName(daoManager.getXXModuleDef()
+						.findByModuleId(vXUserPermission.getModuleId())
+						.getModule());
+				vxUserPermissions.add(vXUserPermission);
+			}
+			userProfile.setGroupPermissions(groupPermissions);
+			userProfile.setUserPermList(vxUserPermissions);
 			userProfile.setFirstName(user.getFirstName());
 			userProfile.setLastName(user.getLastName());
 			userProfile.setPublicScreenName(user.getPublicScreenName());
 		}
-	}
 
-	private boolean setSessionPermissionsIfExist(VXPortalUser userProfile, UserSessionBase userSession) {
-		AtomicBoolean succeeded = new AtomicBoolean(false);
-		ContextUtil.getCurrentUserPermissions(userProfile.getLoginId()).ifPresent(sessionPermissions -> {
-			userProfile.setUserPermList(new ArrayList<>());
-			userProfile.setGroupPermissions(new ArrayList<>());
-			for (String sessionPermission: sessionPermissions) {
-				VXUserPermission vxUserPermission = new VXUserPermission();
-				VXGroupPermission vxGroupPermission = new VXGroupPermission();
-				vxUserPermission.setModuleName(sessionPermission);
-				vxGroupPermission.setModuleName(sessionPermission);
-				userProfile.getUserPermList().add(vxUserPermission);
-				userProfile.getGroupPermissions().add(vxGroupPermission);
-			}
-			succeeded.set(true);
-		});
-		return succeeded.get();
 	}
 
 	/**

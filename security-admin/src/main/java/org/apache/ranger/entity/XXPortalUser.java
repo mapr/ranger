@@ -185,13 +185,6 @@ public class XXPortalUser extends XXDBBase implements java.io.Serializable {
 		userSource = RangerConstants.USER_APP;
 	}
 
-	public static XXPortalUser createInMemoryUser(String loginId) {
-		XXPortalUser xxPortalUser = new XXPortalUser();
-		xxPortalUser.setId(RangerConstants.IN_MEMORY_OBJECT_ID);
-		xxPortalUser.setLoginId(loginId);
-		return xxPortalUser;
-	}
-
 	@Override
 	public int getMyClassType( ) {
 	    return AppConstants.CLASS_TYPE_USER_PROFILE;

@@ -190,6 +190,4 @@ public class RangerConstants extends RangerCommonEnums {
 	}
 	//HTTP STATUS code for authentication timeout
 		public static final int SC_AUTHENTICATION_TIMEOUT = 419;
-
-	public static final Long IN_MEMORY_OBJECT_ID = -1L;
 }

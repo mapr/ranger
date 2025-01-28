@@ -97,7 +97,7 @@ http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 			<security:logout delete-cookies="${ranger.admin.cookie.name}" logout-url="/logout" success-handler-ref="customOidcLogoutSuccessHandler" />
 			<http-basic entry-point-ref="authenticationProcessingFilterEntryPoint"/>
 
-			<oauth2-login oidc-user-service-ref="authorizingOidcUserService" client-registration-repository-ref="clientRegistrationRepository" authentication-success-handler-ref="homeAuthenticationSuccessHandler"/>
+			<oauth2-login client-registration-repository-ref="clientRegistrationRepository" authentication-success-handler-ref="homeAuthenticationSuccessHandler"/>
 			<oauth2-resource-server>
 				<jwt decoder-ref="jwtDecoder" jwt-authentication-converter-ref="jwtAuthenticationConverter"/>
 			</oauth2-resource-server>
@@ -131,17 +131,12 @@ http://www.springframework.org/schema/security/spring-security-5.7.xsd">
 
 		<beans:bean id="clientRegistrationRepository" class="org.apache.ranger.security.oidc.ClientRegistrationRepositoryFactory" factory-method="createClientRegistrationRepository"/>
 
-		<beans:bean id="authorizingOidcUserService" class="org.apache.ranger.security.oidc.AuthorizingOidcUserService"/>
-
 		<beans:bean id="jwtDecoder" class="org.springframework.security.oauth2.jwt.JwtDecoders" factory-method="fromOidcIssuerLocation">
 			<beans:constructor-arg value="#{ T(org.apache.hadoop.security.authentication.util.SsoConfigurationUtil).getInstance().getClientIssuer() }"/>
 		</beans:bean>
 
-		<beans:bean id="jwtGrantedAuthoritiesConverter" class="org.apache.ranger.security.oidc.RangerJwtGrantedAuthoritiesConverter"/>
-
 		<beans:bean id="jwtAuthenticationConverter" class="org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter">
 			<beans:property name="principalClaimName" value="#{ T(org.apache.hadoop.security.authentication.util.SsoConfigurationUtil).getInstance().getUserAttrName() }"/>
-			<beans:property name="jwtGrantedAuthoritiesConverter" ref="jwtGrantedAuthoritiesConverter"/>
 		</beans:bean>
 	</beans:beans>
 </beans:beans>
