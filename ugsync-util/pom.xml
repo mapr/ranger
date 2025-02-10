@@ -45,10 +45,6 @@
         </dependency>
     </dependencies>
 
-    <properties>
-        <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
-    </properties>
-
     <profiles>
         <profile>
             <id>java9AndUp</id>
@@ -57,9 +53,16 @@
             </activation>
             <dependencies>
                 <dependency>
-                    <groupId>jakarta.xml.bind</groupId>
-                    <artifactId>jakarta.xml.bind-api</artifactId>
-                    <version>${jakarta.xml.bind-api.version}</version>
+                    <groupId>javax.xml.bind</groupId>
+                    <artifactId>jaxb-api</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-core</artifactId>
+                </dependency>
+                <dependency>
+                    <groupId>com.sun.xml.bind</groupId>
+                    <artifactId>jaxb-impl</artifactId>
                 </dependency>
             </dependencies>
         </profile>

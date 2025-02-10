@@ -199,12 +199,12 @@ public class UnixAuthenticationService {
 		}
 		keyStorePathPassword = CredentialReader.getDecryptedString(credStoreFileName, SSL_KEYSTORE_PATH_PASSWORD_ALIAS, keyStoreType);
 		trustStorePathPassword = CredentialReader.getDecryptedString(credStoreFileName,SSL_TRUSTSTORE_PATH_PASSWORD_ALIAS, trustStoreType);
-		if (StringUtils.isEmpty(trustStorePathPassword)) {
+		if (StringUtils.isBlank(trustStorePathPassword)) {
 			trustStorePathPassword = MapRSslConfigReader.getServerTruststorePassword();
 		}
 		
 		trustStorePath  = prop.getProperty(SSL_TRUSTSTORE_PATH_PARAM);
-		if (StringUtils.isEmpty(trustStorePath)) {
+		if (StringUtils.isBlank(trustStorePath)) {
 			trustStorePath = MapRSslConfigReader.getServerTruststoreLocation();
 		}
 		portNum = Integer.parseInt(prop.getProperty(REMOTE_LOGIN_AUTH_SERVICE_PORT_PARAM));
