@@ -20,11 +20,18 @@
 package org.apache.ranger.security.oidc;
 
 import org.apache.hadoop.security.authentication.util.SsoConfigurationUtil;
+import org.springframework.security.oauth2.client.oidc.authentication.OidcIdTokenDecoderFactory;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
+import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
+import org.springframework.security.oauth2.jwt.JwtDecoderFactory;
 
-public class OidcUtil {
-  public static final boolean IS_OIDC_ENABLED;
-
-  static {
-    IS_OIDC_ENABLED = SsoConfigurationUtil.getInstance().isSsoEnabled();
+public class IdTokenDecoderFactory {
+  public static JwtDecoderFactory<ClientRegistration> createIdTokenDecoderFactory() {
+    SsoConfigurationUtil ssoConfig = SsoConfigurationUtil.getInstance();
+    JwsAlgorithm jwsAlgorithm = SignatureAlgorithm.from(ssoConfig.getJwsSsoAlgorithm());
+    OidcIdTokenDecoderFactory idTokenDecoderFactory = new OidcIdTokenDecoderFactory();
+    idTokenDecoderFactory.setJwsAlgorithmResolver(o -> jwsAlgorithm);
+    return idTokenDecoderFactory;
   }
 }
