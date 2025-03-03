@@ -47,6 +47,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.filter.GenericFilterBean;
 
 public class RangerSecurityContextFormationFilter extends GenericFilterBean {
@@ -120,7 +122,7 @@ public class RangerSecurityContextFormationFilter extends GenericFilterBean {
 				context.setRequestContext(requestContext);
 
 				RangerContextHolder.setSecurityContext(context);
-				int authType = getAuthType(httpRequest);
+				int authType = getAuthType(httpRequest, auth);
 				UserSessionBase userSession = sessionMgr.processSuccessLogin(
 						authType, userAgent, httpRequest);
 
@@ -148,12 +150,12 @@ public class RangerSecurityContextFormationFilter extends GenericFilterBean {
 		}
 	}
 
-	private int getAuthType(HttpServletRequest request) {
+	private int getAuthType(HttpServletRequest request, Authentication authentication) {
 		int authType;
 		Object ssoEnabledObj = request.getAttribute("ssoEnabled");
 		Boolean ssoEnabled = ssoEnabledObj != null ? Boolean.valueOf(String.valueOf(ssoEnabledObj)) : PropertiesUtil.getBooleanProperty("ranger.sso.enabled", false);
 
-		if (ssoEnabled) {
+		if (ssoEnabled || (authentication instanceof OAuth2AuthenticationToken || authentication instanceof JwtAuthenticationToken)) {
 			authType = XXAuthSession.AUTH_TYPE_SSO;
 		} else if (request.getAttribute("spnegoEnabled") != null && Boolean.valueOf(String.valueOf(request.getAttribute("spnegoEnabled")))){
 			if (request.getAttribute("trustedProxyEnabled") != null && Boolean.valueOf(String.valueOf(request.getAttribute("trustedProxyEnabled")))) {
