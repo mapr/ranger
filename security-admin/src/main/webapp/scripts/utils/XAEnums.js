@@ -391,7 +391,8 @@ define(function(require) {
         XAEnums.UserSyncSource = mergeParams(XAEnums.UserSyncSource, {
                 USER_SYNC_UNIX:{value:0, label:'Unix', rbkey:'xa.enum.UserSyncSource.USER_SYNC_UNIX', tt: 'lbl.USER_SYNC_UNIX'},
                 USER_SYNC_LDAPAD:{value:1, label:'LDAP/AD', rbkey:'xa.enum.UserSyncSource.USER_SYNC_LDAPAD', tt: 'lbl.USER_SYNC_LDAPAD'},
-                USER_SYNC_FILE:{value:2, label:'File', rbkey:'xa.enum.UserSyncSource.USER_SYNC_FILE', tt: 'lbl.USER_SYNC_FILE'}
+                USER_SYNC_FILE:{value:2, label:'File', rbkey:'xa.enum.UserSyncSource.USER_SYNC_FILE', tt: 'lbl.USER_SYNC_FILE'},
+                USER_SYNC_KEYCLOAK:{value:3, label:'Keycloak', rbkey:'xa.enum.UserSyncSource.USER_SYNC_KEYCLOAK', tt: 'lbl.USER_SYNC_KEYCLOAK'}
         });
 
 	return XAEnums;
