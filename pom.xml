@@ -81,7 +81,7 @@
         <asm.all.version>3.2</asm.all.version>
         <aspectj.version>1.8.2</aspectj.version>
         <assembly.plugin.version>2.6</assembly.plugin.version>
-        <atlas.version>2.2.0</atlas.version>
+        <atlas.version>2.4.0</atlas.version>
         <atlas.jackson.version>2.13.4</atlas.jackson.version>
         <atlas.jackson.databind.version>2.13.4.1</atlas.jackson.databind.version>
         <atlas.jettison.version>1.5.3</atlas.jettison.version>
@@ -110,19 +110,20 @@
         <commons.text.version>1.10.0</commons.text.version>
         <curator.test.version>5.4.0</curator.test.version>
         <curator.version>4.2.0</curator.version>
+        <snappy.java.version>1.1.10.7</snappy.java.version>
         <derby.version>10.11.1.1</derby.version>
         <dnsjava.version>2.1.7</dnsjava.version>
         <eclipse.jpa.version>2.7.12</eclipse.jpa.version>
-        <elasticsearch.version>7.10.2</elasticsearch.version>
+        <elasticsearch.version>7.17.28</elasticsearch.version>
         <enunciate.version>2.13.2</enunciate.version>
         <spotbugs.plugin.version>4.5.0.0</spotbugs.plugin.version>
-        <google.guava.version>27.0-jre</google.guava.version>
+        <google.guava.version>33.4.5-jre</google.guava.version>
         <googlecode.log4jdbc.version>1.2</googlecode.log4jdbc.version>
         <graalvm.version>22.3.0</graalvm.version>
         <gson.version>2.9.1</gson.version>
         <guice.version>4.0</guice.version>
         <hadoop.version>3.4.1.0-eep-940-SNAPSHOT</hadoop.version>
-        <ozone.version>1.0.0</ozone.version>
+        <ozone.version>1.4.1</ozone.version>
         <hamcrest.version>2.2</hamcrest.version>
         <hbase.version>2.4.6</hbase.version>
         <hive.version>3.1.3.400-eep-920-SNAPSHOT</hive.version>
@@ -153,12 +154,12 @@
         <jersey-core.version>1.19.4</jersey-core.version>
         <jersey-server.version>1.19.4</jersey-server.version>
         <jersey-spring.version>1.19.4</jersey-spring.version>
-        <jettison.version>1.5.3</jettison.version>
-        <jetty-client.version>9.4.48.v20220622</jetty-client.version>
+        <jettison.version>1.5.4</jettison.version>
+        <jetty-client.version>9.4.57.v20241219</jetty-client.version>
         <jline.version>0.9.94</jline.version>
         <jopt-simple.version>3.2</jopt-simple.version>
         <json4s.version>3.2.11</json4s.version>
-        <jsonsmart.version>2.4.8</jsonsmart.version>
+        <jsonsmart.version>2.5.2</jsonsmart.version>
         <jsr250.version>1.0</jsr250.version>
         <jsr305.version>1.3.9</jsr305.version>
         <junit.version>4.13.1</junit.version>
@@ -179,12 +180,12 @@
         <mockito.version>3.0.0</mockito.version>
         <mockito.all.version>1.10.19</mockito.all.version>
         <mysql-connector-java.version>5.1.31</mysql-connector-java.version>
-        <netty-all.version>4.1.86.Final</netty-all.version>
+        <netty-all.version>4.1.119.Final</netty-all.version>
         <noggit.version>0.8</noggit.version>
         <orc.core.version>1.6.7</orc.core.version>
-        <owasp-java-html-sanitizer.version>r239</owasp-java-html-sanitizer.version>
+        <owasp-java-html-sanitizer.version>20240325.1</owasp-java-html-sanitizer.version>
         <paranamer.version>2.3</paranamer.version>
-        <presto.version>333</presto.version>
+        <presto.version>337</presto.version>
         <prestodb.version>0.269</prestodb.version>
         <trino.version>377</trino.version>
         <poi.version>5.2.2</poi.version>
@@ -198,8 +199,8 @@
         <servlet.api.version>2.5</servlet.api.version>
         <slf4j-api.version>1.7.32</slf4j-api.version>
         <slf4j.version>1.7.32</slf4j.version>
-        <solr.version>8.11.2</solr.version>
-        <snakeyaml.version>1.33</snakeyaml.version>
+        <solr.version>8.11.4</solr.version>
+        <snakeyaml.version>2.4</snakeyaml.version>
         <spring-ldap-core.version>2.4.4</spring-ldap-core.version>
         <springframework.security.version>5.7.14</springframework.security.version>
         <springframework.test.version>5.3.39</springframework.test.version>
@@ -207,10 +208,10 @@
         <sqoop.version>1.99.7</sqoop.version>
         <storm.version>1.2.4</storm.version>
         <sun-jersey-bundle.version>1.19</sun-jersey-bundle.version>
-        <tomcat.embed.version>8.5.86</tomcat.embed.version>
+        <tomcat.embed.version>8.5.100</tomcat.embed.version>
         <testng.version>6.9.4</testng.version>
         <velocity.version>2.3</velocity.version>
-        <zookeeper.version>3.5.6.0-mapr-SNAPSHOT</zookeeper.version>
+        <zookeeper.version>3.8.3.0-mapr-SNAPSHOT</zookeeper.version>
         <mapr.core.version>7.4.0.0-mapr-SNAPSHOT</mapr.core.version>
         <codehaus.woodstox.stax2api.version>4.2.1</codehaus.woodstox.stax2api.version>
         <fasterxml.woodstox.version>5.4.0</fasterxml.woodstox.version>
@@ -254,7 +255,7 @@
         <net.minidev.asm.version>1.0.2</net.minidev.asm.version>
         <org.bouncycastle.bcprov-jdk15on>1.68</org.bouncycastle.bcprov-jdk15on>
         <org.bouncycastle.bcpkix-jdk15on>1.59</org.bouncycastle.bcpkix-jdk15on>
-        <lucene.version>8.4.0</lucene.version>
+        <lucene.version>9.12.0</lucene.version>
         <hppc.version>0.8.0</hppc.version>
         <joda.time.version>2.10.6</joda.time.version>
         <aws-java-sdk.version>1.12.125</aws-java-sdk.version>
@@ -1054,6 +1055,11 @@
                 <groupId>com.webcohesion.enunciate</groupId>
                 <artifactId>enunciate-core-annotations</artifactId>
                 <version>${enunciate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xerial.snappy</groupId>
+                <artifactId>snappy-java</artifactId>
+                <version>${snappy.java.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-beanutils</groupId>
