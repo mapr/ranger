@@ -24,7 +24,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.apache.ranger.common.view.VList;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -53,7 +52,6 @@ public class VXGroupPermissionList extends VList {
 	/**
 	 * @return the vXGroupPermission
 	 */
-	@JsonProperty("vXGroupPermission")
 	public List<VXGroupPermission> getvXGroupPermission() {
 		return vXGroupPermission;
 	}
@@ -61,7 +59,6 @@ public class VXGroupPermissionList extends VList {
 	/**
 	 * @param vXGroupPermission the vXGroupPermission to set
 	 */
-	@JsonProperty("vXGroupPermission")
 	public void setvXGroupPermission(List<VXGroupPermission> vXGroupPermission) {
 		this.vXGroupPermission = vXGroupPermission;
 	}

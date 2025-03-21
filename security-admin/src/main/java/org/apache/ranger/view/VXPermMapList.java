@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.apache.ranger.common.view.VList;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -57,7 +56,6 @@ public class VXPermMapList extends VList {
     /**
      * @return the vXPermMaps
      */
-    @JsonProperty("vXPermMaps")
     public List<VXPermMap> getVXPermMaps() {
 	return vXPermMaps;
     }
@@ -66,7 +64,6 @@ public class VXPermMapList extends VList {
      * @param vXPermMaps
      *            the vXPermMaps to set
      */
-    @JsonProperty("vXPermMaps")
     public void setVXPermMaps(List<VXPermMap> vXPermMaps) {
 	this.vXPermMaps = vXPermMaps;
     }

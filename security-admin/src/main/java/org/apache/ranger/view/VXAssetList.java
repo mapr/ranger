@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import org.codehaus.jackson.annotate.JsonProperty;
 import org.apache.ranger.common.view.VList;
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
@@ -57,7 +56,6 @@ public class VXAssetList extends VList {
     /**
      * @return the vXAssets
      */
-    @JsonProperty("vXAssets")
     public List<VXAsset> getVXAssets() {
 	return vXAssets;
     }
@@ -66,7 +64,6 @@ public class VXAssetList extends VList {
      * @param vXAssets
      *            the vXAssets to set
      */
-    @JsonProperty("vXAssets")
     public void setVXAssets(List<VXAsset> vXAssets) {
 	this.vXAssets = vXAssets;
     }
