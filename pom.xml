@@ -91,7 +91,7 @@
         <cglib.version>2.2.0-b23</cglib.version>
         <checkstyle.plugin.version>3.1.0</checkstyle.plugin.version>
         <checkstyle.version>8.29</checkstyle.version>
-        <codehaus.jackson.version>1.9.13-atlassian-6</codehaus.jackson.version>
+        <codehaus.jackson.version>1.9.13</codehaus.jackson.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
         <commons.cli.version>1.5.0</commons.cli.version>
         <commons.codec.version>1.12</commons.codec.version>
@@ -945,13 +945,6 @@
             </snapshots>
         </repository>
         <repository>
-            <id>repository.atlassian.3rdparty</id>
-            <url>https://packages.atlassian.com/maven-3rdparty/</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-        <repository>
             <id>apache.snapshots.https</id>
             <name>Apache Development Snapshot Repository</name>
             <url>https://repository.apache.org/content/repositories/snapshots</url>
@@ -1409,26 +1402,6 @@
                 <groupId>org.yaml</groupId>
                 <artifactId>snakeyaml</artifactId>
                 <version>${snakeyaml.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-core-asl</artifactId>
-                <version>${codehaus.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-jaxrs</artifactId>
-                <version>${codehaus.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-mapper-asl</artifactId>
-                <version>${codehaus.jackson.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.codehaus.jackson</groupId>
-                <artifactId>jackson-xc</artifactId>
-                <version>${codehaus.jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.curator</groupId>
