@@ -73,11 +73,6 @@
 							<include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:jar:${fasterxml.jackson.version}</include>
 							<include>com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:jar:${fasterxml.jackson.version}</include>
 							<include>com.fasterxml.jackson.module:jackson-module-jaxb-annotations:jar:${fasterxml.jackson.version}</include>
-							<include>com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:${fasterxml.jackson.version}</include>
-							<include>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:${fasterxml.jackson.version}</include>
-							<include>com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-base:jar:${fasterxml.jackson.version}</include>
-							<include>com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider:jar:${fasterxml.jackson.version}</include>
-							<include>com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:jar:${fasterxml.jackson.version}</include>
 							<include>org.codehaus.jettison:jettison:jar:${jettison.version}</include>
 							<include>org.apache.commons:commons-compress:jar:${commons.compress.version}</include>
 							<include>org.apache.commons:commons-lang3</include>
@@ -94,6 +89,11 @@
 							<include>org.apache.ranger:ugsync-util</include>
 							<include>org.apache.httpcomponents:httpclient</include>
 							<include>jakarta.xml.bind:jakarta.xml.bind-api</include>
+							<include>com.fasterxml.jackson.datatype:jackson-datatype-jdk8:jar:${fasterxml.jackson.version}</include>
+							<include>com.fasterxml.jackson.datatype:jackson-datatype-jsr310:jar:${fasterxml.jackson.version}</include>
+							<include>com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-base:jar:${fasterxml.jackson.version}</include>
+							<include>com.fasterxml.jackson.jakarta.rs:jackson-jakarta-rs-json-provider:jar:${fasterxml.jackson.version}</include>
+							<include>com.fasterxml.jackson.module:jackson-module-jakarta-xmlbind-annotations:jar:${fasterxml.jackson.version}</include>
 							<include>org.keycloak:keycloak-admin-client:jar:${keycloak.api.version}</include>
 						</includes>
 					</dependencySet>
