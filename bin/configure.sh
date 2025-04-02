@@ -295,10 +295,8 @@ configure_ssl(){
 
 enable_periodic_user_sync(){
   local property_name="ranger.usersync.enabled"
-  if is_usersync_not_configured_yet ; then
-    logInfo "Ranger: Enabling Ranger's user synchronization."
-    set_property ${property_name} "true" "${RANGER_USERSYNC_SITE}"
-  fi
+  logInfo "Ranger: Enabling Ranger's user synchronization."
+  set_property ${property_name} "true" "${RANGER_USERSYNC_SITE}"
 }
 
 ###############################################
