@@ -402,7 +402,7 @@ check_db_connector() {
 	if test -f "$SQL_CONNECTOR_JAR"; then
 		log "[I] ${DB_FLAVOR} CONNECTOR FILE : $SQL_CONNECTOR_JAR file found"
 	else
-    if test -f "${MAPR_HOME}"/lib/-connector-j* ; then
+    if test -f "${MAPR_HOME}"/lib/mysql-connector-j* ; then
       SQL_CONNECTOR_JAR_CORE_LIB=$(ls "${MAPR_HOME}"/lib/mysql-connector-j*)
       sed -i --expression "s@SQL_CONNECTOR_JAR=${SQL_CONNECTOR_JAR}@SQL_CONNECTOR_JAR=${SQL_CONNECTOR_JAR_CORE_LIB}@" ${PROPFILE}
       SQL_CONNECTOR_JAR=${SQL_CONNECTOR_JAR_CORE_LIB}
