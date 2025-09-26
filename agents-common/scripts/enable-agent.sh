@@ -90,6 +90,7 @@ configure_symlinks_for_plugins() {
 
   # needed jars
   local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
+  local BCUTIL_FIPS_JAR="$MAPR_CORE_LIB"/bcutil-fips-*
   local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
   local JACKSON_CORE_JAR="$HADOOP_COMMON_LIB"/jackson-core-2.*
@@ -98,6 +99,7 @@ configure_symlinks_for_plugins() {
 
   # if already exists, unlink first. In case applying patch, we need to remove old links
   find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bc-fips-*" -delete
+  find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bcutil-fips-*" -delete
   find $RANGER_PLUGIN_INSTALL_LIB -type l -name "bctls-fips-*" -delete
   find $RANGER_PLUGIN_INSTALL_LIB -type l -name "hadoop-shaded-guava-*" -delete
   find $RANGER_PLUGIN_INSTALL_LIB -type l -name "jackson-core-2.*" -delete
@@ -106,6 +108,7 @@ configure_symlinks_for_plugins() {
 
   # create the links again
   ln -sf $BC_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
+  ln -sf $BCUTIL_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
   ln -sf $BCTLS_FIPS_JAR $RANGER_PLUGIN_INSTALL_LIB
   ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_PLUGIN_INSTALL_LIB
   ln -sf $JACKSON_CORE_JAR $RANGER_PLUGIN_INSTALL_LIB
