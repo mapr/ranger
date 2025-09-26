@@ -212,7 +212,7 @@ public class PasswordUtils {
 
 	private static String generateBase64EncodedIV() throws NoSuchAlgorithmException {
 		byte[] iv = new byte[16];
-		SecureRandom.getInstance("NativePRNGNonBlocking").nextBytes(iv);
+		new SecureRandom().nextBytes(iv);
 		return new String(Base64.encode(iv));
 	}
 

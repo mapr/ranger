@@ -46,6 +46,7 @@ link_mapr_core_lib_for_usersync() {
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
   local JACKSON_CORE_JAR="$MAPR_CORE_LIB"/jackson-core-2.*
   local BC_FIPS_JAR="$MAPR_CORE_LIB"/bc-fips-*
+  local BCUTIL_FIPS_JAR="$MAPR_CORE_LIB"/bcutil-fips-*
   local BCTLS_FIPS_JAR="$MAPR_CORE_LIB"/bctls-fips-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
   local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
@@ -56,6 +57,7 @@ link_mapr_core_lib_for_usersync() {
   find $RANGER_USERSYNC_LIB -type l -name "protobuf-java-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "jackson-core-2.*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "bc-fips-*" -delete
+  find $RANGER_USERSYNC_LIB -type l -name "bcutil-fips-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "bctls-fips-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "hadoop-shaded-guava-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "mapr-security-web-*" -delete
@@ -66,6 +68,7 @@ link_mapr_core_lib_for_usersync() {
   ln -sf $PROTOBUF_JARS $RANGER_USERSYNC_LIB
   ln -sf $JACKSON_CORE_JAR $RANGER_USERSYNC_LIB
   ln -sf $BC_FIPS_JAR $RANGER_USERSYNC_LIB
+  ln -sf $BCUTIL_FIPS_JAR $RANGER_USERSYNC_LIB
   ln -sf $BCTLS_FIPS_JAR $RANGER_USERSYNC_LIB
   ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_USERSYNC_LIB
   ln -sf $MAPR_WEB_SECURITY_JAR $RANGER_USERSYNC_LIB
@@ -144,6 +147,7 @@ configure_cred_lib_for_admin() {
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
   local JACKSON_CORE_JAR="$RANGER_ADMIN_WEBAPP_LIB"/jackson-core-2.*
   local BC_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bc-fips-*
+  local BCUTIL_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bcutil-fips-*
   local BCTLS_FIPS_JAR="$RANGER_ADMIN_WEBAPP_LIB"/bctls-fips-*
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
   local STAX2_API_JAR="$RANGER_ADMIN_WEBAPP_LIB"/stax2-api-*
@@ -154,6 +158,7 @@ configure_cred_lib_for_admin() {
   find $RANGER_ADMIN_CRED_LIB -type l -name "protobuf-java-*" -delete
   find $RANGER_ADMIN_CRED_LIB -type l -name "jackson-core-2.*" -delete
   find $RANGER_ADMIN_CRED_LIB -type l -name "bc-fips-*" -delete
+  find $RANGER_ADMIN_CRED_LIB -type l -name "bcutil-fips-*" -delete
   find $RANGER_ADMIN_CRED_LIB -type l -name "bctls-fips-*" -delete
   find $RANGER_ADMIN_CRED_LIB -type l -name "hadoop-shaded-guava-*" -delete
   find $RANGER_ADMIN_CRED_LIB -type l -name "stax2-api-*" -delete
@@ -167,11 +172,13 @@ configure_cred_lib_for_admin() {
   ln -sf $PROTOBUF_JARS $RANGER_ADMIN_CRED_LIB
   ln -sf $JACKSON_CORE_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $BC_FIPS_JAR $RANGER_ADMIN_CRED_LIB
+  ln -sf $BCUTIL_FIPS_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $BCTLS_FIPS_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $STAX2_API_JAR $RANGER_ADMIN_CRED_LIB
   ln -sf $WOODSTOX_CORE_JAR $RANGER_ADMIN_CRED_LIB
 
   ln -sf $BC_FIPS_JAR $RANGER_ADMIN_JISQL_LIB
+  ln -sf $BCUTIL_FIPS_JAR $RANGER_ADMIN_JISQL_LIB
   ln -sf $BCTLS_FIPS_JAR $RANGER_ADMIN_JISQL_LIB
 }
