@@ -1,0 +1,81 @@
+#!/bin/sh
+
+[ -n "$VERBOSE" ] && echo "postinst called with arguments ${1}, ${2}" >&2
+[ -n "$VERBOSE" ] && set -x
+
+remove_old_directory() {
+    OLD_VERSION=$1
+    NEW_VERSION=$(cat __PREFIX__/ranger/rangerversion)
+
+    # If 3-digit version was changed
+    if [ "$OLD_VERSION" != "$NEW_VERSION" ]; then
+	# Remove old ranger-admin directory anyway
+	rm -Rf "__PREFIX__/ranger/ranger-${OLD_VERSION}"/ranger-admin
+	# If we are the last one here and version is changed, remove the whole old 3-digit directory
+	if ! ls "__PREFIX__/ranger/ranger-${OLD_VERSION}"/ranger-* >/dev/null 2>&1 ; then
+	    rm -rf "__PREFIX__/ranger/ranger-${OLD_VERSION}"
+	fi
+    fi
+}
+
+case "$1" in
+    configure)
+	# Overwrite version file and shared bin/ directory with our ones
+	echo "__VERSION_3DIGIT__" >  __PREFIX__/ranger/rangerversion
+	cp -rp __INSTALL_3DIGIT__/ranger-admin/shared_package_files/bin __INSTALL_3DIGIT__
+
+        OLD_VERSION=$( echo "$2" | cut -d'.' -f1-3 )
+	# Always become unconfigured for configure.sh after upgrade or install
+	# postinstall configure will be invoked in both install & upgrade
+        touch "__INSTALL_3DIGIT__/conf/.not_configured_yet"
+        touch "__INSTALL_3DIGIT__/conf/.not_configured_yet_admin"
+        if [ ! -d /etc/hadoop ]; then
+          mkdir /etc/hadoop
+        fi
+
+	# ====== CONF_OVERWRITE start ======
+
+        if [ -n "$2" -a -d "__INSTALL_3DIGIT__"/.conf.backup/admin ]; then
+            cp "__INSTALL_3DIGIT__"/.conf.backup/admin/install.properties __INSTALL_3DIGIT__/ranger-admin/
+            if [ -f "__INSTALL_3DIGIT__"/.conf.backup/admin/ranger-admin-site.xml ]; then
+                cp "__INSTALL_3DIGIT__"/.conf.backup/admin/ranger-admin-site.xml __INSTALL_3DIGIT__/ranger-admin/ews/webapp/WEB-INF/classes/conf/
+            fi
+	    rm -rf "__INSTALL_3DIGIT__"/.conf.backup/admin
+        fi
+
+	# ====== CONF_OVERWRITE end ======
+
+        chmod -R 775 "__INSTALL_3DIGIT__"/bin
+
+        DAEMON_CONF=__PREFIX__/conf/daemon.conf
+        if [ -f "$DAEMON_CONF" ]; then
+            MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' $DAEMON_CONF)
+            MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' $DAEMON_CONF)
+            if [ ! -z "$MAPR_USER" ]; then
+                for each in $(find __PREFIX__/ranger ! -type l)
+                do
+                    chown "${MAPR_USER}":"${MAPR_GROUP}" "$each" 2>/dev/null
+                done
+            fi
+        fi
+
+        if [ -f __PREFIX__/roles/ranger-usersync ]; then
+            cat > "__PREFIX__/roles/ranger-usersync" <<EOF
+PKG_HOME_DIR=__PREFIX__/ranger/ranger-__VERSION_3DIGIT__
+PKG_CONFIG_COMMAND=
+EOF
+        fi
+
+        if [ -n "$OLD_VERSION" ] ; then
+            remove_old_directory "$OLD_VERSION"
+        fi
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument ${1}" >&2
+        exit 1
+    ;;
+esac

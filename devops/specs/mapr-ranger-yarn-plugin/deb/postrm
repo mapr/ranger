@@ -1,0 +1,41 @@
+#!/bin/sh
+
+[ -n "$VERBOSE" ] && echo "postrm called with arguments ${1}, ${2}" >&2
+[ -n "$VERBOSE" ] && set -x
+
+
+case "$1" in
+    upgrade)
+	OLD_VERSION=$(cat __PREFIX__/ranger/rangerversion 2>/dev/null)
+	NEW_VERSION="$( echo $2 | cut -d'.' -f1-3 )"
+
+	# If 3-digit version was changed
+	if [ -n "$OLD_VERSION" -a "$NEW_VERSION" != "$OLD_VERSION" ]; then
+	  # Remove old ranger-yarn-plugin directory anyway
+	  rm -Rf __PREFIX__/ranger/ranger-__VERSION_3DIGIT__/ranger-yarn-plugin
+	  # If we are the last one here and version is changed, remove the whole old 3-digit directory
+	  if ! ls __PREFIX__/ranger/ranger-__VERSION_3DIGIT__/ranger-* >/dev/null 2>&1 ; then
+	    rm -Rf __PREFIX__/ranger/ranger-__VERSION_3DIGIT__
+	  fi
+	fi
+    ;;
+
+    remove|purge|disappear)
+        if [ -f __PREFIX__/conf/conf.d/warden.rangeryarnplugin.conf ]; then
+            rm -f __PREFIX__/conf/conf.d/warden.rangeryarnplugin.conf
+        fi
+        rm -Rf __PREFIX__/ranger/ranger-__VERSION_3DIGIT__/ranger-yarn-plugin
+        if [ ! -f __PREFIX__/roles/ranger-usersync ] && [ ! -f __PREFIX__/roles/ranger ] && [ ! -f __PREFIX__/roles/ranger-hive-plugin ] && [ ! -f __PREFIX__/roles/ranger-hdfs-plugin ] && [ ! -f __PREFIX__/roles/ranger-prestodb-plugin ]; then
+            rm -Rf __PREFIX__/ranger
+            rm -Rf /etc/ranger
+        fi
+    ;;
+
+    abort-install|abort-upgrade|failed-upgrade)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument ${1}" >&2
+        exit 1
+    ;;
+esac

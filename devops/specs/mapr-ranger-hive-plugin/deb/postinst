@@ -1,0 +1,45 @@
+#!/bin/sh
+
+[ -n "$VERBOSE" ] && echo "postinst called with arguments ${1}, ${2}" >&2
+[ -n "$VERBOSE" ] && set -x
+
+
+case "$1" in
+    configure)
+	# Overwrite version file with our one
+	echo "__VERSION_3DIGIT__" >  __PREFIX__/ranger/rangerversion
+
+        DAEMON_CONF=__PREFIX__/conf/daemon.conf
+        if [ -f "$DAEMON_CONF" ]; then
+            MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' $DAEMON_CONF)
+            MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' $DAEMON_CONF)
+            if [ ! -z "$MAPR_USER" ]; then
+                for each in $(find __PREFIX__/ranger ! -type l)
+                do
+                    chown "${MAPR_USER}":"${MAPR_GROUP}" "$each" 2>/dev/null
+                done
+            fi
+        fi
+
+	# ====== CONF_OVERWRITE start ======
+
+        if [ -n "$2" ]; then
+            TIMESTAMP="$2"
+            VERSION_FROM_TIMESTAMP=$( echo $TIMESTAMP | cut -d'.' -f1-3 )
+	    if [ -d __PREFIX__/ranger/ranger-${VERSION_FROM_TIMESTAMP}/.conf.backup/hive ] ; then
+		cp __PREFIX__/ranger/ranger-${VERSION_FROM_TIMESTAMP}/.conf.backup/hive/install.properties __PREFIX__/ranger/ranger-${VERSION_FROM_TIMESTAMP}/ranger-hive-plugin/
+	    fi
+	    rm -rf __PREFIX__/ranger/ranger-${VERSION_FROM_TIMESTAMP}/.conf.backup/hive
+        fi
+
+	# ====== CONF_OVERWRITE end ======
+    ;;
+
+    abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+    *)
+        echo "postinst called with unknown argument ${1}" >&2
+        exit 1
+    ;;
+esac

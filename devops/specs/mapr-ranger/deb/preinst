@@ -1,0 +1,61 @@
+#!/bin/bash
+
+[ -n "$VERBOSE" ] && echo "preinst called with arguments ${1}, ${2}" >&2
+[ -n "$VERBOSE" ] && set -x
+
+case "$1" in
+    install)
+    ;;
+
+# CONF_BACKUP - save old configs in OLD_TIMESTAMP/conf directory (any upgrade)
+# CONF_OVERWRITE - overwrite new configs with old ones (ONLY if first 3 digits HAVE NOT been changed)
+
+    upgrade)
+
+        OLD_TIMESTAMP="$2"
+        OLD_VERSION=$( echo ${OLD_TIMESTAMP} | cut -d'.' -f1-3 )
+
+	# ====== CONF_BACKUP start ======
+
+        mkdir -p __PREFIX__/ranger/ranger-${OLD_TIMESTAMP}/conf/ranger-admin
+        if [ -f __PREFIX__/ranger/ranger-${OLD_VERSION}/conf/warden.ranger-admin.conf ]; then
+            cp __PREFIX__/ranger/ranger-${OLD_VERSION}/conf/warden.ranger-admin.conf __PREFIX__/ranger/ranger-${OLD_TIMESTAMP}/conf/ranger-admin
+        fi
+        cp __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-admin/install.properties __PREFIX__/ranger/ranger-${OLD_TIMESTAMP}/conf/ranger-admin
+        if [ -f __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-admin/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml ]; then
+            cp __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-admin/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml __PREFIX__/ranger/ranger-${OLD_TIMESTAMP}/conf/ranger-admin
+        fi
+
+        DAEMON_CONF=__PREFIX__/conf/daemon.conf
+        if [ -f "$DAEMON_CONF" ]; then
+            MAPR_USER=$( awk -F = '$1 == "mapr.daemon.user" { print $2 }' $DAEMON_CONF)
+            MAPR_GROUP=$( awk -F = '$1 == "mapr.daemon.group" { print $2 }' $DAEMON_CONF)
+            if [ ! -z "$MAPR_USER" ]; then
+                chown -R ${MAPR_USER}:${MAPR_GROUP} __PREFIX__/ranger/ranger-${OLD_TIMESTAMP}
+            fi
+        fi
+
+	# ====== CONF_BACKUP end ======
+
+	# ====== CONF_OVERWRITE start ======
+
+	# Comparing first 3 digits
+	if [ "__VERSION_3DIGIT__" = "$OLD_VERSION" ]; then
+	    mkdir -p "__INSTALL_3DIGIT__"/.conf.backup/admin
+	    cp __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-admin/install.properties "__INSTALL_3DIGIT__"/.conf.backup/admin
+	    if [ -f __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-admin/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml ]; then
+		cp __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-admin/ews/webapp/WEB-INF/classes/conf/ranger-admin-site.xml "__INSTALL_3DIGIT__"/.conf.backup/admin
+	    fi
+	fi
+
+	# ====== CONF_OVERWRITE end ======
+    ;;
+
+    abort-upgrade)
+    ;;
+
+    *)
+        echo "preinst called with unknown argument ${1}" >&2
+        exit 1
+    ;;
+esac

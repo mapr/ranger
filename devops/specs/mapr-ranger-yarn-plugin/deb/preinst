@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# CONF_BACKUP - save old configs in OLD_TIMESTAMP/conf directory (any upgrade)
+# CONF_OVERWRITE - overwrite new configs with old ones (ONLY if first 3 digits HAVE NOT been changed)
+
+if [ "$1" = "upgrade" ]; then
+
+    OLD_TIMESTAMP="$2"
+    OLD_VERSION=$( echo ${OLD_TIMESTAMP} | cut -d'.' -f1-3 )
+
+    # ====== CONF_BACKUP start ======
+
+    mkdir -p __PREFIX__/ranger/ranger-${OLD_TIMESTAMP}/conf/ranger-yarn-plugin
+    cp __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-yarn-plugin/install.properties __PREFIX__/ranger/ranger-${OLD_TIMESTAMP}/conf/ranger-yarn-plugin
+
+    # ====== CONF_BACKUP end ======
+
+    # ====== CONF_OVERWRITE start ======
+
+    # Comparing first 3 digits
+    if [ "__VERSION_3DIGIT__" = "${OLD_VERSION}" ] ; then
+	mkdir -p __PREFIX__/ranger/ranger-${OLD_VERSION}/.conf.backup/yarn
+	cp __PREFIX__/ranger/ranger-${OLD_VERSION}/ranger-yarn-plugin/install.properties __PREFIX__/ranger/ranger-${OLD_VERSION}/.conf.backup/yarn
+    fi
+
+    # ====== CONF_OVERWRITE end ======
+
+    if [ "__VERSION_3DIGIT__" != "${OLD_VERSION}" ] ; then
+        if [ -f __PREFIX__/conf/conf.d/warden.rangeryarnplugin.conf ]; then
+            rm -Rf __PREFIX__/conf/conf.d/warden.rangeryarnplugin.conf
+        fi
+    fi
+fi

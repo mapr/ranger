@@ -1,0 +1,40 @@
+#!/bin/sh
+
+[ -n "$VERBOSE" ] && echo "prerm called with arguments ${1}, ${2}" >&2
+[ -n "$VERBOSE" ] && set -x
+
+stop_service() {
+
+    if [ -e __PREFIX__/conf/conf.d/warden.ranger-admin.conf ]; then
+        rm __PREFIX__/conf/conf.d/warden.ranger-admin.conf
+    fi
+
+    if [ -z "${MAPR_TICKETFILE_LOCATION}" ] && [ -e "__PREFIX__/conf/mapruserticket" ]; then
+        export MAPR_TICKETFILE_LOCATION="__PREFIX__/conf/mapruserticket"
+    fi
+
+    echo "Stopping Ranger Admin service."
+    RESULT=$(__INSTALL_3DIGIT__/ranger-admin/ews/ranger-admin-services.sh stop)
+    STATUS=$?
+    if [ $STATUS -ne 0 ] ; then
+        echo "$RESULT"
+    fi
+}
+
+case "$1" in
+    upgrade)
+        stop_service
+    ;;
+
+    remove|deconfigure)
+        stop_service
+    ;;
+
+    failed-upgrade)
+    ;;
+
+    *)
+        echo "prerm called with unknown argument ${1}" >&2
+        exit 1
+    ;;
+esac

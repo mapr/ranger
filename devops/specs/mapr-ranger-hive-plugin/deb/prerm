@@ -1,0 +1,22 @@
+#!/bin/sh
+
+[ -n "$VERBOSE" ] && echo "prerm called with arguments ${1}, ${2}" >&2
+[ -n "$VERBOSE" ] && set -x
+
+case "$1" in
+    upgrade)
+
+    ;;
+
+    remove|deconfigure)
+
+    ;;
+
+    failed-upgrade)
+    ;;
+
+    *)
+        echo "prerm called with unknown argument ${1}" >&2
+        exit 1
+    ;;
+esac

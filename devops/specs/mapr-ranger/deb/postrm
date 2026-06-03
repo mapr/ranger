@@ -1,0 +1,42 @@
+#!/bin/sh
+
+[ -n "$VERBOSE" ] && echo "postrm called with arguments ${1}, ${2}" >&2
+[ -n "$VERBOSE" ] && set -x
+
+
+case "$1" in
+    upgrade)
+        VERSION_FILE_CONTENT=$(cat __PREFIX__/ranger/rangerversion 2>/dev/null)
+        if [ -n "$VERSION_FILE_CONTENT" -a "__VERSION_3DIGIT__" != "$VERSION_FILE_CONTENT" ]; then
+          rm -Rf __INSTALL_3DIGIT__/ranger-admin
+        fi
+    ;;
+
+    remove|purge|disappear)
+        rm -f /usr/bin/ranger-admin
+        ls /etc/ranger 2>/dev/null | grep -xv "usersync" | xargs rm -rf 2>/dev/null
+        rm -Rf __PREFIX__/ranger/ranger-__VERSION_3DIGIT__/ranger-admin
+        if [ -e __PREFIX__/pid/rangeradmin.pid ]; then
+          rm __PREFIX__/pid/rangeradmin.pid
+        fi
+        if [ ! -f __PREFIX__/roles/ranger-usersync ] && [ ! -f __PREFIX__/roles/ranger-hive-plugin ] && [ ! -f __PREFIX__/roles/ranger-yarn-plugin ] && [ ! -f __PREFIX__/roles/ranger-hdfs-plugin ] && [ ! -f __PREFIX__/roles/ranger-prestodb-plugin ]; then
+          rm -Rf __PREFIX__/ranger
+          rm -Rf /etc/ranger
+        fi
+
+        if [ -f __PREFIX__/roles/ranger-usersync ]; then
+          cat > "__PREFIX__/roles/ranger-usersync" <<EOF
+PKG_HOME_DIR=__PREFIX__/ranger/ranger-__VERSION_3DIGIT__
+EOF
+        fi
+    ;;
+
+    abort-install|abort-upgrade|failed-upgrade)
+    ;;
+
+    *)
+        echo "postrm called with unknown argument ${1}" >&2
+        exit 1
+    ;;
+esac
+
