@@ -35,7 +35,7 @@ pipeline {
   }
   parameters {
     choice(name: 'BUILD_TYPE', choices: ['Dev','EBF','Release'], description: 'default - Dev. EBF and Release args you can use only in release branches')
-    string(name: 'MAKEFILE_ENV_VARS', defaultValue: '', description: 'Variables you can pass to makefile (command will be: make {THIS VAR} {project-name}). Please DO NOT put component_branch_name')
+    string(name: 'MAKEFILE_ENV_VARS', defaultValue: 'RANGER_MVN_ARGS="-pl \'!plugin-prestodb,!ranger-prestodb-plugin-shim,!plugin-kylin,!ranger-kylin-plugin-shim\'"', description: 'Variables you can pass to makefile (command will be: make {THIS VAR} {project-name}). Please DO NOT put component_branch_name')
   }
   stages {
     stage("Setup settings and variables") {
@@ -73,7 +73,7 @@ pipeline {
                   configFileProvider([configFile(fileId: 'maven_settings', variable: 'mvn_settings')]) {
                     sh "cat ${env.mvn_settings} > settings.xml"
                   }
-                  docker.image("dfdkr.mip.storage.hpecorp.net/ubuntu16-java11-gcc7:maven363").inside (
+                  docker.image("dfdkr.ftc.hcocto.hpecorp.net/ubuntu16-java11-gcc7:maven363").inside (
                   "-e MAPR_MIRROR=${MAPR_MIRROR} \
                   -e MAPR_CENTRAL=${MAPR_CENTRAL} \
                   -e MAVEN_CENTRAL=${MAVEN_CENTRAL} \
@@ -94,7 +94,7 @@ pipeline {
                     sh """
                       rm -rf ${PROJECT}; git clone git@github.com:mapr/private-pkg.git ${PROJECT}; \
                       cd ${PROJECT}; \
-                      git checkout MEP-9.2.0 ; \
+                      git checkout MEP-9.2.5 ; \
 
                       make ${PROJECT} TIMESTAMP=${ID} ${MAKEFILE_ARGS}
                     """
@@ -133,7 +133,7 @@ pipeline {
                   configFileProvider([configFile(fileId: 'maven_settings', variable: 'mvn_settings')]) {
                     sh "cat ${env.mvn_settings} > settings.xml"
                   }
-                  docker.image("dfdkr.mip.storage.hpecorp.net/centos8-java11-gcc8:maven363").inside (
+                  docker.image("dfdkr.ftc.hcocto.hpecorp.net/centos8-java11-gcc8:maven363").inside (
                   "-e MAPR_MIRROR=${MAPR_MIRROR} \
                   -e MAPR_CENTRAL=${MAPR_CENTRAL} \
                   -e MAVEN_CENTRAL=${MAVEN_CENTRAL} \
@@ -153,9 +153,9 @@ pipeline {
                     sh """
                       rm -rf ${PROJECT}; git clone git@github.com:mapr/private-pkg.git ${PROJECT}; \
                       cd ${PROJECT}; \
-                      git checkout MEP-9.2.0 ; \
+                      git checkout MEP-9.2.5 ; \
                       make ${PROJECT} TIMESTAMP=${ID} ${MAKEFILE_ARGS} ; \
-                      make ${PROJECT}-deploy ; \
+                      make ${PROJECT}-deploy ${MAKEFILE_ARGS} ; \
                       """
                     }
                 }

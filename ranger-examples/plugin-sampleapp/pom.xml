@@ -24,7 +24,7 @@
     <parent>
         <artifactId>ranger-examples</artifactId>
         <groupId>org.apache.ranger</groupId>
-        <version>2.4.0.0-eep-920-SNAPSHOT</version>
+        <version>2.4.0.5-eep-925-SNAPSHOT</version>
     </parent>
     <dependencies>
         <dependency>
