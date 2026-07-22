@@ -154,7 +154,7 @@
         <jersey-server.version>1.19.4</jersey-server.version>
         <jersey-spring.version>1.19.4</jersey-spring.version>
         <jettison.version>1.5.3</jettison.version>
-        <jetty-client.version>9.4.48.v20220622</jetty-client.version>
+        <jetty-client.version>9.4.60.v20260717-df</jetty-client.version>
         <jline.version>0.9.94</jline.version>
         <jopt-simple.version>3.2</jopt-simple.version>
         <json4s.version>3.2.11</json4s.version>
