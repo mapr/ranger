@@ -80,28 +80,33 @@ link_mapr_core_lib_for_usersync() {
 # 1. maprfs jars
 # 2. protobuf
 # 3. javax.servlet-api
+# 4. jwks-rsa
 # if already linked, then refresh them
 link_mapr_core_lib_for_admin() {
   local MAPR_CORE_LIB="$MAPR_HOME"/lib
   local RANGER_ADMIN_EWS_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/lib
   local RANGER_ADMIN_WEBAPP_LIB="$MAPR_HOME"/ranger/ranger-"$RANGER_VERSION"/ranger-admin/ews/webapp/WEB-INF/lib
+  local HADOOP_COMMON_LIB="$MAPR_HOME"/hadoop/hadoop-"$HADOOP_VERSION"/share/hadoop/common/lib
 
   # if needed add more jars
   local MAPRFS_JARS="$MAPR_CORE_LIB"/maprfs-*
   local PROTOBUF_JARS="$MAPR_CORE_LIB"/protobuf-java-*
   local SERVLET_JARS="$RANGER_ADMIN_WEBAPP_LIB"/javax.servlet-api-*
+  local JWKS_RSA_JAR="$HADOOP_COMMON_LIB"/jwks-rsa-*
   local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
 
   # if already exists, unlink first. In case applying patch, we need to remove old links
   find $RANGER_ADMIN_EWS_LIB -type l -name "maprfs-*" -delete
   find $RANGER_ADMIN_EWS_LIB -type l -name "protobuf-java-*" -delete
   find $RANGER_ADMIN_EWS_LIB -type l -name "javax.servlet-api-*" -delete
+  find $RANGER_ADMIN_EWS_LIB -type l -name "jwks-rsa-*" -delete
   find $RANGER_ADMIN_WEBAPP_LIB -type l -name "mapr-security-web-*" -delete
 
   # create the links again
   ln -sf $MAPRFS_JARS $RANGER_ADMIN_EWS_LIB
   ln -sf $PROTOBUF_JARS $RANGER_ADMIN_EWS_LIB
   ln -sf $SERVLET_JARS $RANGER_ADMIN_EWS_LIB
+  ln -sf $JWKS_RSA_JAR $RANGER_ADMIN_EWS_LIB
   ln -sf $MAPR_WEB_SECURITY_JAR $RANGER_ADMIN_WEBAPP_LIB
 }
 
