@@ -24,7 +24,7 @@
     </parent>
     <groupId>org.apache.ranger</groupId>
     <artifactId>ranger</artifactId>
-    <version>2.4.0.5-eep-925-SNAPSHOT</version>
+    <version>2.4.0.5-eep-925</version>
     <description>Security for Enforcing Enterprise Policies</description>
     <packaging>pom</packaging>
     <name>ranger</name>
@@ -122,12 +122,12 @@
         <graalvm.version>22.3.0</graalvm.version>
         <gson.version>2.9.1</gson.version>
         <guice.version>4.0</guice.version>
-        <hadoop.version>3.3.5.350-eep-925-SNAPSHOT</hadoop.version>
+        <hadoop.version>3.3.5.350-eep-925</hadoop.version>
         <ozone.version>1.0.0</ozone.version>
         <hamcrest.version>2.2</hamcrest.version>
         <hbase.version>2.4.6</hbase.version>
-        <hive.version>3.1.3.580-eep-925-SNAPSHOT</hive.version>
-        <hive.storage-api.version>2.6.1.580-eep-925-SNAPSHOT</hive.storage-api.version>
+        <hive.version>3.1.3.580-eep-925</hive.version>
+        <hive.storage-api.version>2.6.1.580-eep-925</hive.storage-api.version>
         <orc.version>1.5.8</orc.version>
         <hbase-shaded-protobuf>3.5.1</hbase-shaded-protobuf>
         <hbase-shaded-netty>3.5.1</hbase-shaded-netty>
@@ -208,8 +208,8 @@
         <tomcat.embed.version>8.5.86</tomcat.embed.version>
         <testng.version>6.9.4</testng.version>
         <velocity.version>2.3</velocity.version>
-        <zookeeper.version>3.5.6.0-mapr-SNAPSHOT</zookeeper.version>
-        <mapr.core.version>7.4.0.0-mapr-SNAPSHOT</mapr.core.version>
+        <zookeeper.version>3.5.6.0-mapr-2210</zookeeper.version>
+        <mapr.core.version>7.4.0.0-mapr</mapr.core.version>
         <codehaus.woodstox.stax2api.version>4.2.1</codehaus.woodstox.stax2api.version>
         <fasterxml.woodstox.version>5.4.0</fasterxml.woodstox.version>
         <fasterxml.jackson.version>2.13.4</fasterxml.jackson.version>
