@@ -34,7 +34,7 @@ pipeline {
   }
   parameters {
     choice(name: 'BUILD_TYPE', choices: ['Dev','EBF','Release'], description: 'default - Dev. EBF and Release args you can use only in release branches.')
-    string(name: 'BUILD_ENV_VARS', defaultValue: 'RANGER_MVN_ARGS="-pl !plugin-prestodb,!ranger-prestodb-plugin-shim,!plugin-kylin,!ranger-kylin-plugin-shim -DskipTests -Drat.skip=true clean install"', description: 'Variables you can pass to build script. Command will be: "env {THIS VARS} path/to/build.sh".')
+    string(name: 'BUILD_ENV_VARS', defaultValue: 'RANGER_MVN_ARGS="-PDEP -DskipTests -Drat.skip=true clean install"', description: 'Variables you can pass to build script. Command will be: "env {THIS VARS} path/to/build.sh".')
     booleanParam(name: 'DO_DEPLOY', defaultValue: true, description: 'Uncheck and Jenkins will skip mvn deploy')
   }
   stages {

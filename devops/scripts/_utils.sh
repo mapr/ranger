@@ -38,12 +38,6 @@ setup_package() {
 	  mkdir -p "${pkg_install_root}/conf"
 	  cp $warden_conf "${pkg_install_root}/conf"
   fi
-
-  cred_validator="unixauthnative/target/credValidator.uexe"
-  if [[ "${component_name}" = "usersync" && -e $cred_validator ]] ; then
-	  mkdir "${pkg_home}/native"
-	  cp $cred_validator "${pkg_home}/native"
-  fi
 }
 
 build_package() {
