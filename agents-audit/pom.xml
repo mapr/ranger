@@ -74,6 +74,10 @@
                     <groupId>org.slf4j</groupId>
                     <artifactId>*</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>javax.servlet-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -169,10 +173,12 @@
             <artifactId>guava</artifactId>
             <version>${google.guava.version}</version>
         </dependency>
+	<!-- RAN-349: declaring all elasticsearch dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger) -->
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.elasticsearch</groupId>
@@ -192,51 +198,61 @@
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch-core</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>securesm</artifactId>
             <version>${securesm.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.client</groupId>
             <artifactId>elasticsearch-rest-high-level-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>parent-join-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>aggs-matrix-stats-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>rank-eval-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch.plugin</groupId>
             <artifactId>lang-mustache-client</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch-x-content</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch-secure-sm</artifactId>
             <version>${elasticsearch.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
@@ -356,10 +372,12 @@
             <version>${slf4j.version}</version>
             <scope>test</scope>
         </dependency>
+	<!-- RAN-349: declaring all aws dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger) -->
          <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-bundle</artifactId>
             <version>${aws-java-sdk.version}</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

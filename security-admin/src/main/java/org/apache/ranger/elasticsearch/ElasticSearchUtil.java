@@ -47,7 +47,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-@Component
+//@Component RAN-349: declaring all elasticsearch dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 public class ElasticSearchUtil {
     private static final Logger logger = LoggerFactory.getLogger(ElasticSearchUtil.class);
 

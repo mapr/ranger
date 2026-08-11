@@ -43,14 +43,13 @@ import org.apache.ranger.common.SortField;
 import org.apache.ranger.common.StringUtil;
 import org.apache.solr.client.solrj.util.ClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.logs.AWSLogs;
 import com.amazonaws.services.logs.model.FilterLogEventsRequest;
 import com.amazonaws.services.logs.model.FilterLogEventsResult;
 import com.amazonaws.services.logs.model.FilteredLogEvent;
 
-@Component
+//@Component RAN-349: declaring all aws dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 public class CloudWatchUtil {
 	private static final Logger LOGGER = Logger.getLogger(CloudWatchUtil.class);
 

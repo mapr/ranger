@@ -113,10 +113,10 @@ public class AssetMgr extends AssetMgrBase {
 	@Autowired
 	SolrAccessAuditsService solrAccessAuditsService;
 
-	@Autowired
+	@Autowired(required = false) // RAN-349: declaring all elasticsearch dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 	ElasticSearchAccessAuditsService elasticSearchAccessAuditsService;
 
-	@Autowired
+	@Autowired(required = false) // RAN-349: declaring all aws dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 	CloudWatchAccessAuditsService cloudWatchAccessAuditsService;
 
 	@Autowired

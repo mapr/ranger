@@ -40,20 +40,19 @@ import org.apache.ranger.view.VXAccessAuditList;
 import org.apache.ranger.view.VXLong;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.logs.AWSLogs;
 import com.amazonaws.services.logs.model.FilteredLogEvent;
 
-@Service
+//@Service RAN-349: declaring all aws dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 @Scope("singleton")
 public class CloudWatchAccessAuditsService extends org.apache.ranger.AccessAuditsService {
 	private static final Logger LOGGER = Logger.getLogger(CloudWatchAccessAuditsService.class);
 
-	@Autowired
+	@Autowired(required = false) // RAN-349: declaring all aws dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 	CloudWatchMgr cloudWatchMgr;
 
-	@Autowired
+	@Autowired(required = false) // RAN-349: declaring all aws dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 	CloudWatchUtil cloudWatchUtil;
 
 	@Autowired
