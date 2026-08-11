@@ -87,7 +87,7 @@
         <atlas.jettison.version>1.5.3</atlas.jettison.version>
         <atlas.commons.logging.version>1.1.3</atlas.commons.logging.version>
         <bouncycastle.version>1.55</bouncycastle.version>
-        <c3p0.version>0.9.5.5</c3p0.version>
+        <c3p0.version>0.14.1</c3p0.version>
         <cglib.version>2.2.0-b23</cglib.version>
         <checkstyle.plugin.version>3.1.0</checkstyle.plugin.version>
         <checkstyle.version>8.29</checkstyle.version>
@@ -95,16 +95,16 @@
         <commons.cli.version>1.5.0</commons.cli.version>
         <commons.codec.version>1.12</commons.codec.version>
         <commons.collections.version>3.2.2</commons.collections.version>
-        <commons.compress.version>1.21</commons.compress.version>
+        <commons.compress.version>1.28.0</commons.compress.version>
         <commons.configuration1.version>1.10</commons.configuration1.version>
-        <commons.configuration.version>2.8.0</commons.configuration.version>
+        <commons.configuration.version>2.15.1</commons.configuration.version>
         <commons.dbcp.version>1.4</commons.dbcp.version>
         <commons.digester.version>2.1</commons.digester.version>
-        <commons.io.version>2.5</commons.io.version>
-        <commons.lang3.version>3.3.2</commons.lang3.version>
+        <commons.io.version>2.22.0</commons.io.version>
+        <commons.lang3.version>3.20.0</commons.lang3.version>
         <commons.logging.version>1.2</commons.logging.version>
         <commons.math.version>2.2</commons.math.version>
-        <commons.net.version>3.6</commons.net.version>
+        <commons.net.version>3.13.0</commons.net.version>
         <commons.pool.version>1.6</commons.pool.version>
         <commons.text.version>1.10.0</commons.text.version>
         <curator.test.version>5.4.0</curator.test.version>
@@ -121,25 +121,22 @@
         <graalvm.version>22.3.0</graalvm.version>
         <gson.version>2.9.1</gson.version>
         <guice.version>4.0</guice.version>
-        <hadoop.version>3.4.1.0-eep-940-SNAPSHOT</hadoop.version>
+        <hadoop.version>3.4.1.125-eep-942-SNAPSHOT</hadoop.version>
         <ozone.version>1.4.1</ozone.version>
         <hamcrest.version>2.2</hamcrest.version>
         <hbase.version>2.4.6</hbase.version>
-        <hive.version>3.1.3.400-eep-920-SNAPSHOT</hive.version>
-        <hive.storage-api.version>2.6.1.400-eep-920-SNAPSHOT</hive.storage-api.version>
+        <hive.version>3.1.3.810-eep-942-SNAPSHOT</hive.version>
+        <hive.storage-api.version>2.6.1.810-eep-942-SNAPSHOT</hive.storage-api.version>
         <orc.version>1.5.8</orc.version>
-        <hbase-shaded-protobuf>3.5.1</hbase-shaded-protobuf>
-        <hbase-shaded-netty>3.5.1</hbase-shaded-netty>
-        <hbase-shaded-miscellaneous>3.5.1</hbase-shaded-miscellaneous>
         <libfb303.version>0.9.3</libfb303.version>
-        <libthrift.version>0.16.0</libthrift.version>
+        <libthrift.version>0.24.0</libthrift.version>
         <htrace-core.version>4.1.0-incubating</htrace-core.version>
-        <httpcomponents.httpclient.version>4.5.6</httpcomponents.httpclient.version>
+        <httpcomponents.httpclient.version>4.5.14</httpcomponents.httpclient.version>
         <httpcomponents.httpcore.version>4.4.6</httpcomponents.httpcore.version>
         <httpcomponents.httpasyncclient.version>4.1.3</httpcomponents.httpasyncclient.version>
         <httpcomponents.httpmime.version>4.5.6</httpcomponents.httpmime.version>
         <javax.persistence.version>2.1.0</javax.persistence.version>
-        <javax.servlet.version>3.1.0</javax.servlet.version>
+        <javax.servlet.version>4.0.1</javax.servlet.version>
         <javax-inject.version>1</javax-inject.version>
         <javax.annotation-api>1.3.2</javax.annotation-api>
         <javax.el-glassfish.version>3.0.0</javax.el-glassfish.version>
@@ -154,7 +151,7 @@
         <jersey-server.version>1.19.4</jersey-server.version>
         <jersey-spring.version>1.19.4</jersey-spring.version>
         <jettison.version>1.5.4</jettison.version>
-        <jetty-client.version>9.4.60.v20260717-df</jetty-client.version>
+        <jetty-client.version>9.4.63.v20260812-df</jetty-client.version>
         <jline.version>0.9.94</jline.version>
         <jopt-simple.version>3.2</jopt-simple.version>
         <json4s.version>3.2.11</json4s.version>
@@ -164,13 +161,13 @@
         <junit.version>4.13.1</junit.version>
         <kafka.version>2.8.2</kafka.version>
         <kerby.version>1.0.0</kerby.version>
-        <keycloak.api.version>26.0.4</keycloak.api.version>
+        <keycloak.api.version>26.0.12</keycloak.api.version>
         <jakarta.xml.bind-api.version>4.0.2</jakarta.xml.bind-api.version>
         <knox.gateway.version>1.4.0</knox.gateway.version>
         <kylin.version>3.1.3</kylin.version>
         <libpam4j.version>1.10</libpam4j.version>
         <local.lib.dir>${project.basedir}/../lib/local</local.lib.dir>
-        <logback.version>1.3.14</logback.version>
+        <logback.version>1.6.1</logback.version>
         <reload4j.version>1.2.19</reload4j.version>
         <log4j2.version>2.26.1</log4j2.version>
         <maven.exec.plugin.version>1.6.0</maven.exec.plugin.version>
@@ -179,15 +176,15 @@
         <mockito.version>3.0.0</mockito.version>
         <mockito.all.version>1.10.19</mockito.all.version>
         <mysql-connector-java.version>5.1.31</mysql-connector-java.version>
-        <netty-all.version>4.1.119.Final</netty-all.version>
+        <netty-all.version>4.1.137.Final</netty-all.version>
         <noggit.version>0.8</noggit.version>
         <orc.core.version>1.6.7</orc.core.version>
-        <owasp-java-html-sanitizer.version>20240325.1</owasp-java-html-sanitizer.version>
+        <owasp-java-html-sanitizer.version>20260313.1</owasp-java-html-sanitizer.version>
         <paranamer.version>2.3</paranamer.version>
         <presto.version>337</presto.version>
         <prestodb.version>0.269</prestodb.version>
         <trino.version>377</trino.version>
-        <poi.version>5.2.2</poi.version>
+        <poi.version>5.5.1</poi.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <protobuf-java.version>3.21.12</protobuf-java.version>
         <gcp.protobuf-java.version>3.21.12</gcp.protobuf-java.version>
@@ -207,15 +204,16 @@
         <sqoop.version>1.99.7</sqoop.version>
         <storm.version>1.2.4</storm.version>
         <sun-jersey-bundle.version>1.19</sun-jersey-bundle.version>
-        <tomcat.embed.version>8.5.100</tomcat.embed.version>
+        <tomcat.embed.version>9.0.120</tomcat.embed.version>
         <testng.version>6.9.4</testng.version>
-        <velocity.version>2.3</velocity.version>
+        <velocity.version>2.4.1</velocity.version>
         <zookeeper.version>3.8.3.0-mapr-SNAPSHOT</zookeeper.version>
         <mapr.core.version>7.4.0.0-mapr-SNAPSHOT</mapr.core.version>
         <codehaus.woodstox.stax2api.version>4.2.1</codehaus.woodstox.stax2api.version>
         <fasterxml.woodstox.version>5.4.0</fasterxml.woodstox.version>
-        <fasterxml.jackson.version>2.18.3</fasterxml.jackson.version>
-        <fasterxml.jackson.databind.version>2.18.3</fasterxml.jackson.databind.version>
+        <fasterxml.jackson.version>2.22.1</fasterxml.jackson.version>
+        <fasterxml.jackson.databind.version>2.22.1</fasterxml.jackson.databind.version>
+        <fasterxml.jackson.annotations.version>2.22</fasterxml.jackson.annotations.version>
         <kstruct.gethostname4j.version>1.0.0</kstruct.gethostname4j.version>
         <jna.version>5.7.0</jna.version>
         <jna-platform.version>5.7.0</jna-platform.version>
@@ -1166,7 +1164,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${fasterxml.jackson.version}</version>
+                <version>${fasterxml.jackson.annotations.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -1447,6 +1445,7 @@
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
                 <version>${zookeeper.version}</version>
+                <scope>provided</scope>
                 <exclusions>
                     <exclusion>
                         <groupId>ch.qos.logback</groupId>
@@ -1458,6 +1457,7 @@
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper-jute</artifactId>
                 <version>${zookeeper.version}</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>

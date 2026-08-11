@@ -38,7 +38,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -46,15 +45,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Service
+//@Service RAN-349: declaring all elasticsearch dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 @Scope("singleton")
 public class ElasticSearchAccessAuditsService extends org.apache.ranger.AccessAuditsService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchAccessAuditsService.class);
 
-	@Autowired
+	@Autowired(required = false) // RAN-349: declaring all elasticsearch dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 	ElasticSearchMgr elasticSearchMgr;
 
-	@Autowired
+	@Autowired(required = false) // RAN-349: declaring all elasticsearch dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 	ElasticSearchUtil elasticSearchUtil;
 
 

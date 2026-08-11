@@ -53,7 +53,7 @@ import static org.apache.ranger.audit.destination.ElasticSearchAuditDestination.
  * This class initializes the ElasticSearch client
  *
  */
-@Component
+//@Component RAN-349: declaring all elasticsearch dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 public class ElasticSearchMgr {
 
 	private static final Logger logger = LoggerFactory.getLogger(ElasticSearchMgr.class);

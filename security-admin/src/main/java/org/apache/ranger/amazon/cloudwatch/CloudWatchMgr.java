@@ -25,7 +25,6 @@ import static org.apache.ranger.audit.destination.AmazonCloudWatchAuditDestinati
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.ranger.common.PropertiesUtil;
-import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.logs.AWSLogs;
 import com.amazonaws.services.logs.AWSLogsClientBuilder;
@@ -34,7 +33,7 @@ import com.amazonaws.services.logs.AWSLogsClientBuilder;
  * This class initializes the CloudWatch client
  *
  */
-@Component
+//@Component RAN-349: declaring all aws dependencies in provided scope to exclude them from packaging and resolve CVEs (we don't need them in DEP Ranger)
 public class CloudWatchMgr {
 
 	private static final Logger LOGGER = Logger.getLogger(CloudWatchMgr.class);
