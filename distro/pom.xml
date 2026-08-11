@@ -32,7 +32,8 @@
         <profile>
             <id>all</id>
             <activation>
-                <activeByDefault>true</activeByDefault>
+                <!-- Disabled by default in favour of DEP profile -->
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -89,7 +90,8 @@
         <profile>
             <id>ranger-jdk11</id>
             <activation>
-                <jdk>11</jdk>
+                <!-- Disabled by default in favour of DEP profile -->
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -142,6 +144,44 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>DEP</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-assembly-plugin</artifactId>
+                        <version>${assembly.plugin.version}</version>
+                        <configuration>
+                            <finalName>ranger-${project.version}</finalName>
+                            <outputDirectory>../target</outputDirectory>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <goals>
+                                    <goal>single</goal>
+                                </goals>
+                                <phase>package</phase>
+                                <configuration>
+                                    <skipAssembly>false</skipAssembly>
+                                    <descriptors>
+                                        <!-- DEP: Admin, Usersync, Hive plugin, Yarn plugin -->
+                                        <descriptor>src/main/assembly/admin-web.xml</descriptor>
+                                        <descriptor>src/main/assembly/hive-agent.xml</descriptor>
+                                        <descriptor>src/main/assembly/plugin-yarn.xml</descriptor>
+                                        <descriptor>src/main/assembly/usersync.xml</descriptor>
+                                    </descriptors>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+
         <profile>
             <id>ranger-admin</id>
             <build>
@@ -701,9 +741,8 @@
         <profile>
             <id>linux</id>
             <activation>
-                <os>
-                    <family>linux</family>
-                </os>
+                <!-- Disabled by default in favour of DEP profile -->
+                <activeByDefault>false</activeByDefault>
             </activation>
             <build>
                 <plugins>
