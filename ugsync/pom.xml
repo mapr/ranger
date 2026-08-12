@@ -54,11 +54,6 @@
             </exclusions>
         </dependency>
         <dependency>
-            <groupId>commons-lang</groupId>
-            <artifactId>commons-lang</artifactId>
-            <version>${commons.lang.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
             <version>${commons.text.version}</version>
@@ -151,12 +146,24 @@
             <artifactId>apacheds-core-annotations</artifactId>
             <version>${apacheds.version}</version>
             <scope>test</scope>
+	    <exclusions>
+		<exclusion>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		</exclusion>
+	    </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.directory.server</groupId>
             <artifactId>apacheds-core-integ</artifactId>
             <version>${apacheds.version}</version>
             <scope>test</scope>
+	    <exclusions>
+		<exclusion>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		</exclusion>
+	    </exclusions>
         </dependency>
 	<dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
