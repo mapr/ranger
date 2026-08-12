@@ -46,8 +46,8 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.ws.rs.core.Cookie;
 
 import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.Validate;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.ranger.authorization.hadoop.utils.RangerCredentialProvider;
 import org.apache.ranger.authorization.utils.StringUtil;

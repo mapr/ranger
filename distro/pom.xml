@@ -802,6 +802,12 @@
             <groupId>org.apache.ranger</groupId>
             <artifactId>ranger-elasticsearch-plugin-shim</artifactId>
             <version>${project.version}</version>
+	    <exclusions>
+		<exclusion>
+		    <groupId>commons-lang</groupId>
+		    <artifactId>commons-lang</artifactId>
+		</exclusion>
+	    </exclusions>
         </dependency>
     </dependencies>
 </project>
