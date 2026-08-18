@@ -35,6 +35,7 @@ log() {
 # 3. jackson
 # 4. bc fips jars
 # 5. hadoop-shaded-guava
+# 6. jwks-rsa
 # if already linked, then refresh them
 link_mapr_core_lib_for_usersync() {
   local MAPR_CORE_LIB="$MAPR_HOME"/lib
@@ -51,6 +52,7 @@ link_mapr_core_lib_for_usersync() {
   local HADOOP_SHADED_GUAVA_JAR="$HADOOP_COMMON_LIB"/hadoop-shaded-guava-*
   local MAPR_WEB_SECURITY_JAR="$MAPR_CORE_LIB"/mapr-security-web-*
   local JETTY_UTIL_JAR="$HADOOP_COMMON_LIB"/jetty-util-*
+  local JWKS_RSA_JAR="$HADOOP_COMMON_LIB"/jwks-rsa-*
 
   # if already exists, unlink first. In case applying patch, we need to remove old links
   find $RANGER_USERSYNC_LIB -type l -name "maprfs-*" -delete
@@ -62,6 +64,7 @@ link_mapr_core_lib_for_usersync() {
   find $RANGER_USERSYNC_LIB -type l -name "hadoop-shaded-guava-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "mapr-security-web-*" -delete
   find $RANGER_USERSYNC_LIB -type l -name "jetty-util-*" -delete
+  find $RANGER_USERSYNC_LIB -type l -name "jwks-rsa-*" -delete
 
   # create the links again
   ln -sf $MAPRFS_JARS $RANGER_USERSYNC_LIB
@@ -73,6 +76,7 @@ link_mapr_core_lib_for_usersync() {
   ln -sf $HADOOP_SHADED_GUAVA_JAR $RANGER_USERSYNC_LIB
   ln -sf $MAPR_WEB_SECURITY_JAR $RANGER_USERSYNC_LIB
   ln -sf $JETTY_UTIL_JAR $RANGER_USERSYNC_LIB
+  ln -sf $JWKS_RSA_JAR $RANGER_USERSYNC_LIB
 }
 
 # link following jars from core lib to ranger-usersync lib.
