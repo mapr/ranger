@@ -79,6 +79,8 @@ public class ServiceMgr {
     private static final String NAME_RULES           = "hadoop.security.auth_to_local";
     private static final String HOST_NAME            = "ranger.service.host";
 
+    public static final String PROP_SERVICE_CONFIG_VALIDATE_REQUIRE_SAVED_SERVICE = "ranger.serviceconfig.validate.require.saved.service";
+
     private static final long _DefaultTimeoutValue_Lookp          = 1000; // 1 s
     private static final long _DefaultTimeoutValue_ValidateConfig = 10000; // 10 s
 
@@ -137,15 +139,17 @@ public class ServiceMgr {
             }
         }
 
-        RangerBaseService svc = null;
-
-        if (service != null) {
-            Map<String, String> newConfigs = rangerSvcService.getConfigsWithDecryptedPassword(service);
-
-            service.setConfigs(newConfigs);
-
-            svc = getRangerServiceByService(service, svcStore);
+        if (service == null) {
+            throw new Exception("Service not found: " + serviceName);
         }
+
+        Map<String, String> newConfigs = rangerSvcService.getConfigsWithDecryptedPassword(service);
+
+        service.setConfigs(newConfigs);
+
+        validateOutboundServiceConfigs(newConfigs);
+
+        RangerBaseService svc = getRangerServiceByService(service, svcStore);
 
         LOG.debug("==> ServiceMgr.lookupResource for Service: ({}Context: {})", svc, context);
 
@@ -204,29 +208,9 @@ public class ServiceMgr {
 
         LOG.debug("==> ServiceMgr.validateConfig for Service: ({})", svc);
 
-        // check if service configs contains localhost/127.0.0.1
         if (service != null && service.getConfigs() != null) {
-            for (Map.Entry<String, String> entry : service.getConfigs().entrySet()) {
-                String configValue = entry.getValue();
-                if (configValue != null && !configValue.trim().isEmpty()) {
-                    String userInfo = extractUserInfo(configValue);
-                    if (userInfoContainsBlockedHost(userInfo)) {
-                        throw new Exception("Invalid value for configuration " + entry.getKey() + ": userinfo contains blocked host (blocked host detected)");
-                    }
-
-                    String host = extractHost(configValue);
-                    if (host != null) {
-                        if (isBlockedHost(host)) {
-                            throw new Exception("Invalid value for configuration " + entry.getKey() + ": host " + host + " is not allowed (blocked host detected)");
-                        }
-                    } else {
-                        String lowerVal = configValue.toLowerCase().trim();
-                        if (lowerVal.contains("localhost") || lowerVal.contains("127.0.0.1") || lowerVal.contains("0.0.0.0") || lowerVal.contains("::1")) {
-                            throw new Exception("Invalid value for configuration " + entry.getKey() + ": contains blocked keywords but could not be parsed securely.");
-                        }
-                    }
-                }
-            }
+            enforceSavedServiceEndpointConfigs(service);
+            validateOutboundServiceConfigs(service.getConfigs());
         }
 
         if (svc != null) {
@@ -457,6 +441,82 @@ public class ServiceMgr {
             LOG.debug("ServiceMgr.parseLong: could not parse [{}] as Long! Returning null", str);
 
             return null;
+        }
+    }
+
+    private void enforceSavedServiceEndpointConfigs(RangerService service) throws Exception {
+        if (!Boolean.parseBoolean(PropertiesUtil.getProperty(PROP_SERVICE_CONFIG_VALIDATE_REQUIRE_SAVED_SERVICE, "false"))) {
+            return;
+        }
+
+        String serviceName = service.getName();
+        if (StringUtils.isBlank(serviceName)) {
+            return;
+        }
+
+        RangerService savedService = svcDBStore.getServiceByName(serviceName);
+        if (savedService == null) {
+            throw new Exception("Configuration validation requires a saved service: " + serviceName);
+        }
+
+        if (StringUtils.isNotBlank(service.getType()) && StringUtils.isNotBlank(savedService.getType())
+                && !StringUtils.equals(service.getType(), savedService.getType())) {
+            throw new Exception("Configuration validation service type does not match saved service: " + serviceName);
+        }
+
+        Map<String, String> savedConfigs = rangerSvcService.getConfigsWithDecryptedPassword(savedService);
+        if (savedConfigs == null) {
+            savedConfigs = Collections.emptyMap();
+        }
+
+        for (Map.Entry<String, String> entry : service.getConfigs().entrySet()) {
+            String requestValue = entry.getValue();
+            if (requestValue == null || requestValue.trim().isEmpty()) {
+                continue;
+            }
+
+            String requestHost = extractHost(requestValue);
+            if (requestHost == null) {
+                continue;
+            }
+
+            String savedValue = savedConfigs.get(entry.getKey());
+            if (savedValue == null) {
+                throw new Exception("Invalid value for configuration " + entry.getKey() + ": endpoint property is not present in saved service configuration");
+            }
+
+            String savedHost = extractHost(savedValue);
+            if (savedHost == null || !requestHost.equalsIgnoreCase(savedHost)) {
+                throw new Exception("Invalid value for configuration " + entry.getKey() + ": endpoint must match the saved service configuration");
+            }
+        }
+    }
+
+    private static void validateOutboundServiceConfigs(Map<String, String> configs) throws Exception {
+        if (configs == null) {
+            return;
+        }
+
+        for (Map.Entry<String, String> entry : configs.entrySet()) {
+            String configValue = entry.getValue();
+            if (configValue != null && !configValue.trim().isEmpty()) {
+                String userInfo = extractUserInfo(configValue);
+                if (userInfoContainsBlockedHost(userInfo)) {
+                    throw new Exception("Invalid value for configuration " + entry.getKey() + ": userinfo contains blocked host (blocked host detected)");
+                }
+
+                String host = extractHost(configValue);
+                if (host != null) {
+                    if (isBlockedHost(host)) {
+                        throw new Exception("Invalid value for configuration " + entry.getKey() + ": host " + host + " is not allowed (blocked host detected)");
+                    }
+                } else {
+                    String lowerVal = configValue.toLowerCase().trim();
+                    if (lowerVal.contains("localhost") || lowerVal.contains("127.0.0.1") || lowerVal.contains("0.0.0.0") || lowerVal.contains("::1")) {
+                        throw new Exception("Invalid value for configuration " + entry.getKey() + ": contains blocked keywords but could not be parsed securely.");
+                    }
+                }
+            }
         }
     }
 
