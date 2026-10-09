@@ -794,20 +794,28 @@
                 </plugins>
             </build>
         </profile>
-    </profiles>
+        <profile>
+            <!-- Apache profile means "not DEP", use this profile to add the original dependency on ranger-elasticsearch-plugin-shim in distro module (we remove it because we don't support the elasticsearch plugin -->
+            <id>apache</id>
+            <activation>
+                <!-- Disabled by default in favour of DEP profile -->
+                <activeByDefault>false</activeByDefault>
+            </activation>
 
-    <!--Add a dependency here to ensure this module is the final one built-->
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.ranger</groupId>
-            <artifactId>ranger-elasticsearch-plugin-shim</artifactId>
-            <version>${project.version}</version>
-	    <exclusions>
-		<exclusion>
-		    <groupId>commons-lang</groupId>
-		    <artifactId>commons-lang</artifactId>
-		</exclusion>
-	    </exclusions>
-        </dependency>
-    </dependencies>
+	    <!--Add a dependency here to ensure this module is the final one built-->
+	    <dependencies>
+		<dependency>
+		    <groupId>org.apache.ranger</groupId>
+		    <artifactId>ranger-elasticsearch-plugin-shim</artifactId>
+		    <version>${project.version}</version>
+		    <exclusions>
+			<exclusion>
+			    <groupId>commons-lang</groupId>
+			    <artifactId>commons-lang</artifactId>
+			</exclusion>
+		    </exclusions>
+		</dependency>
+	    </dependencies>
+        </profile>
+    </profiles>
 </project>
